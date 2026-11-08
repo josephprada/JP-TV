@@ -14,12 +14,14 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import java.time.LocalDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /** Merges apps, network, clock and focus into the [HomeState] every theme renders. */
+@OptIn(FlowPreview::class)
 class HomeViewModel(
     private val catalog: AppCatalog,
     ticks: Flow<LocalDateTime>,
@@ -78,19 +81,25 @@ class HomeViewModel(
     private val appEdits = Channel<(AppOrdering) -> AppOrdering>(Channel.UNLIMITED)
 
     init {
-        // First run: persist the default arrangement as soon as the catalog has apps.
+        // First run: persist the default arrangement once the catalog has apps and has stopped changing.
         viewModelScope.launch {
-            val apps = installed.first { it.isNotEmpty() }
+            val apps = installed.debounce(SEED_SETTLE_MS).first { it.isNotEmpty() }
             val packages = apps.map { it.packageName }
-            configStore.update { saved -> saved ?: seed(AppLayout.firstRun(packages)) }
+            configStore.update { saved ->
+                if (saved == null || saved.appOrder.isEmpty()) {
+                    (saved ?: LauncherConfig.Default).withOrdering(AppLayout.firstRun(packages))
+                } else {
+                    saved
+                }
+            }
         }
         // Edits are applied one at a time so rapid key repeats never interleave.
         viewModelScope.launch {
             for (edit in appEdits) {
                 val packages = installedPackages.ifEmpty { installed.first().map { it.packageName } }
+                if (packages.isEmpty()) continue // nothing installed yet: never persist an empty arrangement
                 configStore.update { saved ->
-                    val next = edit(orderingOf(saved, packages))
-                    (saved ?: LauncherConfig.Default).copy(appOrder = next.order, hiddenApps = next.hidden)
+                    (saved ?: LauncherConfig.Default).withOrdering(edit(orderingOf(saved, packages)))
                 }
             }
         }
@@ -129,10 +138,12 @@ class HomeViewModel(
     )
 
     private fun orderingOf(saved: LauncherConfig?, packages: List<String>): AppOrdering =
-        saved?.let { AppOrdering(it.appOrder, it.hiddenApps).reconcile(packages) } ?: AppLayout.firstRun(packages)
+        saved?.takeIf { it.appOrder.isNotEmpty() }
+            ?.let { AppOrdering(it.appOrder, it.hiddenApps).reconcile(packages) }
+            ?: AppLayout.firstRun(packages)
 
-    private fun seed(ordering: AppOrdering) =
-        LauncherConfig.Default.copy(appOrder = ordering.order, hiddenApps = ordering.hidden)
+    private fun LauncherConfig.withOrdering(ordering: AppOrdering) =
+        copy(appOrder = ordering.order, hiddenApps = ordering.hidden)
 
     override fun launch(app: TvApp) = catalog.launch(app)
 
@@ -208,5 +219,10 @@ class HomeViewModel(
 
     private fun push(target: Screen) {
         backStack.update { if (it.lastOrNull() == target) it else it + target }
+    }
+
+    private companion object {
+        /** Quiet time on the catalog before the first-run arrangement is persisted. */
+        const val SEED_SETTLE_MS = 1_000L
     }
 }

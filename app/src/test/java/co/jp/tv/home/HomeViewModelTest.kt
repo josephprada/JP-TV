@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -239,6 +241,7 @@ class HomeViewModelTest {
         val vm = vm(FakeCatalog(apps), store = store)
         vm.state.test {
             expectMostRecentItem().let { if (it.apps.isEmpty()) awaitItem() }
+            advanceUntilIdle()
             assertEquals(listOf("com.xuper.netxxus", "com.spotify.tv.android", "a.nf2"), visible(vm))
             assertEquals(setOf("com.android.tv.settings"), store.source.value?.hiddenApps)
             assertEquals("com.xuper.netxxus", store.source.value?.appOrder?.first())
@@ -300,6 +303,39 @@ class HomeViewModelTest {
             assertEquals(listOf("a.nf", "a.sp", "a.yt", "a.cam"), visible(vm))
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun `reset with an empty catalog does not persist an empty order`() = runTest {
+        val saved = LauncherConfig(appOrder = listOf("a.nf", "a.yt"), hiddenApps = setOf("a.yt"))
+        val store = FakeConfigStore(saved)
+        val vm = vm(FakeCatalog(emptyList()), store = store)
+        vm.resetApps()
+        advanceUntilIdle()
+        assertEquals(saved, store.source.value)
+    }
+
+    @Test
+    fun `first run seed waits for the catalog to settle`() = runTest {
+        val catalog = FakeCatalog(listOf(TvApp("a.nf", "Netflix", true)))
+        val store = FakeConfigStore()
+        vm(catalog, store = store)
+        advanceTimeBy(200)
+        catalog.source.value = manyApps
+        advanceUntilIdle()
+        assertEquals(setOf("a.nf", "a.yt", "a.sp", "a.cam"), store.source.value?.appOrder?.toSet())
+    }
+
+    @Test
+    fun `appearance changes before the first run seed do not suppress it`() = runTest {
+        val store = FakeConfigStore()
+        val catalog = FakeCatalog(emptyList())
+        val vm = vm(catalog, store = store)
+        vm.setTheme("pixel")
+        catalog.source.value = manyApps
+        advanceUntilIdle()
+        assertEquals("pixel", store.source.value?.themeId)
+        assertEquals(manyApps.map { it.packageName }.toSet(), store.source.value?.appOrder?.toSet())
     }
 
     @Test
