@@ -6,4 +6,9 @@
     <string name="rail_below">%1$d MÁS</string>
     <string name="rail_start">INICIO</string>
     <string name="rail_end">FIN</string>
+    <string name="network_chip_title">Wi-Fi</string>
+    <string name="network_chip_subtitle">—</string>
+    <string name="cd_network">Ver detalles de red</string>
+    <string name="cd_settings">Ajustes</string>
+    <string name="cd_themes">Temas</string>
 </resources>

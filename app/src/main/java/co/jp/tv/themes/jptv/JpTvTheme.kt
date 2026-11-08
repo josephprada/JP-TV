@@ -1,16 +1,16 @@
 package co.jp.tv.themes.jptv
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 
-/** Default theme: left glass rail, clock card bottom-right. Sizes are the 1920x1080 design halved to dp. */
+/** Default theme: left glass rail, top-right pills, clock card bottom-right. dp = design px / 2. */
 object JpTvTheme : LauncherTheme {
     override val id = "jptv"
     override val displayName = "JP-TV"
@@ -18,9 +18,18 @@ object JpTvTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        Box(Modifier.fillMaxSize().background(JpTvPalette.Ink)) {
-            AppRail(state, actions, Modifier.align(Alignment.CenterStart))
-            ClockCard(state, Modifier.align(Alignment.BottomEnd))
+        val accent = Color(state.config.accent)
+        Box(Modifier.fillMaxSize()) {
+            AppRail(
+                brand = state.brand,
+                apps = state.apps,
+                focusedIndex = state.focusedIndex,
+                accent = accent,
+                actions = actions,
+                modifier = Modifier.align(Alignment.CenterStart),
+            )
+            TopPills(accent = accent, actions = actions, modifier = Modifier.align(Alignment.TopEnd))
+            ClockCard(now = state.now, accent = accent, modifier = Modifier.align(Alignment.BottomEnd))
         }
     }
 }

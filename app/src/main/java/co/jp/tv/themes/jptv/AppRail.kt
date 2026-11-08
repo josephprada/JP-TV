@@ -1,7 +1,5 @@
 package co.jp.tv.themes.jptv
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,59 +9,87 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import co.jp.tv.R
+import co.jp.tv.apps.domain.TvApp
+import co.jp.tv.core.design.JpColors
+import co.jp.tv.core.design.JpDimens
+import co.jp.tv.core.design.JpFonts
+import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.glass
+import co.jp.tv.core.design.riseIn
 import co.jp.tv.themes.shared.HomeActions
-import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.RailWindow
+import kotlinx.coroutines.delay
 
 private const val VISIBLE_ROWS = 7
-private val RailShape = RoundedCornerShape(18.dp)
 
+/** Takes plain values (not HomeState) so the per-second clock tick does not recompose the rail. */
 @Composable
-internal fun AppRail(state: HomeState, actions: HomeActions, modifier: Modifier = Modifier) {
+internal fun AppRail(
+    brand: String,
+    apps: List<TvApp>,
+    focusedIndex: Int,
+    accent: Color,
+    actions: HomeActions,
+    modifier: Modifier = Modifier,
+) {
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
+    // Rows stagger in only on the first pass; rows revealed by scrolling appear immediately.
+    var firstPass by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        delay(1500)
+        firstPass = false
+    }
+
     var previousTop by remember { mutableIntStateOf(0) }
-    val count = state.apps.size
-    val top = RailWindow.top(previousTop, state.focusedIndex, count, VISIBLE_ROWS)
+    val count = apps.size
+    val top = RailWindow.top(previousTop, focusedIndex, count, VISIBLE_ROWS)
     SideEffect { previousTop = top }
+
+    // Latest values for the key handler, which is created once.
+    val currentApps by rememberUpdatedState(apps)
+    val currentFocus by rememberUpdatedState(focusedIndex)
 
     Column(
         modifier = modifier
             .padding(start = 20.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxHeight()
             .width(270.dp)
-            .background(JpTvPalette.Glass, RailShape)
-            .border(0.5.dp, JpTvPalette.Line, RailShape)
+            .riseIn(delayMs = 0, durationMs = JpMotion.FadeMs, distanceDp = 0f)
+            .glass(JpDimens.RailShape)
             .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 20.dp)
             .focusRequester(focusRequester)
             .focusable()
-            .onKeyEvent { event -> handleKey(event, state, actions) },
+            .onKeyEvent { handleKey(it, currentApps, currentFocus, actions) },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(
@@ -72,13 +98,10 @@ internal fun AppRail(state: HomeState, actions: HomeActions, modifier: Modifier 
             verticalAlignment = Alignment.Bottom,
         ) {
             BasicText(
-                text = state.brand,
-                style = TextStyle(color = JpTvPalette.Accent, fontSize = 30.sp),
+                text = brand,
+                style = TextStyle(color = accent, fontSize = 30.sp, fontFamily = JpFonts.Display, letterSpacing = (-0.01).em),
             )
-            BasicText(
-                text = stringResource(R.string.rail_total_apps, count),
-                style = monoLabel(),
-            )
+            BasicText(text = stringResource(R.string.rail_total_apps, count), style = monoLabel())
         }
 
         PagerLabel(
@@ -92,9 +115,10 @@ internal fun AppRail(state: HomeState, actions: HomeActions, modifier: Modifier 
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
             for (index in top until minOf(count, top + VISIBLE_ROWS)) {
-                val app = state.apps[index]
-                androidx.compose.runtime.key(app.packageName) {
-                    AppRow(app, focused = index == state.focusedIndex)
+                val app = apps[index]
+                key(app.packageName) {
+                    val delayMs = if (firstPass) 150 + (index - top) * JpMotion.RowStaggerMs else null
+                    AppRow(app, focused = index == focusedIndex, accent = accent, riseDelayMs = delayMs)
                 }
             }
         }
@@ -114,25 +138,25 @@ private fun PagerLabel(up: Boolean, text: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        Chevron(up = up, color = JpTvPalette.Faint)
+        Chevron(up = up, color = JpColors.Faint)
         BasicText(text = text, style = monoLabel())
     }
 }
 
 private fun monoLabel() = TextStyle(
-    color = JpTvPalette.Faint,
+    color = JpColors.Faint,
     fontSize = 8.sp,
-    fontFamily = FontFamily.Monospace,
+    fontFamily = JpFonts.Mono,
     letterSpacing = 0.14.em,
 )
 
-private fun handleKey(event: androidx.compose.ui.input.key.KeyEvent, state: HomeState, actions: HomeActions): Boolean {
+private fun handleKey(event: KeyEvent, apps: List<TvApp>, focusedIndex: Int, actions: HomeActions): Boolean {
     if (event.type != KeyEventType.KeyDown) return false
     return when (event.key) {
-        Key.DirectionUp -> { actions.focus(state.focusedIndex - 1); true }
-        Key.DirectionDown -> { actions.focus(state.focusedIndex + 1); true }
+        Key.DirectionUp -> { actions.focus(focusedIndex - 1); true }
+        Key.DirectionDown -> { actions.focus(focusedIndex + 1); true }
         Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
-            if (event.nativeKeyEvent.repeatCount == 0) state.apps.getOrNull(state.focusedIndex)?.let(actions::launch)
+            if (event.nativeKeyEvent.repeatCount == 0) apps.getOrNull(focusedIndex)?.let(actions::launch)
             true
         }
         else -> false

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 /** Merges apps, clock and focus into the [HomeState] every theme renders. */
@@ -28,12 +29,14 @@ class HomeViewModel(
 
     private val requestedFocus = MutableStateFlow(0)
 
+    // Arranged once per catalog change so clock ticks reuse the same list instance (keeps the UI skippable).
+    private val arrangedApps: Flow<List<TvApp>> = catalog.apps.map { AppLayout.arrange(it, ownPackage) }
+
     val state: StateFlow<HomeState> = combine(
-        catalog.apps,
+        arrangedApps,
         ticks,
         requestedFocus,
-    ) { apps, now, focus ->
-        val arranged = AppLayout.arrange(apps, ownPackage)
+    ) { arranged, now, focus ->
         HomeState(
             brand = config.brand,
             apps = arranged,
