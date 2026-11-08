@@ -8,6 +8,7 @@ interface HomeActions {
     fun openNetwork()
     fun openSettings()
     fun openThemes()
+    fun openCustomize()
 
     /** Opens the app editor, focused on [focus] when given. */
     fun openEditApps(focus: TvApp?)

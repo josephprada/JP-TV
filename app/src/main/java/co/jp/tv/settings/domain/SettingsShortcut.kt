@@ -12,6 +12,9 @@ sealed interface ShortcutTarget {
     /** Opens a native Android settings screen; [fallbackAction] is used when [action] has no handler. */
     data class Native(val action: String, val fallbackAction: String) : ShortcutTarget
 
-    /** Not available yet (phase 5). */
+    /** Not available yet. */
     data object Disabled : ShortcutTarget
+
+    /** Opens the launcher theme picker. */
+    data object Themes : ShortcutTarget
 }

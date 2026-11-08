@@ -29,12 +29,14 @@ import co.jp.tv.core.util.rememberPausedByLifecycle
 import co.jp.tv.home.HomeViewModel
 import co.jp.tv.home.Screen
 import co.jp.tv.network.ui.NetworkPanel
+import co.jp.tv.preferences.ui.CustomizeScreen
 import co.jp.tv.settings.domain.SettingsShortcut
 import co.jp.tv.settings.domain.SettingsShortcuts
 import co.jp.tv.settings.domain.ShortcutTarget
 import co.jp.tv.settings.ui.QuickSettingsInfo
 import co.jp.tv.settings.ui.QuickSettingsScreen
 import co.jp.tv.themes.ThemeRegistry
+import co.jp.tv.themes.ui.ThemesScreen
 import co.jp.tv.wallpaper.WallpaperRegistry
 
 class MainActivity : ComponentActivity() {
@@ -45,23 +47,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // This is the HOME screen: Back closes an open panel and otherwise does nothing.
             val screens by viewModel.screens.collectAsStateWithLifecycle()
             BackHandler(enabled = true) { viewModel.back() }
 
             val state by viewModel.state.collectAsStateWithLifecycle()
             val paused = rememberPausedByLifecycle()
-            // Probes and animations idle whenever the activity is stopped.
             LaunchedEffect(paused) { viewModel.setActive(!paused) }
 
             val accent = Color(state.config.accent)
+            val top = screens.lastOrNull()
             val settingsOpen = Screen.Settings in screens
-            val networkOpen = screens.lastOrNull() == Screen.Network
-            val editOpen = screens.lastOrNull() == Screen.EditApps
+            val networkOpen = top == Screen.Network
+            val editOpen = top == Screen.EditApps
+            val themesOpen = top == Screen.Themes
+            val customizeOpen = top == Screen.Customize
             val editState by viewModel.editState.collectAsStateWithLifecycle()
             val overlayOpen = screens.isNotEmpty()
+            val hideHome = settingsOpen || editOpen || themesOpen || customizeOpen
 
-            // Focus returns to whatever had it on the home when the last panel closes.
             val homeFocus = remember { FocusRequester() }
             var wasOverlayOpen by remember { mutableStateOf(false) }
             LaunchedEffect(overlayOpen) {
@@ -74,14 +77,16 @@ class MainActivity : ComponentActivity() {
                 LocalPaused provides paused,
             ) {
                 Box(Modifier.fillMaxSize().background(JpColors.Ink)) {
-                    WallpaperRegistry.byId(state.config.wallpaperId)
-                        .Render(accent, paused, Modifier.fillMaxSize())
-                    if (!settingsOpen && !editOpen) {
+                    if (!customizeOpen) {
+                        WallpaperRegistry.byId(state.config.wallpaperId)
+                            .Render(accent, paused || overlayOpen, Modifier.fillMaxSize())
+                    }
+                    if (!hideHome) {
                         Box(Modifier.fillMaxSize().focusRequester(homeFocus).focusRestorer()) {
-                            ThemeRegistry.default.Home(state, viewModel)
+                            ThemeRegistry.byId(state.config.themeId).Home(state, viewModel)
                         }
                     }
-                    if (settingsOpen && !editOpen) {
+                    if (settingsOpen && !editOpen && !themesOpen && !customizeOpen) {
                         QuickSettingsScreen(
                             info = QuickSettingsInfo(
                                 launcherName = state.brand,
@@ -115,6 +120,20 @@ class MainActivity : ComponentActivity() {
                             onReset = viewModel::resetApps,
                         )
                     }
+                    if (themesOpen) {
+                        ThemesScreen(
+                            activeThemeId = state.config.themeId,
+                            accent = accent,
+                            onSelect = viewModel::setTheme,
+                            onCustomize = viewModel::openCustomize,
+                        )
+                    }
+                    if (customizeOpen) {
+                        CustomizeScreen(
+                            initial = state.config,
+                            onApply = viewModel::applyCustomize,
+                        )
+                    }
                     if (networkOpen) {
                         NetworkPanel(
                             status = state.network,
@@ -137,6 +156,7 @@ class MainActivity : ComponentActivity() {
         when (val target = shortcut.target) {
             ShortcutTarget.NetworkPanel -> viewModel.openNetwork()
             is ShortcutTarget.Native -> container.settingsLauncher.open(target)
+            ShortcutTarget.Themes -> viewModel.openThemes()
             ShortcutTarget.Disabled -> Unit
         }
     }

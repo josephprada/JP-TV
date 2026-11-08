@@ -19,17 +19,24 @@ object JpTvTheme : LauncherTheme {
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
         val accent = Color(state.config.accent)
+        val titleFontId = state.config.titleFontId
         Box(Modifier.fillMaxSize()) {
             AppRail(
                 brand = state.brand,
                 apps = state.apps,
                 focusedIndex = state.focusedIndex,
                 accent = accent,
+                titleFontId = titleFontId,
                 actions = actions,
                 modifier = Modifier.align(Alignment.CenterStart),
             )
             TopPills(network = state.network, accent = accent, actions = actions, modifier = Modifier.align(Alignment.TopEnd))
-            ClockCard(now = state.now, accent = accent, modifier = Modifier.align(Alignment.BottomEnd))
+            ClockCard(
+                now = state.now,
+                accent = accent,
+                titleFontId = titleFontId,
+                modifier = Modifier.align(Alignment.BottomEnd),
+            )
         }
     }
 }

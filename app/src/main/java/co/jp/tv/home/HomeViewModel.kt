@@ -172,8 +172,32 @@ class HomeViewModel(
         appEdits.trySend { AppLayout.firstRun(installedPackages) }
     }
 
-    // Wired in phase 6 (theme picker).
-    override fun openThemes() = Unit
+    override fun openThemes() = push(Screen.Themes)
+
+    override fun openCustomize() = push(Screen.Customize)
+
+    /** Persists appearance fields from the Customize / Themes screens. */
+    fun applyAppearance(transform: (LauncherConfig) -> LauncherConfig) {
+        viewModelScope.launch {
+            configStore.update { saved -> transform(saved ?: LauncherConfig.Default) }
+        }
+    }
+
+    fun applyCustomize(config: LauncherConfig) {
+        applyAppearance {
+            it.copy(
+                brand = config.brand,
+                accent = config.accent,
+                titleFontId = config.titleFontId,
+                wallpaperId = config.wallpaperId,
+            )
+        }
+        back()
+    }
+
+    fun setTheme(themeId: String) {
+        applyAppearance { it.copy(themeId = themeId) }
+    }
 
     /** Closes the top screen. Returns false when already at home. */
     fun back(): Boolean {

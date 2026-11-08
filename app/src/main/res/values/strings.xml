@@ -83,4 +83,18 @@
     <string name="edit_empty_hidden">NINGUNA OCULTA</string>
     <string name="edit_reset">RESTABLECER</string>
     <string name="edit_reset_confirm">¿SEGURO? OK</string>
+
+    <string name="themes_title">Temas</string>
+    <string name="themes_breadcrumb">%1$d DISPONIBLES · ACTIVO: %2$s</string>
+    <string name="themes_customize">PERSONALIZAR COLORES →</string>
+    <string name="themes_active">ACTIVO</string>
+    <string name="themes_use">USAR</string>
+
+    <string name="customize_title">Personalizar tema</string>
+    <string name="customize_breadcrumb">AJUSTES / TEMA · JP-TV</string>
+    <string name="customize_brand">NOMBRE</string>
+    <string name="customize_accent">COLOR DE ACENTO</string>
+    <string name="customize_font">FUENTE DE TÍTULOS Y RELOJ</string>
+    <string name="customize_wallpaper">LIVE WALLPAPER</string>
+    <string name="customize_apply">APLICAR</string>
 </resources>

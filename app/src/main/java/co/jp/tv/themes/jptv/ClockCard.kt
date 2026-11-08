@@ -34,13 +34,20 @@ import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.design.JpDimens
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.glass
+import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
 import java.time.LocalDateTime
 
 @Composable
-internal fun ClockCard(now: LocalDateTime, accent: Color, modifier: Modifier = Modifier) {
+internal fun ClockCard(
+    now: LocalDateTime,
+    accent: Color,
+    titleFontId: String,
+    modifier: Modifier = Modifier,
+) {
+    val titleFont = rememberTitleFont(titleFontId)
     Column(
         modifier = modifier
             .padding(end = 20.dp, bottom = 20.dp)
@@ -53,7 +60,7 @@ internal fun ClockCard(now: LocalDateTime, accent: Color, modifier: Modifier = M
     ) {
         BasicText(
             text = timeText(now),
-            style = TextStyle(color = JpColors.Paper, fontSize = 74.sp, fontFamily = JpFonts.Display, letterSpacing = (-0.01).em),
+            style = TextStyle(color = JpColors.Paper, fontSize = 74.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
         )
         BasicText(
             text = ClockFormat.date(now),

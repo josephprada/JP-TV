@@ -23,9 +23,8 @@ object SettingsShortcuts {
         native(SettingsShortcut.Id.DATE_TIME, "android.settings.DATE_SETTINGS"),
     )
 
-    /** Customization tile that arrives in phase 5; shown disabled. The launcher-name tile waits for it too. */
     val upcoming: List<SettingsShortcut> = listOf(
-        SettingsShortcut(SettingsShortcut.Id.THEME, ShortcutTarget.Disabled),
+        SettingsShortcut(SettingsShortcut.Id.THEME, ShortcutTarget.Themes),
     )
 
     /** Bytes as GiB with one decimal, e.g. "3.5". */

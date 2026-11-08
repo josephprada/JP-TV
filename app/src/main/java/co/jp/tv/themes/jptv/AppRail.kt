@@ -43,6 +43,7 @@ import co.jp.tv.core.design.JpDimens
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
+import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.RailWindow
@@ -57,9 +58,11 @@ internal fun AppRail(
     apps: List<TvApp>,
     focusedIndex: Int,
     accent: Color,
+    titleFontId: String,
     actions: HomeActions,
     modifier: Modifier = Modifier,
 ) {
+    val titleFont = rememberTitleFont(titleFontId)
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
@@ -100,7 +103,7 @@ internal fun AppRail(
         ) {
             BasicText(
                 text = brand,
-                style = TextStyle(color = accent, fontSize = 30.sp, fontFamily = JpFonts.Display, letterSpacing = (-0.01).em),
+                style = TextStyle(color = accent, fontSize = 30.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
             )
             BasicText(text = stringResource(R.string.rail_total_apps, count), style = monoLabel())
         }
