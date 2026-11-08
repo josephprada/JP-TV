@@ -78,6 +78,7 @@ internal fun AppRail(
     // Latest values for the key handler, which is created once.
     val currentApps by rememberUpdatedState(apps)
     val currentFocus by rememberUpdatedState(focusedIndex)
+    val okPress = remember { OkPress() }
 
     Column(
         modifier = modifier
@@ -89,7 +90,7 @@ internal fun AppRail(
             .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 20.dp)
             .focusRequester(focusRequester)
             .focusable()
-            .onKeyEvent { handleKey(it, currentApps, currentFocus, actions) },
+            .onKeyEvent { handleKey(it, currentApps, currentFocus, actions, okPress) },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(
@@ -150,15 +151,34 @@ private fun monoLabel() = TextStyle(
     letterSpacing = 0.14.em,
 )
 
-private fun handleKey(event: KeyEvent, apps: List<TvApp>, focusedIndex: Int, actions: HomeActions): Boolean {
-    if (event.type != KeyEventType.KeyDown) return false
-    return when (event.key) {
-        Key.DirectionUp -> { actions.focus(focusedIndex - 1); true }
-        Key.DirectionDown -> { actions.focus(focusedIndex + 1); true }
-        Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
-            if (event.nativeKeyEvent.repeatCount == 0) apps.getOrNull(focusedIndex)?.let(actions::launch)
+/** Tracks an OK press so a short press launches on release and a long press opens the editor instead. */
+private class OkPress { var pending = false }
+
+private fun handleKey(event: KeyEvent, apps: List<TvApp>, focusedIndex: Int, actions: HomeActions, ok: OkPress): Boolean {
+    val key = event.key
+    val isOk = key == Key.DirectionCenter || key == Key.Enter || key == Key.NumPadEnter
+    return when {
+        isOk && event.type == KeyEventType.KeyDown -> {
+            val native = event.nativeKeyEvent
+            if (native.repeatCount == 0) {
+                ok.pending = true
+            } else if (native.isLongPress && ok.pending) {
+                ok.pending = false
+                actions.openEditApps(apps.getOrNull(focusedIndex))
+            }
             true
         }
+        isOk && event.type == KeyEventType.KeyUp -> {
+            if (ok.pending) {
+                ok.pending = false
+                apps.getOrNull(focusedIndex)?.let(actions::launch)
+            }
+            true
+        }
+        event.type != KeyEventType.KeyDown -> false
+        key == Key.Menu -> { actions.openEditApps(apps.getOrNull(focusedIndex)); true }
+        key == Key.DirectionUp -> { actions.focus(focusedIndex - 1); true }
+        key == Key.DirectionDown -> { actions.focus(focusedIndex + 1); true }
         else -> false
     }
 }

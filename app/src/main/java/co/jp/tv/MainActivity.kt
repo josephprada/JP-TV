@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.jp.tv.apps.ui.EditAppsScreen
 import co.jp.tv.apps.ui.LocalAppIcons
 import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.util.LocalPaused
@@ -56,6 +57,8 @@ class MainActivity : ComponentActivity() {
             val accent = Color(state.config.accent)
             val settingsOpen = Screen.Settings in screens
             val networkOpen = screens.lastOrNull() == Screen.Network
+            val editOpen = screens.lastOrNull() == Screen.EditApps
+            val editState by viewModel.editState.collectAsStateWithLifecycle()
             val overlayOpen = screens.isNotEmpty()
 
             // Focus returns to whatever had it on the home when the last panel closes.
@@ -73,31 +76,43 @@ class MainActivity : ComponentActivity() {
                 Box(Modifier.fillMaxSize().background(JpColors.Ink)) {
                     WallpaperRegistry.byId(state.config.wallpaperId)
                         .Render(accent, paused, Modifier.fillMaxSize())
-                    if (!settingsOpen) {
+                    if (!settingsOpen && !editOpen) {
                         Box(Modifier.fillMaxSize().focusRequester(homeFocus).focusRestorer()) {
                             ThemeRegistry.default.Home(state, viewModel)
                         }
                     }
-                    if (settingsOpen) {
+                    if (settingsOpen && !editOpen) {
                         QuickSettingsScreen(
                             info = QuickSettingsInfo(
                                 launcherName = state.brand,
                                 launcherVersion = container.deviceInfo.launcherVersion,
                                 androidRelease = container.deviceInfo.androidRelease,
                                 deviceModel = container.deviceInfo.deviceModel,
-                                appCount = state.apps.size,
+                                appCount = editState.visible.size + editState.hidden.size,
                                 storage = remember { container.deviceInfo.storage() },
                                 display = remember { container.deviceInfo.display() },
                             ),
                             network = state.network,
                             accent = accent,
                             onShortcut = { openShortcut(it) },
+                            onEditApps = { viewModel.openEditApps(null) },
                             onAllSettings = {
                                 container.settingsLauncher.open(
                                     SettingsShortcuts.ALL_SETTINGS_ACTION,
                                     SettingsShortcuts.ALL_SETTINGS_ACTION,
                                 )
                             },
+                        )
+                    }
+                    if (editOpen) {
+                        EditAppsScreen(
+                            apps = editState,
+                            freeGb = remember { container.deviceInfo.storage()?.let { SettingsShortcuts.formatGb(it.freeBytes) } },
+                            accent = accent,
+                            initialFocus = viewModel.editFocusPackage,
+                            onMove = viewModel::moveApp,
+                            onSetHidden = viewModel::setAppHidden,
+                            onReset = viewModel::resetApps,
                         )
                     }
                     if (networkOpen) {

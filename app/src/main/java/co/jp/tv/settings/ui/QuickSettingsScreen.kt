@@ -73,6 +73,7 @@ fun QuickSettingsScreen(
     accent: Color,
     onShortcut: (SettingsShortcut) -> Unit,
     onAllSettings: () -> Unit,
+    onEditApps: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val tiles = SettingsShortcuts.tiles + SettingsShortcuts.upcoming
@@ -86,7 +87,7 @@ fun QuickSettingsScreen(
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Header(info)
+        Header(info, accent, onEditApps)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             tiles.chunked(COLUMNS).forEachIndexed { row, rowTiles ->
                 Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -111,21 +112,25 @@ fun QuickSettingsScreen(
 }
 
 @Composable
-private fun Header(info: QuickSettingsInfo) {
+private fun Header(info: QuickSettingsInfo, accent: Color, onEditApps: () -> Unit) {
     Row(
-        modifier = Modifier.padding(start = 8.dp, top = 4.dp).riseIn(delayMs = 0, durationMs = JpMotion.RiseMs, distanceDp = 8f),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 4.dp)
+            .riseIn(delayMs = 0, durationMs = JpMotion.RiseMs, distanceDp = 8f),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        BasicText(
-            stringResource(R.string.settings_title),
-            style = TextStyle(JpColors.Paper, 20.sp, FontWeight.Medium, fontFamily = JpFonts.Body),
-        )
-        BasicText(
-            stringResource(R.string.settings_version, info.launcherName, info.launcherVersion, info.androidRelease, info.deviceModel).uppercase(),
-            style = TextStyle(JpColors.Faint, 6.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
-            modifier = Modifier.padding(bottom = 3.dp),
-        )
+        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            BasicText(
+                stringResource(R.string.settings_title),
+                style = TextStyle(JpColors.Paper, 20.sp, FontWeight.Medium, fontFamily = JpFonts.Body),
+            )
+            BasicText(
+                stringResource(R.string.settings_version, info.launcherName, info.launcherVersion, info.androidRelease, info.deviceModel).uppercase(),
+                style = TextStyle(JpColors.Faint, 6.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
+                modifier = Modifier.padding(bottom = 3.dp),
+            )
+        }
+        GlassButton(stringResource(R.string.settings_edit_apps), accent, onEditApps)
     }
 }
 
