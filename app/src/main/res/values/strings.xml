@@ -59,4 +59,28 @@
         <item quantity="other">%1$d INSTALADAS</item>
     </plurals>
     <string name="settings_version">%1$s %2$s · ANDROID %3$s · %4$s</string>
+
+    <string name="settings_edit_apps">EDITAR APPS →</string>
+
+    <string name="edit_title">Apps</string>
+    <string name="edit_breadcrumb">AJUSTES / APPS</string>
+    <string name="edit_hint_moving">↑↓ ORDENAR · → OCULTAR · OK LISTO</string>
+    <string name="edit_free_gb">%1$s GB libres</string>
+    <plurals name="edit_pill_visible">
+        <item quantity="one">%1$d visible</item>
+        <item quantity="other">%1$d visibles</item>
+    </plurals>
+    <plurals name="edit_pill_hidden">
+        <item quantity="one">%1$d oculta</item>
+        <item quantity="other">%1$d ocultas</item>
+    </plurals>
+    <string name="edit_col_rail">EN EL RAIL · %1$d</string>
+    <string name="edit_col_hidden">OCULTAS · %1$d</string>
+    <string name="edit_tag_move">MOVER</string>
+    <string name="edit_tag_moving">MOVIENDO</string>
+    <string name="edit_tag_show">MOSTRAR</string>
+    <string name="edit_empty_rail">EL RAIL ESTÁ VACÍO</string>
+    <string name="edit_empty_hidden">NINGUNA OCULTA</string>
+    <string name="edit_reset">RESTABLECER</string>
+    <string name="edit_reset_confirm">¿SEGURO? OK</string>
 </resources>
