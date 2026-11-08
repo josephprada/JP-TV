@@ -1,7 +1,30 @@
 package co.jp.tv
 
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import co.jp.tv.apps.data.AppIconLoader
+import co.jp.tv.apps.data.PackageManagerAppCatalog
+import co.jp.tv.apps.domain.AppCatalog
+import co.jp.tv.core.util.ClockTicker
+import co.jp.tv.home.HomeViewModel
+
 /**
  * Manual dependency holder. The only place that creates adapters and wires them to ports.
- * Empty until the first feature needs a dependency.
  */
-class AppContainer
+class AppContainer(context: Context) {
+    private val appContext = context.applicationContext
+
+    val appCatalog: AppCatalog = PackageManagerAppCatalog(appContext)
+    val appIconLoader = AppIconLoader(appContext)
+
+    val homeViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            HomeViewModel(
+                catalog = appCatalog,
+                ticks = ClockTicker.ticks(),
+                ownPackage = appContext.packageName,
+            ) as T
+    }
+}
