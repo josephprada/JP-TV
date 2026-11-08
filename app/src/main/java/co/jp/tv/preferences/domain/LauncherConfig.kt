@@ -1,11 +1,15 @@
 package co.jp.tv.preferences.domain
 
-/** User-facing configuration. Persistence arrives in phase 5; defaults apply until then. */
+/** User-facing configuration. Brand, accent and wallpaper are placeholders until phase 5 persists them. */
 data class LauncherConfig(
     val brand: String = "JP-TV",
     /** ARGB */
     val accent: Long = 0xFFE63329,
     val wallpaperId: String = DEFAULT_WALLPAPER_ID,
+    /** Package names of every known app, in the user's order (hidden ones keep their slot). */
+    val appOrder: List<String> = emptyList(),
+    /** Package names kept off the home rail. */
+    val hiddenApps: Set<String> = emptySet(),
 ) {
     companion object {
         const val DEFAULT_WALLPAPER_ID = "galaxy"
