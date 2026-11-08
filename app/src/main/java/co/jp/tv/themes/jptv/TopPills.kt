@@ -41,17 +41,20 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.riseIn
+import co.jp.tv.network.domain.NetworkRules
+import co.jp.tv.network.domain.NetworkStatus
+import co.jp.tv.network.ui.SignalBars
 import co.jp.tv.themes.shared.HomeActions
 
 @Composable
-internal fun TopPills(accent: Color, actions: HomeActions, modifier: Modifier = Modifier) {
+internal fun TopPills(network: NetworkStatus, accent: Color, actions: HomeActions, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .padding(top = 20.dp, end = 20.dp)
             .riseIn(delayMs = 200, durationMs = JpMotion.FadeMs, distanceDp = 12f),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        NetworkChip(accent, onClick = actions::openNetwork)
+        NetworkChip(network, accent, onClick = actions::openNetwork)
         RoundButton(JpIcons.Settings, stringResource(R.string.cd_settings), accent, onClick = actions::openSettings)
         RoundButton(JpIcons.Palette, stringResource(R.string.cd_themes), accent, onClick = actions::openThemes)
     }
@@ -81,41 +84,38 @@ private fun GlassPill(
 }
 
 @Composable
-private fun NetworkChip(accent: Color, onClick: () -> Unit) {
-    // Placeholder content: live data arrives in phase 3.
+private fun NetworkChip(network: NetworkStatus, accent: Color, onClick: () -> Unit) {
+    val title = when {
+        network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline)
+        network.ssid != null -> network.ssid
+        network.transport == NetworkStatus.Transport.WIFI -> stringResource(R.string.network_wifi)
+        network.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.network_ethernet)
+        else -> stringResource(R.string.network_generic)
+    }
+    val detail = when {
+        network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline_detail)
+        else -> NetworkRules.chipDetail(network).uppercase().ifEmpty { stringResource(R.string.network_no_detail) }
+    }
     GlassPill(stringResource(R.string.cd_network), accent, onClick, Modifier.height(40.dp)) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(9.dp),
         ) {
-            JpIconView(JpIcons.Wifi, 13.dp, JpColors.Paper)
+            JpIconView(JpIcons.Wifi, 13.dp, if (network.isConnected || network.state == NetworkStatus.State.UNKNOWN) JpColors.Paper else JpColors.Faint)
             Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
                 BasicText(
-                    stringResource(R.string.network_chip_title),
+                    title,
                     style = TextStyle(JpColors.Paper, 9.5.sp, FontWeight.Medium, fontFamily = JpFonts.Body),
+                    maxLines = 1,
                 )
                 BasicText(
-                    stringResource(R.string.network_chip_subtitle),
+                    detail,
                     style = TextStyle(JpColors.Muted, 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
+                    maxLines = 1,
                 )
             }
-            SignalBars(filled = 3)
-        }
-    }
-}
-
-@Composable
-private fun SignalBars(filled: Int) {
-    Row(Modifier.height(11.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-        listOf(3.5f, 6f, 8.5f, 11f).forEachIndexed { i, h ->
-            Box(
-                Modifier
-                    .width(2.5.dp)
-                    .height(h.dp)
-                    .graphicsLayer { alpha = if (i < filled) 1f else 0.25f }
-                    .background(JpColors.Paper, RoundedCornerShape(1.5.dp)),
-            )
+            SignalBars(level = network.signalLevel)
         }
     }
 }

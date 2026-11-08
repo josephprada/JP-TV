@@ -28,7 +28,7 @@ object JpTvTheme : LauncherTheme {
                 actions = actions,
                 modifier = Modifier.align(Alignment.CenterStart),
             )
-            TopPills(accent = accent, actions = actions, modifier = Modifier.align(Alignment.TopEnd))
+            TopPills(network = state.network, accent = accent, actions = actions, modifier = Modifier.align(Alignment.TopEnd))
             ClockCard(now = state.now, accent = accent, modifier = Modifier.align(Alignment.BottomEnd))
         }
     }
