@@ -4,14 +4,15 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import co.jp.tv.preferences.domain.ConfigStore
 import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.preferences.domain.ConfigStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/** Adapter: Jetpack DataStore (Preferences). Brand, accent and wallpaper are not persisted yet (phase 5). */
+/** Adapter: Jetpack DataStore (Preferences) for the full [LauncherConfig]. */
 class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : ConfigStore {
 
     override val config: Flow<LauncherConfig?> = dataStore.data.map { it.toConfig() }
@@ -20,6 +21,11 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         dataStore.edit { prefs ->
             val next = transform(prefs.toConfig())
             prefs[SAVED] = true
+            prefs[BRAND] = next.brand
+            prefs[ACCENT] = next.accent
+            prefs[TITLE_FONT] = next.titleFontId
+            prefs[WALLPAPER] = next.wallpaperId
+            prefs[THEME] = next.themeId
             prefs[APP_ORDER] = next.appOrder.joinToString(SEPARATOR)
             prefs[HIDDEN_APPS] = next.hiddenApps
         }
@@ -29,7 +35,12 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         if (this[SAVED] != true) {
             null
         } else {
-            LauncherConfig.Default.copy(
+            LauncherConfig(
+                brand = this[BRAND] ?: LauncherConfig.DEFAULT_BRAND,
+                accent = this[ACCENT] ?: LauncherConfig.Default.accent,
+                titleFontId = this[TITLE_FONT] ?: LauncherConfig.Default.titleFontId,
+                wallpaperId = this[WALLPAPER] ?: LauncherConfig.DEFAULT_WALLPAPER_ID,
+                themeId = this[THEME] ?: LauncherConfig.DEFAULT_THEME_ID,
                 appOrder = this[APP_ORDER].orEmpty().split(SEPARATOR).filter { it.isNotEmpty() },
                 hiddenApps = this[HIDDEN_APPS].orEmpty(),
             )
@@ -38,6 +49,11 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
     private companion object {
         const val SEPARATOR = "\n"
         val SAVED = booleanPreferencesKey("saved")
+        val BRAND = stringPreferencesKey("brand")
+        val ACCENT = longPreferencesKey("accent")
+        val TITLE_FONT = stringPreferencesKey("title_font")
+        val WALLPAPER = stringPreferencesKey("wallpaper")
+        val THEME = stringPreferencesKey("theme")
         val APP_ORDER = stringPreferencesKey("app_order")
         val HIDDEN_APPS = stringSetPreferencesKey("hidden_apps")
     }

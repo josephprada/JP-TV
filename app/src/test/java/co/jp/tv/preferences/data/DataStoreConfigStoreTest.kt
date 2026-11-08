@@ -32,6 +32,21 @@ class DataStoreConfigStoreTest {
     }
 
     @Test
+    fun `appearance fields round trip`() = runTest {
+        val store = store()
+        val written = LauncherConfig.Default.copy(
+            brand = "Casa",
+            accent = 0xFF3D8BFD,
+            titleFontId = "bebas_neue",
+            wallpaperId = "embers",
+            themeId = "jptv",
+            appOrder = listOf("a"),
+        )
+        store.update { written }
+        assertEquals(written, store.config.first())
+    }
+
+    @Test
     fun `an empty saved order is still a saved config`() = runTest {
         val store = store()
         store.update { LauncherConfig.Default }

@@ -42,10 +42,10 @@ class SettingsShortcutsTest {
     }
 
     @Test
-    fun `phase 5 tile is disabled`() {
+    fun `theme tile opens the themes screen`() {
         val upcoming = SettingsShortcuts.upcoming
         assertEquals(listOf(SettingsShortcut.Id.THEME), upcoming.map { it.id })
-        assertTrue(upcoming.all { it.target == ShortcutTarget.Disabled })
+        assertTrue(upcoming.all { it.target == ShortcutTarget.Themes })
     }
 
     @Test
