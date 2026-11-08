@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Inicio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Bebas+Neue&amp;family=Archivo+Black&amp;family=Instrument+Serif&amp;family=Space+Grotesk:wght@700&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0b0c}
+a{color:#f53d31}a:hover{color:#f2efe9}
+@keyframes jp-drift-a{0%{transform:translate(0,0) scale(1)}100%{transform:translate(260px,140px) scale(1.25)}}
+@keyframes jp-drift-b{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(-320px,-120px) scale(0.9)}}
+@keyframes jp-drift-c{0%{transform:translate(0,0)}100%{transform:translate(-160px,220px)}}
+@keyframes jp-twinkle{0%,100%{opacity:0.2}50%{opacity:1}}
+@keyframes jp-meteor{0%{transform:translate(0,0) rotate(-38deg);opacity:0}3%{opacity:1}22%{transform:translate(1100px,-860px) rotate(-38deg);opacity:0}100%{transform:translate(1100px,-860px) rotate(-38deg);opacity:0}}
+@keyframes jp-orb-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,-40px) scale(1.08)}}
+@keyframes jp-orb-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-70px,50px) scale(0.94)}}
+@keyframes jp-orb-3{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,60px)}}
+@keyframes jp-rise{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes jp-fade{0%{opacity:0}100%{opacity:1}}
+@keyframes jp-blink{0%,49%{opacity:1}50%,100%{opacity:0.25}}
+@keyframes jp-minute{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+@keyframes jp-signal{0%,100%{opacity:1}50%{opacity:0.35}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0b0b0c; color: #f2efe9; font-family: 'Geist', system-ui, sans-serif;">
+
+  <!-- Live wallpaper: Brasas -->
+  <sc-if value="{{isBrasas}}" hint-placeholder-val="{{ true }}">
+    <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+      <div style="{{orbA}}"></div>
+      <div style="position: absolute; width: 1300px; height: 1300px; left: 1100px; top: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(60,10,14,0.9) 0%, rgba(60,10,14,0) 65%); animation: jp-drift-b 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+      <div style="{{orbC}}"></div>
+      <div style="position: absolute; inset: 0; background: radial-gradient(120% 90% at 70% 40%, rgba(11,11,12,0) 0%, rgba(11,11,12,0.75) 100%);"></div>
+    </div>
+  </sc-if>
+
+  <!-- Live wallpaper: Galaxia — ported from JP-Wallet login (galaxyEngine + aurora orbs), accent instead of mint -->
+  <sc-if value="{{isGalaxia}}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden; background: linear-gradient(155deg, #0a0a0c 0%, #110d10 45%, #140a0b 100%);">
+      <sc-for list="{{orbs}}" as="o" hint-placeholder-count="5">
+        <span style="{{o}}"></span>
+      </sc-for>
+      <sc-for list="{{stars}}" as="s" hint-placeholder-count="40">
+        <span style="{{s}}"></span>
+      </sc-for>
+      <sc-for list="{{meteors}}" as="m" hint-placeholder-count="4">
+        <span style="{{m}}"></span>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- Rail -->
+  <nav aria-label="Apps" style="position: absolute; left: 40px; top: 40px; bottom: 40px; width: 540px; box-sizing: border-box; padding: 48px 32px 40px; display: flex; flex-direction: column; gap: 24px; border-radius: 36px; background: rgba(18,18,20,0.42); backdrop-filter: blur(28px) saturate(140%); -webkit-backdrop-filter: blur(28px) saturate(140%); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 30px 80px rgba(0,0,0,0.45); animation: jp-fade 0.8s cubic-bezier(0.16,1,0.3,1) both;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 16px;">
+      <span style="{{brandStyle}}">{{brand}}</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.2em; color: rgba(242,239,233,0.5);">{{total}} APPS</span>
+    </div>
+
+    <button aria-label="Apps anteriores" onClick="{{up}}" style="height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-radius: 22px; background: none; border: 0; color: rgba(242,239,233,0.5); font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; cursor: pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg>
+      {{aboveLabel}}
+    </button>
+
+    <div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1;">
+      <sc-for list="{{visible}}" as="app" hint-placeholder-count="7">
+        <button onClick="{{app.pick}}" style="{{app.rowStyle}}">
+          <span style="{{app.iconStyle}}">{{app.initial}}</span>
+          <span style="font-size: 27px; font-weight: 500; line-height: 1.2;">{{app.name}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <button aria-label="Apps siguientes" onClick="{{down}}" style="height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-radius: 22px; background: none; border: 0; color: rgba(242,239,233,0.5); font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; cursor: pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      {{belowLabel}}
+    </button>
+  </nav>
+
+  <!-- Top right -->
+  <div style="position: absolute; top: 40px; right: 40px; display: flex; gap: 12px; animation: jp-rise 0.8s 0.2s cubic-bezier(0.16,1,0.3,1) both;">
+    <a href="Network.dc.html" aria-label="Ver detalles de red" style="height: 80px; display: flex; align-items: center; gap: 18px; padding: 0 28px; border-radius: 40px; background: rgba(18,18,20,0.42); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); color: #f2efe9; text-decoration: none;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f2efe9" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      <span style="display: flex; flex-direction: column; gap: 2px;">
+        <span style="font-size: 19px; font-weight: 500;">[RED WI-FI]</span>
+        <span style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.78);">192.168.1.4 · 12 MS</span>
+      </span>
+      <span role="img" aria-label="Señal 3 de 4" style="display: flex; align-items: flex-end; gap: 4px; height: 22px;">
+        <span style="width: 5px; height: 7px; border-radius: 3px; background: #f2efe9;"></span>
+        <span style="width: 5px; height: 12px; border-radius: 3px; background: #f2efe9;"></span>
+        <span style="width: 5px; height: 17px; border-radius: 3px; background: #f2efe9; animation: jp-signal 2s ease-in-out infinite;"></span>
+        <span style="width: 5px; height: 22px; border-radius: 3px; background: rgba(242,239,233,0.25);"></span>
+      </span>
+    </a>
+    <a href="Settings.dc.html" aria-label="Ajustes" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 40px; background: rgba(18,18,20,0.42); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); color: #f2efe9;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+    </a>
+    <a href="Themes.dc.html" aria-label="Temas" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 40px; background: rgba(18,18,20,0.42); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); color: #f2efe9;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+    </a>
+  </div>
+
+  <!-- Clock -->
+  <div style="position: absolute; right: 40px; bottom: 40px; padding: 28px 40px 32px; border-radius: 36px; background: rgba(18,18,20,0.42); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: flex-end; gap: 10px; animation: jp-rise 0.8s 0.35s cubic-bezier(0.16,1,0.3,1) both;">
+    <span style="{{clockStyle}}">21<span style="animation: jp-blink 1s steps(1) infinite;">:</span>40</span>
+    <span style="{{dateStyle}}">SÁBADO · 8 NOV</span>
+    <span style="width: 100%; height: 3px; border-radius: 2px; background: rgba(242,239,233,0.12); overflow: hidden;"><span style="{{minuteStyle}}"></span></span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV","section":"Tema"},"accent":{"editor":"color","default":"#e63329","options":["#e63329","#ff8a1f","#3d8bfd","#b26bff"],"section":"Tema"},"font":{"editor":"enum","default":"Anton","options":["Anton","Bebas Neue","Archivo Black","Space Grotesk","Instrument Serif"],"section":"Tema"},"wallpaper":{"editor":"enum","default":"Galaxia","options":["Brasas","Galaxia"],"section":"Tema"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { focus: 0, top: 0 };
+  }
+  rgba(hex, a) {
+    const h = (hex || '#e63329').replace('#', '');
+    const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    const accent = this.props.accent ?? '#e63329';
+    const fontName = this.props.font ?? 'Anton';
+    const display = "'" + fontName + "', 'Anton', sans-serif";
+    const wallpaper = this.props.wallpaper ?? 'Galaxia';
+    const apps = ['Xuper Hydra', 'YouTube', 'Netflix', 'Spotify', 'Prime Video', 'Disney+', 'Crunchyroll', 'Plex', 'Ajustes', 'Todas las apps'];
+    const SIZE = 7;
+    const { focus, top } = this.state;
+    const move = (next) => {
+      const f = Math.max(0, Math.min(apps.length - 1, next));
+      let t = top;
+      if (f < t) t = f;
+      if (f >= t + SIZE) t = f - SIZE + 1;
+      this.setState({ focus: f, top: t });
+    };
+    const ease = 'cubic-bezier(0.16,1,0.3,1)';
+    const visible = apps.slice(top, top + SIZE).map((name, i) => {
+      const idx = top + i;
+      const on = idx === focus;
+      return {
+        name,
+        initial: name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase(),
+        pick: () => move(idx),
+        rowStyle: 'height: 86px; display: flex; align-items: center; gap: 22px; padding: 0 18px; border-radius: 24px; text-align: left; cursor: pointer; font-family: inherit; border: 0; ' +
+          'transition: transform 0.35s ' + ease + ', background 0.35s ' + ease + ', box-shadow 0.35s ' + ease + '; ' +
+          'animation: jp-rise 0.7s ' + (0.15 + i * 0.06).toFixed(2) + 's ' + ease + ' both; ' +
+          (on
+            ? 'transform: scale(1.03); background: rgba(5,5,6,0.62); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: #f2efe9; box-shadow: 0 0 0 1px ' + this.rgba(accent, 0.7) + ', 0 18px 52px ' + this.rgba(accent, 0.3) + ';'
+            : 'background: transparent; color: rgba(242,239,233,0.78);'),
+        iconStyle: 'width: 54px; height: 54px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 16px; font-family: "Geist Mono", monospace; font-size: 15px; letter-spacing: 0.06em; ' +
+          (on ? 'background: ' + accent + '; color: #0b0b0c;' : 'background: rgba(242,239,233,0.08); color: #f2efe9; border: 1px solid rgba(242,239,233,0.12);'),
+      };
+    });
+    // Galaxia, as in JP-Wallet's galaxyEngine: density w*h/9000, radius 0.3–1.2 (8% at 1.4),
+    // bright big stars tinted with the accent plus a 3x halo, sine twinkle at 0.4–1.4 speed.
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const stars = Array.from({ length: 230 }, () => {
+      const r = rnd() > 0.92 ? 1.4 : rnd() * 0.9 + 0.3;
+      const bright = 0.35 + rnd() * 0.65;
+      const isAccent = r > 1.1 && bright > 0.75;
+      const color = isAccent ? this.rgba(accent, 0.9) : 'rgba(240,248,255,' + bright.toFixed(2) + ')';
+      const d = Math.max(1.5, r * 2.4).toFixed(1);
+      return 'position: absolute; left: ' + (rnd() * 1920).toFixed(0) + 'px; top: ' + (rnd() * 1080).toFixed(0) + 'px; width: ' + d + 'px; height: ' + d + 'px; border-radius: 50%; background: ' + color + '; ' +
+        (isAccent ? 'box-shadow: 0 0 ' + (r * 6).toFixed(0) + 'px ' + (r * 2).toFixed(0) + 'px ' + this.rgba(accent, 0.25) + '; ' : '') +
+        'animation: jp-twinkle ' + (5.2 / (0.4 + rnd())).toFixed(1) + 's ' + (rnd() * 5).toFixed(1) + 's ease-in-out infinite;';
+    });
+    // Meteors: one every ~2 s on average, up to 4 alive, heading up-right with a white→accent tail.
+    const meteorSpots = [[180, 620, 0], [520, 760, 2.3], [-40, 480, 4.1], [760, 900, 6.4]];
+    const meteors = meteorSpots.map(([x, y, delay], i) =>
+      'position: absolute; left: ' + x + 'px; top: ' + y + 'px; width: ' + (150 + i * 20) + 'px; height: 2px; border-radius: 2px; transform-origin: 100% 50%; ' +
+      'background: linear-gradient(90deg, ' + this.rgba(accent, 0) + ' 0%, ' + this.rgba(accent, 0.45) + ' 55%, rgba(255,220,215,0.85) 85%, #ffffff 100%); ' +
+      'box-shadow: 0 0 8px ' + this.rgba(accent, 0.6) + '; animation: jp-meteor 8.6s ' + delay + 's cubic-bezier(0.3,0,0.7,1) infinite;');
+    // Aurora orbs (5), floating 7–10 s like JP-Wallet's login.
+    const orbSpec = [[1100, -200, 900, 0.30, 1, 8], [1400, 520, 700, 0.18, 2, 10], [300, 600, 800, 0.14, 3, 7], [800, 200, 520, 0.12, 1, 9], [1600, 80, 420, 0.16, 2, 8.5]];
+    const orbs = orbSpec.map(([x, y, s, a, k, dur]) =>
+      'position: absolute; left: ' + x + 'px; top: ' + y + 'px; width: ' + s + 'px; height: ' + s + 'px; border-radius: 50%; ' +
+      'background: radial-gradient(circle, ' + this.rgba(accent, a) + ' 0%, ' + this.rgba(accent, 0) + ' 65%); filter: blur(30px); animation: jp-orb-' + k + ' ' + dur + 's ease-in-out infinite;');
+    const below = Math.max(0, apps.length - (top + SIZE));
+    return {
+      brand: this.props.brand ?? 'JP-TV',
+      brandStyle: 'font-family: ' + display + '; font-size: 60px; line-height: 1.02; letter-spacing: -0.01em; color: ' + accent + ';',
+      clockStyle: 'font-family: ' + display + '; font-size: 148px; line-height: 1.02; letter-spacing: -0.01em;',
+      dateStyle: 'font-family: "Geist Mono", monospace; font-size: 15px; letter-spacing: 0.2em; color: ' + accent + ';',
+      minuteStyle: 'display: block; width: 100%; height: 100%; background: ' + accent + '; transform-origin: left; animation: jp-minute 60s linear infinite;',
+      isBrasas: wallpaper === 'Brasas',
+      isGalaxia: wallpaper === 'Galaxia',
+      orbA: 'position: absolute; width: 1100px; height: 1100px; left: 620px; top: -360px; border-radius: 50%; background: radial-gradient(circle, ' + this.rgba(accent, 0.55) + ' 0%, ' + this.rgba(accent, 0) + ' 65%); animation: jp-drift-a 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;',
+      orbC: 'position: absolute; width: 700px; height: 700px; left: 1250px; top: 120px; border-radius: 50%; background: radial-gradient(circle, ' + this.rgba(accent, 0.35) + ' 0%, ' + this.rgba(accent, 0) + ' 60%); animation: jp-drift-c 12s cubic-bezier(0.45,0,0.55,1) infinite alternate;',
+      stars,
+      meteors,
+      orbs,
+      total: apps.length,
+      visible,
+      up: () => move(focus - 1),
+      down: () => move(focus + 1),
+      aboveLabel: top ? top + ' ARRIBA' : 'INICIO',
+      belowLabel: below ? below + ' MÁS' : 'FIN',
+    };
+  }
+}
+</script>
+</body>
+</html>

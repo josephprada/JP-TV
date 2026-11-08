@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Temas</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Geist:wght@300;400;500&amp;family=Geist+Mono:wght@400&amp;family=Press+Start+2P&amp;family=VT323&amp;family=Limelight&amp;family=Orbitron:wght@700&amp;family=Righteous&amp;family=Caveat:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0b0c}
+a{color:#f53d31}a:hover{color:#f2efe9}
+@keyframes th-rise{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes th-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes th-twinkle{0%,100%{opacity:0.2}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; padding: 48px 64px; background: #0b0b0c; color: #f2efe9; font-family: 'Geist', system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: baseline; gap: 20px;">
+      <h1 style="margin: 0; font-size: 40px; font-weight: 500;">Temas</h1>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">8 DISPONIBLES · ACTIVO: {{activeName}}</span>
+    </div>
+    <a href="Customize.dc.html" style="padding: 16px 28px; border-radius: 28px; background: rgba(242,239,233,0.06); border: 1px solid rgba(242,239,233,0.2); color: #f2efe9; font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.14em; text-decoration: none;">PERSONALIZAR COLORES →</a>
+  </header>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; flex-grow: 1;">
+
+    <button onClick="{{pick0}}" style="{{card0}}">
+      <span style="height: 230px; border-radius: 22px; position: relative; overflow: hidden; display: block; background: linear-gradient(155deg, #0a0a0c 0%, #110d10 45%, #140a0b 100%);">
+        <span style="position: absolute; left: 30%; top: 10%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(230,51,41,0.35), rgba(230,51,41,0) 65%);"></span>
+        <span style="position: absolute; left: 60%; top: 20%; width: 3px; height: 3px; border-radius: 50%; background: #fff; animation: th-twinkle 2s infinite;"></span>
+        <span style="position: absolute; left: 80%; top: 50%; width: 2px; height: 2px; border-radius: 50%; background: #fff; animation: th-twinkle 3s 1s infinite;"></span>
+        <span style="position: absolute; left: 70%; top: 75%; width: 3px; height: 3px; border-radius: 50%; background: #f53d31; animation: th-twinkle 2.5s .5s infinite;"></span>
+        <span style="position: absolute; left: 10px; top: 10px; bottom: 10px; width: 38%; border-radius: 16px; background: rgba(18,18,20,0.5); border: 1px solid rgba(242,239,233,0.12); padding: 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'Anton', sans-serif; font-size: 22px; color: #e63329;">JP-TV</span>
+          <span style="height: 20px; border-radius: 8px; background: rgba(5,5,6,0.7); box-shadow: 0 0 0 1px rgba(245,61,49,0.7);"></span>
+          <span style="height: 20px; border-radius: 8px; background: rgba(242,239,233,0.06);"></span>
+        </span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">JP-TV</span><span style="{{badge0}}">{{label0}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Vidrio oscuro, galaxia o brasas. Colores y fuente a tu gusto.</span>
+    </button>
+
+    <button onClick="{{pick1}}" style="{{card1}}">
+      <span style="height: 230px; border-radius: 22px; position: relative; overflow: hidden; display: block; background: #1a1c2c;">
+        <span style="position: absolute; left: 14px; top: 14px; font-family: 'Press Start 2P', monospace; font-size: 12px; color: #ffcd75;">P1 ★ JP-TV</span>
+        <span style="position: absolute; left: 14px; right: 14px; top: 50px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+          <span style="height: 60px; background: #b13e53; box-shadow: 4px 4px 0 #000;"></span><span style="height: 60px; background: #38b764; box-shadow: 4px 4px 0 #000;"></span><span style="height: 60px; background: #3b5dc9; box-shadow: 4px 4px 0 #000;"></span><span style="height: 60px; background: #ef7d57; box-shadow: 4px 4px 0 #000;"></span>
+        </span>
+        <span style="position: absolute; left: 14px; bottom: 16px; font-family: 'Press Start 2P', monospace; font-size: 11px; color: #f4f4f4;">▶ YOUTUBE</span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">Pixel</span><span style="{{badge1}}">{{label1}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">8 bits: apps como cartuchos y pantalla CRT.</span>
+    </button>
+
+    <button onClick="{{pick2}}" style="{{card2}}">
+      <span style="height: 230px; border-radius: 22px; background: #050805; display: flex; flex-direction: column; gap: 4px; padding: 18px; box-sizing: border-box; font-family: 'VT323', monospace; font-size: 24px; color: #33ff66; line-height: 1;">
+        <span>jp@tv:~$ ls apps/</span><span style="background: #33ff66; color: #050805; align-self: flex-start; padding: 0 4px;">&gt; youtube</span><span>&nbsp;&nbsp;netflix</span><span>&nbsp;&nbsp;spotify</span><span style="color: #1f9940;">[ wifi ok · 12ms ]</span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">Terminal</span><span style="{{badge2}}">{{label2}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Fósforo verde. Las apps son comandos.</span>
+    </button>
+
+    <button onClick="{{pick3}}" style="{{card3}}">
+      <span style="height: 230px; border-radius: 22px; background: #1c0a0c; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;">
+        <span style="font-family: 'Limelight', serif; font-size: 32px; color: #f6c453; border-top: 3px dotted #f6c453; border-bottom: 3px dotted #f6c453; padding: 6px 16px;">ESTA NOCHE</span>
+        <span style="display: flex; gap: 10px;"><span style="width: 70px; height: 96px; border-radius: 8px; background: #3a1418; border: 2px solid #f6c453;"></span><span style="width: 70px; height: 96px; border-radius: 8px; background: #3a1418; border: 2px solid #f6c453;"></span><span style="width: 70px; height: 96px; border-radius: 8px; background: #3a1418; border: 2px solid #f6c453;"></span></span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">Cartelera</span><span style="{{badge3}}">{{label3}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Marquesina de cine con apps como afiches.</span>
+    </button>
+
+    <button onClick="{{pick4}}" style="{{card4}}">
+      <span style="height: 230px; border-radius: 22px; background: radial-gradient(120% 100% at 50% 30%, #3a4038 0%, #2b2f2a 60%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+        <span style="font-weight: 300; font-size: 80px; color: #e8e6df; letter-spacing: -0.02em;">21:40</span>
+        <span style="font-weight: 300; font-size: 14px; color: rgba(232,230,223,0.7); letter-spacing: 0.3em;">PULSA OK</span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">Zen</span><span style="{{badge4}}">{{label4}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Solo hora y ondas. Las apps aparecen al tocar OK.</span>
+    </button>
+
+    <button onClick="{{pick5}}" style="{{card5}}">
+      <span style="height: 230px; border-radius: 22px; position: relative; overflow: hidden; display: block; background: radial-gradient(80% 70% at 50% 50%, #0a1824 0%, #03070c 75%);">
+        <span style="position: absolute; left: 50%; top: 50%; width: 170px; height: 170px; margin: -85px 0 0 -85px; border-radius: 50%; border: 2px dashed rgba(77,232,255,0.5); animation: th-spin 20s linear infinite;"></span>
+        <span style="position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-family: 'Orbitron', sans-serif; font-size: 34px; color: #e9fdff; text-shadow: 0 0 14px rgba(77,232,255,0.7);">21:40</span>
+        <span style="position: absolute; left: 50%; top: 14px; transform: translateX(-50%); padding: 6px 14px; background: #4de8ff; color: #03070c; font-family: 'Orbitron', sans-serif; font-size: 11px; clip-path: polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%);">YOUTUBE</span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">HUD</span><span style="{{badge5}}">{{label5}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Cabina sci-fi: rueda de apps alrededor del reloj.</span>
+    </button>
+
+    <button onClick="{{pick6}}" style="{{card6}}">
+      <span style="height: 230px; border-radius: 22px; position: relative; overflow: hidden; display: block; background: radial-gradient(90% 80% at 30% 20%, #3a2418 0%, #24160f 70%);">
+        <span style="position: absolute; left: 20px; top: 40px; width: 120px; height: 120px; border-radius: 8px; background: #e8743b;"></span>
+        <span style="position: absolute; left: 150px; top: 40px; width: 80px; height: 80px; border-radius: 6px; background: #2f7f7a; margin-top: 40px;"></span>
+        <span style="position: absolute; right: 20px; top: 30px; width: 150px; height: 150px; border-radius: 50%; background: repeating-radial-gradient(circle, #111 0px, #111 3px, #222 4px); animation: th-spin 1.8s linear infinite;"><span style="position: absolute; left: 50%; top: 50%; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%; background: #e0b23a;"></span></span>
+        <span style="position: absolute; left: 10px; right: 10px; bottom: 30px; height: 14px; border-radius: 4px; background: #6b4226;"></span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">Vinilo</span><span style="{{badge6}}">{{label6}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Tienda de discos: portadas LP y giradiscos.</span>
+    </button>
+
+    <button onClick="{{pick7}}" style="{{card7}}">
+      <span style="height: 230px; border-radius: 22px; position: relative; overflow: hidden; display: block; background: linear-gradient(180deg, #2a2350 0%, #1e1b3a 70%, #4a3047 70%);">
+        <span style="position: absolute; left: 16px; top: 18px; width: 170px; height: 120px; border-radius: 10px; background: linear-gradient(180deg, #3b2d5c 0%, #7a4a72 55%, #f2a65a 100%); box-shadow: 0 0 0 6px #3a2d4a;"></span>
+        <span style="position: absolute; left: 140px; top: 32px; width: 22px; height: 22px; border-radius: 50%; background: #f6e7d0;"></span>
+        <span style="position: absolute; right: 16px; top: 22px; width: 150px; height: 170px; border-radius: 8px; background: repeating-linear-gradient(180deg, #f6e7d0 0px, #f6e7d0 26px, #d8c7ad 27px); transform: rotate(2deg); padding: 10px 14px; box-sizing: border-box; font-family: 'Caveat', cursive; font-size: 24px; line-height: 27px; color: #2a2350;">✎ YouTube<br>· Netflix<br>· Spotify</span>
+        <span style="position: absolute; left: 40px; top: 170px; width: 80px; height: 32px; border-radius: 40px 40px 10px 10px; background: #1b1530;"></span>
+      </span>
+      <span style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 26px; font-weight: 500;">Lo-fi</span><span style="{{badge7}}">{{label7}}</span></span>
+      <span style="font-size: 16px; color: rgba(242,239,233,0.78); line-height: 1.45;">Cuarto de noche: lluvia, lámpara, gato y apps en un cuaderno.</span>
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { active: 0 };
+  }
+  renderVals() {
+    const names = ['JP-TV', 'PIXEL', 'TERMINAL', 'CARTELERA', 'ZEN', 'HUD', 'VINILO', 'LO-FI'];
+    const out = { activeName: names[this.state.active] };
+    for (let i = 0; i < 8; i++) {
+      const on = this.state.active === i;
+      out['pick' + i] = () => this.setState({ active: i });
+      out['card' + i] = 'display: flex; flex-direction: column; gap: 12px; padding: 10px 10px 20px; border-radius: 30px; text-align: left; cursor: pointer; font-family: inherit; color: #f2efe9; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s cubic-bezier(0.16,1,0.3,1); ' +
+        'animation: th-rise 0.7s ' + (0.08 + i * 0.05).toFixed(2) + 's cubic-bezier(0.16,1,0.3,1) both; ' +
+        (on ? 'transform: scale(1.02); background: rgba(5,5,6,0.7); border: 0; box-shadow: 0 0 0 2px rgba(245,61,49,0.8), 0 20px 60px rgba(230,51,41,0.3);' : 'background: rgba(18,18,20,0.45); border: 1px solid rgba(242,239,233,0.1);');
+      out['badge' + i] = 'font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: 0.14em; ' + (on ? 'color: #f53d31;' : 'color: rgba(242,239,233,0.5);');
+      out['label' + i] = on ? 'ACTIVO' : 'PROBAR';
+    }
+    return out;
+  }
+}
+</script>
+</body>
+</html>

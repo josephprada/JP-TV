@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Tema HUD</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#03070c}
+a{color:#4de8ff}a:hover{color:#ffffff}
+@keyframes hud-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes hud-spin-r{0%{transform:rotate(360deg)}100%{transform:rotate(0deg)}}
+@keyframes hud-scan{0%{transform:translateY(-120px)}100%{transform:translateY(1200px)}}
+@keyframes hud-grid{0%{background-position:0 0}100%{background-position:0 80px}}
+@keyframes hud-blink{0%,49%{opacity:1}50%,100%{opacity:0.2}}
+@keyframes hud-in{0%{opacity:0;transform:scale(0.6)}100%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: radial-gradient(80% 70% at 50% 45%, #0a1824 0%, #03070c 70%); color: #bdf6ff; font-family: 'Share Tech Mono', monospace;">
+
+  <!-- Perspective grid floor -->
+  <div aria-hidden="true" style="position: absolute; left: -400px; right: -400px; bottom: -200px; height: 620px; transform: perspective(500px) rotateX(62deg); transform-origin: 50% 100%; background-image: linear-gradient(rgba(77,232,255,0.22) 1px, transparent 1px), linear-gradient(90deg, rgba(77,232,255,0.22) 1px, transparent 1px); background-size: 80px 80px; animation: hud-grid 2s linear infinite;"></div>
+  <!-- Scan line -->
+  <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 120px; background: linear-gradient(180deg, rgba(77,232,255,0) 0%, rgba(77,232,255,0.12) 85%, rgba(77,232,255,0.5) 100%); animation: hud-scan 6s linear infinite;"></div>
+
+  <!-- Reticle rings -->
+  <div aria-hidden="true" style="position: absolute; left: 960px; top: 520px; width: 0; height: 0;">
+    <span style="position: absolute; left: -300px; top: -300px; width: 600px; height: 600px; border-radius: 50%; border: 2px dashed rgba(77,232,255,0.35); animation: hud-spin 40s linear infinite;"></span>
+    <span style="position: absolute; left: -250px; top: -250px; width: 500px; height: 500px; border-radius: 50%; border: 1px solid rgba(77,232,255,0.25); border-top-color: #4de8ff; border-bottom-color: #4de8ff; animation: hud-spin-r 12s linear infinite;"></span>
+    <span style="position: absolute; left: -440px; top: -440px; width: 880px; height: 880px; border-radius: 50%; border: 1px solid rgba(77,232,255,0.12);"></span>
+  </div>
+
+  <!-- Clock in the core -->
+  <div style="position: absolute; left: 960px; top: 520px; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <span style="font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 112px; letter-spacing: 0.04em; color: #e9fdff; text-shadow: 0 0 24px rgba(77,232,255,0.6);">21:40</span>
+    <span style="font-size: 20px; letter-spacing: 0.3em; color: #4de8ff;">SAB · 08 NOV · <span style="animation: hud-blink 1s steps(1) infinite;">●</span> REC</span>
+  </div>
+
+  <!-- App wheel -->
+  <sc-for list="{{nodes}}" as="n" hint-placeholder-count="8">
+    <button onClick="{{n.pick}}" style="{{n.style}}">{{n.name}}</button>
+  </sc-for>
+  <div style="position: absolute; left: 960px; top: 92px; transform: translateX(-50%); font-family: 'Orbitron', sans-serif; font-size: 16px; letter-spacing: 0.4em; color: #ffb547;">▼ OBJETIVO: {{selected}}</div>
+
+  <!-- Telemetry: network -->
+  <a href="Network.dc.html" style="position: absolute; left: 56px; top: 56px; width: 340px; padding: 24px; border: 1px solid rgba(77,232,255,0.4); clip-path: polygon(0 0, 92% 0, 100% 14%, 100% 100%, 8% 100%, 0 86%); background: rgba(5,20,30,0.6); display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: #bdf6ff;">
+    <span style="font-family: 'Orbitron', sans-serif; font-size: 15px; letter-spacing: 0.3em; color: #4de8ff;">TELEMETRÍA</span>
+    <span style="display: flex; justify-content: space-between; font-size: 20px;"><span>SEÑAL</span><span>62%</span></span>
+    <span style="height: 6px; background: rgba(77,232,255,0.15);"><span style="display: block; width: 62%; height: 100%; background: #4de8ff; box-shadow: 0 0 10px #4de8ff;"></span></span>
+    <span style="display: flex; justify-content: space-between; font-size: 20px;"><span>PING</span><span>12 MS</span></span>
+    <span style="display: flex; justify-content: space-between; font-size: 20px;"><span>IP</span><span>192.168.1.4</span></span>
+  </a>
+
+  <!-- Unit -->
+  <a href="Settings.dc.html" style="position: absolute; right: 56px; top: 56px; width: 340px; padding: 24px; border: 1px solid rgba(77,232,255,0.4); clip-path: polygon(8% 0, 100% 0, 100% 86%, 92% 100%, 0 100%, 0 14%); background: rgba(5,20,30,0.6); display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: #bdf6ff;">
+    <span style="font-family: 'Orbitron', sans-serif; font-size: 15px; letter-spacing: 0.3em; color: #4de8ff;">UNIDAD {{brand}}</span>
+    <span style="display: flex; justify-content: space-between; font-size: 20px;"><span>MEMORIA</span><span>3.5 GB</span></span>
+    <span style="display: flex; justify-content: space-between; font-size: 20px;"><span>DNS</span><span>ESCUDO ON</span></span>
+    <span style="display: flex; justify-content: space-between; font-size: 20px; color: #ffb547;"><span>AJUSTES</span><span>▶</span></span>
+  </a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 0 };
+  }
+  renderVals() {
+    const names = ['YOUTUBE', 'NETFLIX', 'SPOTIFY', 'HYDRA', 'PRIME', 'DISNEY+', 'PLEX', 'AJUSTES'];
+    const R = 380, cx = 960, cy = 520;
+    const nodes = names.map((name, i) => {
+      // the selected node always sits at the top of the wheel
+      const ang = (-90 + (i - this.state.sel) * 45) * Math.PI / 180;
+      const x = cx + R * Math.cos(ang), y = cy + R * Math.sin(ang);
+      const on = i === this.state.sel;
+      return {
+        name,
+        pick: () => this.setState({ sel: i }),
+        style: 'position: absolute; left: ' + (x - 90).toFixed(0) + 'px; top: ' + (y - 34).toFixed(0) + 'px; width: 180px; height: 68px; border: 0; cursor: pointer; font-family: "Orbitron", sans-serif; font-weight: 500; font-size: 17px; letter-spacing: 0.12em; ' +
+          'clip-path: polygon(12% 0, 88% 0, 100% 50%, 88% 100%, 12% 100%, 0 50%); transition: left 0.6s cubic-bezier(0.16,1,0.3,1), top 0.6s cubic-bezier(0.16,1,0.3,1), background 0.3s; ' +
+          'animation: hud-in 0.5s ' + (i * 0.06).toFixed(2) + 's cubic-bezier(0.16,1,0.3,1) both; ' +
+          (on ? 'background: #4de8ff; color: #03070c; filter: drop-shadow(0 0 16px rgba(77,232,255,0.9));' : 'background: rgba(77,232,255,0.14); color: #bdf6ff;'),
+      };
+    });
+    return { nodes, selected: names[this.state.sel], brand: this.props.brand ?? 'JP-TV' };
+  }
+}
+</script>
+</body>
+</html>

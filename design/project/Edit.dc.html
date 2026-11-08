@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Editar apps</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0b0c}
+a{color:#f53d31}a:hover{color:#f2efe9}
+@keyframes jp-drift-a{0%{transform:translate(0,0) scale(1)}100%{transform:translate(260px,140px) scale(1.25)}}
+@keyframes jp-drift-b{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(-320px,-120px) scale(0.9)}}
+@keyframes jp-mini-a{0%{transform:translate(0,0)}100%{transform:translate(90px,40px)}}
+@keyframes jp-mini-b{0%{transform:translate(0,0)}100%{transform:translate(-80px,-30px)}}
+@keyframes jp-rise{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes jp-nudge{0%,100%{transform:translateY(0) scale(1.03)}50%{transform:translateY(-6px) scale(1.03)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0b0b0c; color: #f2efe9; font-family: 'Geist', system-ui, sans-serif;">
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <div style="position: absolute; width: 1100px; height: 1100px; left: 200px; top: -400px; border-radius: 50%; background: radial-gradient(circle, rgba(230,51,41,0.45) 0%, rgba(230,51,41,0) 65%); animation: jp-drift-a 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+    <div style="position: absolute; width: 1300px; height: 1300px; left: 1000px; top: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(90,15,18,0.9) 0%, rgba(90,15,18,0) 65%); animation: jp-drift-b 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+    <div style="position: absolute; inset: 0; background: rgba(11,11,12,0.5);"></div>
+  </div>
+
+  <div style="position: absolute; inset: 40px; display: flex; flex-direction: column; gap: 32px;">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 8px 16px 0; animation: jp-rise 0.7s cubic-bezier(0.16,1,0.3,1) both;">
+      <div style="display: flex; align-items: baseline; gap: 20px;">
+        <h1 style="margin: 0; font-size: 40px; font-weight: 500;">Apps</h1>
+        <span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">AJUSTES / APPS</span>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <span style="padding: 12px 20px; border-radius: 22px; background: rgba(18,18,20,0.45); border: 1px solid rgba(242,239,233,0.12); font-size: 18px;">6 visibles</span>
+        <span style="padding: 12px 20px; border-radius: 22px; background: rgba(18,18,20,0.45); border: 1px solid rgba(242,239,233,0.12); font-size: 18px; color: rgba(242,239,233,0.78);">14 ocultas</span>
+        <span style="padding: 12px 20px; border-radius: 22px; background: rgba(18,18,20,0.45); border: 1px solid rgba(242,239,233,0.12); font-size: 18px; color: rgba(242,239,233,0.78);">3.5 GB libres</span>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; flex-grow: 1; min-height: 0;">
+      <!-- In the rail -->
+      <section aria-labelledby="col-rail" style="padding: 32px 24px; border-radius: 36px; background: rgba(18,18,20,0.45); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 6px; animation: jp-rise 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) both;">
+        <h2 id="col-rail" style="margin: 0 12px 14px; font-family: 'Geist Mono', monospace; font-weight: 400; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">EN EL RAIL · 6</h2>
+        <sc-for list="{{rail}}" as="a" hint-placeholder-count="6">
+          <div style="{{a.style}}">
+            <span style="font-family: 'Geist Mono', monospace; font-size: 13px; width: 26px; color: rgba(242,239,233,0.5);">{{a.n}}</span>
+            <span style="{{a.icon}}">{{a.ini}}</span>
+            <span style="flex-grow: 1;">{{a.name}}</span>
+            <span style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: #f53d31;">{{a.tag}}</span>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- Hidden -->
+      <section aria-labelledby="col-hidden" style="padding: 32px 24px; border-radius: 36px; background: rgba(18,18,20,0.35); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(242,239,233,0.1); display: flex; flex-direction: column; gap: 4px; animation: jp-rise 0.7s 0.18s cubic-bezier(0.16,1,0.3,1) both;">
+        <h2 id="col-hidden" style="margin: 0 12px 14px; font-family: 'Geist Mono', monospace; font-weight: 400; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">OCULTAS · 14</h2>
+        <sc-for list="{{hidden}}" as="h" hint-placeholder-count="5">
+          <div style="height: 62px; display: flex; align-items: center; gap: 18px; padding: 0 14px; border-radius: 20px; font-size: 22px; color: rgba(242,239,233,0.5);"><span style="width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(242,239,233,0.14);"></span>{{h}}</div>
+        </sc-for>
+        <span style="padding: 10px 14px; font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">+ 9 MÁS</span>
+      </section>
+
+      <!-- Wallpaper -->
+      <section aria-labelledby="col-wall" style="padding: 32px; border-radius: 36px; background: rgba(18,18,20,0.45); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 22px; animation: jp-rise 0.7s 0.26s cubic-bezier(0.16,1,0.3,1) both;">
+        <h2 id="col-wall" style="margin: 0; font-family: 'Geist Mono', monospace; font-weight: 400; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">LIVE WALLPAPER</h2>
+        <div style="height: 280px; position: relative; overflow: hidden; border-radius: 26px; background: #0b0b0c;">
+          <div style="position: absolute; width: 360px; height: 360px; left: 60px; top: -120px; border-radius: 50%; background: radial-gradient(circle, rgba(230,51,41,0.7) 0%, rgba(230,51,41,0) 65%); animation: jp-mini-a 8s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+          <div style="position: absolute; width: 420px; height: 420px; left: 220px; top: 40px; border-radius: 50%; background: radial-gradient(circle, rgba(90,15,18,0.95) 0%, rgba(90,15,18,0) 65%); animation: jp-mini-b 8s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+          <span style="position: absolute; left: 20px; bottom: 16px; padding: 8px 14px; border-radius: 16px; background: rgba(5,5,6,0.6); font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em;">BRASAS · POR DEFECTO</span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <span style="padding: 12px 18px; border-radius: 20px; background: rgba(5,5,6,0.7); border: 1px solid rgba(245,61,49,0.6); font-size: 18px;">Brasas</span>
+          <span style="padding: 12px 18px; border-radius: 20px; background: rgba(242,239,233,0.06); font-size: 18px; color: rgba(242,239,233,0.78);">Galaxia</span>
+          <span style="padding: 12px 18px; border-radius: 20px; background: rgba(242,239,233,0.06); font-size: 18px; color: rgba(242,239,233,0.78);">Mi video</span>
+          <span style="padding: 12px 18px; border-radius: 20px; background: rgba(242,239,233,0.06); font-size: 18px; color: rgba(242,239,233,0.78);">Imagen fija</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="padding: 16px 20px; border-radius: 20px; background: rgba(242,239,233,0.05); display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">OSCURECER</span><span style="font-size: 22px;">40%</span></div>
+          <div style="padding: 16px 20px; border-radius: 20px; background: rgba(242,239,233,0.05); display: flex; flex-direction: column; gap: 4px;"><span style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">PAUSAR EN APPS</span><span style="font-size: 22px;">Sí</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const names = ['Xuper Hydra', 'YouTube', 'Netflix', 'Spotify', 'Prime Video', 'Ajustes'];
+    const ease = 'cubic-bezier(0.16,1,0.3,1)';
+    const rail = names.map((name, i) => {
+      const moving = i === 1;
+      return {
+        n: String(i + 1).padStart(2, '0'),
+        name,
+        ini: name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase(),
+        tag: moving ? 'MOVIENDO' : '',
+        style: 'height: 78px; display: flex; align-items: center; gap: 18px; padding: 0 16px; border-radius: 24px; font-size: 24px; ' +
+          (moving
+            ? 'background: rgba(5,5,6,0.7); color: #f2efe9; box-shadow: 0 0 0 1px rgba(245,61,49,0.7), 0 16px 44px rgba(230,51,41,0.3); animation: jp-nudge 2.4s ' + ease + ' infinite;'
+            : 'color: rgba(242,239,233,0.78);'),
+        icon: 'width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-family: "Geist Mono", monospace; font-size: 14px; ' +
+          (moving ? 'background: #e63329; color: #0b0b0c;' : 'background: rgba(242,239,233,0.08); color: #f2efe9; border: 1px solid rgba(242,239,233,0.12);'),
+      };
+    });
+    return { rail, hidden: ['Disney+', 'Crunchyroll', 'Chrome', 'Downloader', 'AirScreen'] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Panel de red</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0b0c}
+a{color:#f53d31}a:hover{color:#f2efe9}
+@keyframes jp-drift-a{0%{transform:translate(0,0) scale(1)}100%{transform:translate(260px,140px) scale(1.25)}}
+@keyframes jp-drift-b{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(-320px,-120px) scale(0.9)}}
+@keyframes jp-slide{0%{opacity:0;transform:translateX(80px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes jp-rise{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes jp-pulse{0%{box-shadow:0 0 0 0 rgba(56,214,112,0.6)}100%{box-shadow:0 0 0 14px rgba(56,214,112,0)}}
+@keyframes jp-signal{0%,100%{opacity:1}50%{opacity:0.35}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0b0b0c; color: #f2efe9; font-family: 'Geist', system-ui, sans-serif;">
+
+  <!-- Live wallpaper -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <div style="position: absolute; width: 1100px; height: 1100px; left: 620px; top: -360px; border-radius: 50%; background: radial-gradient(circle, rgba(230,51,41,0.55) 0%, rgba(230,51,41,0) 65%); animation: jp-drift-a 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+    <div style="position: absolute; width: 1300px; height: 1300px; left: 1100px; top: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(90,15,18,0.9) 0%, rgba(90,15,18,0) 65%); animation: jp-drift-b 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+    <div style="position: absolute; inset: 0; background: rgba(11,11,12,0.55);"></div>
+  </div>
+
+  <!-- Dimmed rail behind -->
+  <div aria-hidden="true" style="position: absolute; left: 40px; top: 40px; bottom: 40px; width: 540px; border-radius: 36px; background: rgba(18,18,20,0.3); border: 1px solid rgba(242,239,233,0.08); padding: 48px 48px; box-sizing: border-box; opacity: 0.45;">
+    <span style="font-family: 'Anton', sans-serif; font-size: 64px; line-height: 1.02; color: #e63329;">JP-TV</span>
+  </div>
+
+  <!-- Network panel: glass sheet -->
+  <section aria-labelledby="net-title" style="position: absolute; top: 40px; right: 40px; bottom: 40px; width: 780px; box-sizing: border-box; padding: 56px; border-radius: 40px; background: rgba(18,18,20,0.5); backdrop-filter: blur(32px) saturate(140%); -webkit-backdrop-filter: blur(32px) saturate(140%); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 40px 100px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 36px; animation: jp-slide 0.6s cubic-bezier(0.16,1,0.3,1) both;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <h1 id="net-title" style="margin: 0; font-size: 40px; font-weight: 500;">Red</h1>
+      <span style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: 22px; background: rgba(56,214,112,0.12); font-size: 18px; color: #8ff0b2;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #38d670; animation: jp-pulse 1.6s ease-out infinite;"></span>Con internet</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px; padding: 24px 28px; border-radius: 28px; background: rgba(5,5,6,0.5); border: 1px solid rgba(242,239,233,0.1); animation: jp-rise 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f2efe9" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      <div style="display: flex; flex-direction: column; gap: 4px; flex-grow: 1;">
+        <span style="font-size: 28px; font-weight: 500;">[RED WI-FI]</span>
+        <span style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.14em; color: rgba(242,239,233,0.78);">5 GHZ · SEÑAL 62%</span>
+      </div>
+      <div role="img" aria-label="Señal 3 de 4" style="display: flex; align-items: flex-end; gap: 5px; height: 32px;">
+        <span style="width: 7px; height: 10px; border-radius: 4px; background: #f2efe9;"></span>
+        <span style="width: 7px; height: 17px; border-radius: 4px; background: #f2efe9;"></span>
+        <span style="width: 7px; height: 24px; border-radius: 4px; background: #f2efe9; animation: jp-signal 2s ease-in-out infinite;"></span>
+        <span style="width: 7px; height: 32px; border-radius: 4px; background: rgba(242,239,233,0.25);"></span>
+      </div>
+    </div>
+
+    <dl style="margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: 22px; background: rgba(242,239,233,0.05); animation: jp-rise 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both;"><dt style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">IP</dt><dd style="margin: 0; font-size: 26px;">192.168.1.4</dd></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: 22px; background: rgba(242,239,233,0.05); animation: jp-rise 0.6s 0.25s cubic-bezier(0.16,1,0.3,1) both;"><dt style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">PUERTA DE ENLACE</dt><dd style="margin: 0; font-size: 26px;">192.168.1.254</dd></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: 22px; background: rgba(242,239,233,0.05); animation: jp-rise 0.6s 0.3s cubic-bezier(0.16,1,0.3,1) both;"><dt style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">DNS</dt><dd style="margin: 0; font-size: 26px;">94.140.14.14</dd></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: 22px; background: rgba(242,239,233,0.05); animation: jp-rise 0.6s 0.35s cubic-bezier(0.16,1,0.3,1) both;"><dt style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">LATENCIA ROUTER</dt><dd style="margin: 0; font-size: 26px;">12 ms</dd></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: 22px; background: rgba(242,239,233,0.05); animation: jp-rise 0.6s 0.4s cubic-bezier(0.16,1,0.3,1) both;"><dt style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">LATENCIA INTERNET</dt><dd style="margin: 0; font-size: 26px;">38 ms</dd></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: 22px; background: rgba(242,239,233,0.05); animation: jp-rise 0.6s 0.45s cubic-bezier(0.16,1,0.3,1) both;"><dt style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">MAC</dt><dd style="margin: 0; font-size: 26px;">60:35:73:··:··:1F</dd></div>
+    </dl>
+
+    <div style="display: flex; gap: 12px; margin-top: auto;">
+      <button style="padding: 18px 30px; border-radius: 30px; background: rgba(5,5,6,0.7); color: #f2efe9; border: 1px solid rgba(245,61,49,0.6); box-shadow: 0 12px 40px rgba(230,51,41,0.25); font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.14em; cursor: pointer;">PROBAR CONEXIÓN</button>
+      <button style="padding: 18px 30px; border-radius: 30px; background: rgba(242,239,233,0.06); color: #f2efe9; border: 1px solid rgba(242,239,233,0.2); font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.14em; cursor: pointer;">AJUSTES DE RED →</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

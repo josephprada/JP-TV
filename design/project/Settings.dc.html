@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Ajustes rápidos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0b0c}
+a{color:#f53d31}a:hover{color:#f2efe9}
+@keyframes jp-drift-a{0%{transform:translate(0,0) scale(1)}100%{transform:translate(260px,140px) scale(1.25)}}
+@keyframes jp-drift-b{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(-320px,-120px) scale(0.9)}}
+@keyframes jp-rise{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes jp-caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0b0b0c; color: #f2efe9; font-family: 'Geist', system-ui, sans-serif;">
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <div style="position: absolute; width: 1100px; height: 1100px; left: 300px; top: -420px; border-radius: 50%; background: radial-gradient(circle, rgba(230,51,41,0.45) 0%, rgba(230,51,41,0) 65%); animation: jp-drift-a 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+    <div style="position: absolute; width: 1300px; height: 1300px; left: 1000px; top: 250px; border-radius: 50%; background: radial-gradient(circle, rgba(90,15,18,0.9) 0%, rgba(90,15,18,0) 65%); animation: jp-drift-b 24s cubic-bezier(0.45,0,0.55,1) infinite alternate;"></div>
+    <div style="position: absolute; inset: 0; background: rgba(11,11,12,0.5);"></div>
+  </div>
+
+  <div style="position: absolute; inset: 40px; display: flex; flex-direction: column; gap: 28px;">
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 8px 16px 0; animation: jp-rise 0.7s cubic-bezier(0.16,1,0.3,1) both;">
+      <div style="display: flex; align-items: baseline; gap: 20px;">
+        <h1 style="margin: 0; font-size: 40px; font-weight: 500;">Ajustes</h1>
+        <span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">{{brand}} 1.0 · ANDROID 9 · V_BOX14</span>
+      </div>
+      <a href="Edit.dc.html" style="padding: 18px 30px; border-radius: 30px; background: rgba(242,239,233,0.06); border: 1px solid rgba(242,239,233,0.2); color: #f2efe9; font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.14em; text-decoration: none;">EDITAR APPS →</a>
+    </header>
+
+    <!-- Launcher name -->
+    <div style="display: flex; align-items: center; gap: 32px; padding: 26px 32px; border-radius: 32px; background: rgba(18,18,20,0.45); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); animation: jp-rise 0.7s 0.08s cubic-bezier(0.16,1,0.3,1) both;">
+      <label for="brand-name" style="display: flex; flex-direction: column; gap: 6px; width: 360px;">
+        <span style="font-size: 26px; font-weight: 500;">Nombre del launcher</span>
+        <span style="font-size: 16px; color: rgba(242,239,233,0.78);">Aparece arriba de tus apps y en este menú.</span>
+      </label>
+      <div style="flex-grow: 1; display: flex; align-items: center; gap: 4px; height: 76px; padding: 0 28px; border-radius: 24px; background: rgba(5,5,6,0.6); box-shadow: 0 0 0 1px rgba(245,61,49,0.6), 0 12px 36px rgba(230,51,41,0.2);">
+        <input id="brand-name" value="{{brand}}" style="width: 100%; background: transparent; border: 0; outline: none; color: #e63329; font-family: 'Anton', sans-serif; font-size: 44px; letter-spacing: -0.01em;">
+        <span aria-hidden="true" style="width: 3px; height: 44px; border-radius: 2px; background: #f2efe9; animation: jp-caret 1s steps(1) infinite;"></span>
+      </div>
+      <button style="padding: 18px 30px; border-radius: 30px; background: rgba(5,5,6,0.7); color: #f2efe9; border: 1px solid rgba(245,61,49,0.6); font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.14em; cursor: pointer;">GUARDAR</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; flex-grow: 1;">
+      <sc-for list="{{tiles}}" as="t" hint-placeholder-count="8">
+        <a href="{{t.href}}" style="{{t.style}}">
+          <span style="width: 64px; height: 64px; border-radius: 20px; background: rgba(242,239,233,0.08); display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.06em;">{{t.glyph}}</span>
+          <span style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 28px; font-weight: 500;">{{t.name}}</span><span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.78);">{{t.value}}</span></span>
+        </a>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 0 16px; animation: jp-rise 0.7s 0.6s cubic-bezier(0.16,1,0.3,1) both;">
+      <span style="font-size: 18px; color: rgba(242,239,233,0.78);">Cada acceso abre la pantalla nativa de Android para ese ajuste.</span>
+      <button style="padding: 20px 34px; border-radius: 32px; background: rgba(5,5,6,0.7); color: #f2efe9; border: 1px solid rgba(245,61,49,0.6); box-shadow: 0 14px 40px rgba(230,51,41,0.25); font-family: 'Geist Mono', monospace; font-size: 16px; letter-spacing: 0.14em; cursor: pointer;">TODOS LOS AJUSTES DE ANDROID →</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const ease = 'cubic-bezier(0.16,1,0.3,1)';
+    const data = [
+      ['WI', 'Red e internet', '[RED WI-FI] · 12 MS', 'Network.dc.html'],
+      ['BT', 'Bluetooth', 'APAGADO', '#'],
+      ['PA', 'Pantalla', '720P · 60 HZ', '#'],
+      ['SO', 'Sonido', 'HDMI · 60%', '#'],
+      ['AP', 'Aplicaciones', '24 INSTALADAS', 'Edit.dc.html'],
+      ['AL', 'Almacenamiento', '3.5 GB LIBRES DE 11', '#'],
+      ['HO', 'Fecha y hora', 'AUTOMÁTICA', '#'],
+      ['TE', 'Tema y colores', 'JP-TV · ROJO · ANTON', 'Customize.dc.html'],
+    ];
+    const tiles = data.map(([glyph, name, value, href], i) => ({
+      glyph, name, value, href,
+      style: 'padding: 30px; border-radius: 32px; background: rgba(18,18,20,0.42); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(242,239,233,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; flex-direction: column; justify-content: space-between; color: #f2efe9; text-decoration: none; ' +
+        'animation: jp-rise 0.7s ' + (0.15 + i * 0.05).toFixed(2) + 's ' + ease + ' both;',
+    }));
+    return { brand: this.props.brand ?? 'JP-TV', tiles };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Personalizar tema</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Bebas+Neue&amp;family=Archivo+Black&amp;family=Instrument+Serif&amp;family=Space+Grotesk:wght@700&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0b0c}
+a{color:#f53d31}a:hover{color:#f2efe9}
+@keyframes cz-drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(120px,60px) scale(1.2)}}
+@keyframes cz-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes cz-twinkle{0%,100%{opacity:0.25}50%{opacity:1}}
+@keyframes cz-rise{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; padding: 48px; background: #0b0b0c; color: #f2efe9; font-family: 'Geist', system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px;">
+
+  <header style="display: flex; align-items: baseline; gap: 20px; padding: 0 16px;">
+    <h1 style="margin: 0; font-size: 40px; font-weight: 500;">Personalizar tema</h1>
+    <span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">AJUSTES / TEMA · JP-TV</span>
+  </header>
+
+  <div style="display: flex; gap: 28px; flex-grow: 1; min-height: 0;">
+    <!-- Options -->
+    <div style="width: 760px; display: flex; flex-direction: column; gap: 20px;">
+      <section aria-labelledby="h-accent" style="padding: 28px; border-radius: 32px; background: rgba(242,239,233,0.04); border: 1px solid rgba(242,239,233,0.1); display: flex; flex-direction: column; gap: 18px; animation: cz-rise 0.6s cubic-bezier(0.16,1,0.3,1) both;">
+        <h2 id="h-accent" style="margin: 0; font-family: 'Geist Mono', monospace; font-weight: 400; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">COLOR DE ACENTO</h2>
+        <div style="display: flex; gap: 16px;">
+          <sc-for list="{{accents}}" as="c" hint-placeholder-count="6">
+            <button onClick="{{c.pick}}" aria-label="{{c.name}}" style="{{c.style}}"></button>
+          </sc-for>
+        </div>
+        <span style="font-size: 18px; color: rgba(242,239,233,0.78);">{{accentName}} · {{accent}}</span>
+      </section>
+
+      <section aria-labelledby="h-font" style="padding: 28px; border-radius: 32px; background: rgba(242,239,233,0.04); border: 1px solid rgba(242,239,233,0.1); display: flex; flex-direction: column; gap: 10px; animation: cz-rise 0.6s 0.08s cubic-bezier(0.16,1,0.3,1) both;">
+        <h2 id="h-font" style="margin: 0 0 6px; font-family: 'Geist Mono', monospace; font-weight: 400; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">FUENTE DE TÍTULOS Y RELOJ</h2>
+        <sc-for list="{{fonts}}" as="f" hint-placeholder-count="5">
+          <button onClick="{{f.pick}}" style="{{f.style}}"><span style="{{f.sample}}">21:40</span><span style="font-size: 18px; color: rgba(242,239,233,0.78);">{{f.name}}</span></button>
+        </sc-for>
+      </section>
+
+      <section aria-labelledby="h-wall" style="padding: 28px; border-radius: 32px; background: rgba(242,239,233,0.04); border: 1px solid rgba(242,239,233,0.1); display: flex; flex-direction: column; gap: 14px; animation: cz-rise 0.6s 0.16s cubic-bezier(0.16,1,0.3,1) both;">
+        <h2 id="h-wall" style="margin: 0; font-family: 'Geist Mono', monospace; font-weight: 400; font-size: 13px; letter-spacing: 0.14em; color: rgba(242,239,233,0.5);">LIVE WALLPAPER</h2>
+        <div style="display: flex; gap: 10px;">
+          <sc-for list="{{walls}}" as="w" hint-placeholder-count="4">
+            <button onClick="{{w.pick}}" style="{{w.style}}">{{w.name}}</button>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+
+    <!-- Live preview -->
+    <section aria-label="Vista previa" style="flex-grow: 1; position: relative; overflow: hidden; border-radius: 40px; border: 1px solid rgba(242,239,233,0.12); background: #07070a;">
+      <sc-if value="{{isBrasas}}" hint-placeholder-val="{{ true }}">
+        <div aria-hidden="true" style="position: absolute; inset: 0;">
+          <div style="{{orb}}"></div>
+          <div style="position: absolute; width: 700px; height: 700px; left: 420px; top: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(60,10,14,0.9) 0%, rgba(60,10,14,0) 65%); animation: cz-drift 12s 2s cubic-bezier(0.45,0,0.55,1) infinite alternate-reverse;"></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{isGalaxia}}" hint-placeholder-val="{{ false }}">
+        <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(90% 80% at 65% 45%, #14101a 0%, #07070a 70%);">
+          <div style="{{nebula}}"></div>
+          <div style="position: absolute; width: 1400px; height: 1400px; left: -140px; top: -440px; animation: cz-spin 200s linear infinite;">
+            <sc-for list="{{stars}}" as="s" hint-placeholder-count="30">
+              <span style="{{s}}"></span>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{isStatic}}" hint-placeholder-val="{{ false }}">
+        <div aria-hidden="true" style="position: absolute; inset: 0; background: #121214; display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.18em; color: rgba(242,239,233,0.5);">{{staticLabel}}</span></div>
+      </sc-if>
+
+      <div style="position: absolute; left: 32px; top: 32px; bottom: 32px; width: 380px; box-sizing: border-box; padding: 32px 20px; border-radius: 28px; background: rgba(18,18,20,0.42); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(242,239,233,0.12); display: flex; flex-direction: column; gap: 8px;">
+        <span style="{{brandStyle}}">JP-TV</span>
+        <span style="{{rowOn}}"><span style="{{iconOn}}">YO</span>YouTube</span>
+        <span style="height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 14px; font-size: 22px; color: rgba(242,239,233,0.78);"><span style="width: 42px; height: 42px; border-radius: 13px; background: rgba(242,239,233,0.08);"></span>Netflix</span>
+        <span style="height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 14px; font-size: 22px; color: rgba(242,239,233,0.78);"><span style="width: 42px; height: 42px; border-radius: 13px; background: rgba(242,239,233,0.08);"></span>Spotify</span>
+      </div>
+      <div style="position: absolute; right: 32px; bottom: 32px; padding: 20px 28px; border-radius: 28px; background: rgba(18,18,20,0.42); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(242,239,233,0.12); display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+        <span style="{{clockStyle}}">21:40</span>
+        <span style="{{dateStyle}}">SÁBADO · 8 NOV</span>
+      </div>
+      <button style="position: absolute; right: 32px; top: 32px; padding: 16px 28px; border-radius: 28px; background: rgba(5,5,6,0.7); color: #f2efe9; border: 0; box-shadow: {{applyShadow}}; font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.14em; cursor: pointer;">APLICAR</button>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { accent: 0, font: 0, wall: 0 };
+  }
+  rgba(hex, a) {
+    const n = parseInt(hex.replace('#', ''), 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    const ease = 'cubic-bezier(0.16,1,0.3,1)';
+    const accentList = [['Rojo JP', '#e63329'], ['Naranja', '#ff8a1f'], ['Oro', '#f2c14e'], ['Verde', '#2fbf71'], ['Azul', '#3d8bfd'], ['Violeta', '#b26bff']];
+    const fontList = ['Anton', 'Bebas Neue', 'Archivo Black', 'Space Grotesk', 'Instrument Serif'];
+    const wallList = ['Brasas', 'Galaxia', 'Mi video', 'Imagen fija'];
+    const { accent: ai, font: fi, wall: wi } = this.state;
+    const accent = accentList[ai][1];
+    const display = "'" + fontList[fi] + "', sans-serif";
+    const accents = accentList.map(([name, hex], i) => ({
+      name,
+      pick: () => this.setState({ accent: i }),
+      style: 'width: 72px; height: 72px; border-radius: 50%; border: 0; cursor: pointer; background: ' + hex + '; transition: transform 0.3s ' + ease + ', box-shadow 0.3s ' + ease + '; ' +
+        (i === ai ? 'transform: scale(1.1); box-shadow: 0 0 0 4px #0b0b0c, 0 0 0 6px ' + hex + ', 0 10px 30px ' + this.rgba(hex, 0.5) + ';' : ''),
+    }));
+    const fonts = fontList.map((name, i) => ({
+      name,
+      pick: () => this.setState({ font: i }),
+      sample: "font-family: '" + name + "', sans-serif; font-size: 34px; line-height: 1; width: 120px; text-align: left; color: #f2efe9;",
+      style: 'height: 64px; display: flex; align-items: center; gap: 24px; padding: 0 18px; border-radius: 20px; cursor: pointer; font-family: inherit; color: #f2efe9; text-align: left; transition: background 0.3s ' + ease + '; ' +
+        (i === fi ? 'background: rgba(5,5,6,0.7); border: 0; box-shadow: 0 0 0 1px ' + this.rgba(accent, 0.7) + ';' : 'background: transparent; border: 0;'),
+    }));
+    const walls = wallList.map((name, i) => ({
+      name,
+      pick: () => this.setState({ wall: i }),
+      style: 'padding: 14px 22px; border-radius: 22px; cursor: pointer; font-family: inherit; font-size: 19px; color: #f2efe9; ' +
+        (i === wi ? 'background: rgba(5,5,6,0.7); border: 1px solid ' + this.rgba(accent, 0.7) + ';' : 'background: rgba(242,239,233,0.06); border: 1px solid transparent;'),
+    }));
+    let seed = 11;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const stars = Array.from({ length: 90 }, () => {
+      const big = rnd() > 0.85;
+      const tint = rnd() < 0.2 ? accent : '#ffffff';
+      return 'position: absolute; left: ' + (rnd() * 1400).toFixed(0) + 'px; top: ' + (rnd() * 1400).toFixed(0) + 'px; width: ' + (big ? 3 : 2) + 'px; height: ' + (big ? 3 : 2) + 'px; border-radius: 50%; background: ' + tint + '; animation: cz-twinkle ' + (2 + rnd() * 3).toFixed(1) + 's ' + (rnd() * 3).toFixed(1) + 's ease-in-out infinite;';
+    });
+    return {
+      accents, fonts, walls, stars, accent,
+      accentName: accentList[ai][0],
+      isBrasas: wi === 0, isGalaxia: wi === 1, isStatic: wi > 1,
+      staticLabel: wi === 2 ? 'TU VIDEO · /sdcard/JPTV/loop.mp4' : 'TU IMAGEN · /sdcard/JPTV/fondo.jpg',
+      orb: 'position: absolute; width: 800px; height: 800px; left: 300px; top: -260px; border-radius: 50%; background: radial-gradient(circle, ' + this.rgba(accent, 0.6) + ' 0%, ' + this.rgba(accent, 0) + ' 65%); animation: cz-drift 12s cubic-bezier(0.45,0,0.55,1) infinite alternate;',
+      nebula: 'position: absolute; width: 900px; height: 520px; left: 360px; top: 80px; border-radius: 50%; background: radial-gradient(ellipse, ' + this.rgba(accent, 0.35) + ' 0%, ' + this.rgba(accent, 0) + ' 65%); filter: blur(20px);',
+      brandStyle: 'font-family: ' + display + '; font-size: 46px; line-height: 1.05; color: ' + accent + '; padding: 0 12px 16px;',
+      rowOn: 'height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 14px; border-radius: 20px; font-size: 22px; background: rgba(5,5,6,0.62); box-shadow: 0 0 0 1px ' + this.rgba(accent, 0.7) + ', 0 14px 40px ' + this.rgba(accent, 0.3) + ';',
+      iconOn: 'width: 42px; height: 42px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-family: "Geist Mono", monospace; font-size: 13px; color: #0b0b0c; background: ' + accent + ';',
+      clockStyle: 'font-family: ' + display + '; font-size: 96px; line-height: 1;',
+      dateStyle: 'font-family: "Geist Mono", monospace; font-size: 13px; letter-spacing: 0.2em; color: ' + accent + ';',
+      applyShadow: '0 0 0 1px ' + this.rgba(accent, 0.7) + ', 0 12px 36px ' + this.rgba(accent, 0.3),
+    };
+  }
+}
+</script>
+</body>
+</html>

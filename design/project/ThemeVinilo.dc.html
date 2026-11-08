@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Tema Vinilo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Righteous&amp;family=Geist:wght@400;500&amp;family=Geist+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#24160f}
+a{color:#e8743b}a:hover{color:#f3e3c3}
+@keyframes vin-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes vin-arm{0%,100%{transform:rotate(22deg)}50%{transform:rotate(24deg)}}
+@keyframes vin-in{0%{opacity:0;transform:translateY(40px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes vin-eq{0%,100%{transform:scaleY(0.3)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: radial-gradient(90% 80% at 30% 20%, #3a2418 0%, #24160f 60%, #170e09 100%); color: #f3e3c3; font-family: 'Geist', system-ui, sans-serif;">
+
+  <!-- Header -->
+  <header style="position: absolute; left: 80px; right: 80px; top: 56px; display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-family: 'Righteous', sans-serif; font-size: 56px; color: #e8743b;">{{brand}} <span style="color: #e0b23a;">Records</span></span>
+    <div style="display: flex; gap: 32px; align-items: center; font-family: 'Geist Mono', monospace; font-size: 16px; letter-spacing: 0.16em;">
+      <a href="Network.dc.html" style="color: #f3e3c3; text-decoration: none;">[RED WI-FI] · 12 MS</a>
+      <span style="font-family: 'Righteous', sans-serif; font-size: 44px; letter-spacing: 0;">21:40</span>
+      <a href="Settings.dc.html" style="padding: 12px 22px; border-radius: 24px; border: 2px solid #e0b23a; color: #e0b23a; text-decoration: none;">AJUSTES</a>
+    </div>
+  </header>
+
+  <!-- Turntable -->
+  <div style="position: absolute; right: 80px; top: 170px; width: 700px; height: 560px; border-radius: 36px; background: linear-gradient(160deg, #5a3a26 0%, #3a2418 100%); box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.08);">
+    <div style="position: absolute; left: 50px; top: 40px; width: 480px; height: 480px; border-radius: 50%; background: #1a1a1a; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+      <div style="position: absolute; inset: 14px; border-radius: 50%; background: repeating-radial-gradient(circle, #111 0px, #111 3px, #1d1d1d 4px, #111 5px); animation: vin-spin 1.8s linear infinite;">
+        <div style="position: absolute; left: 50%; top: 50%; width: 160px; height: 160px; margin: -80px 0 0 -80px; border-radius: 50%; background: {{labelColor}}; display: flex; align-items: center; justify-content: center;">
+          <span style="font-family: 'Righteous', sans-serif; font-size: 20px; color: #24160f;">{{selected}}</span>
+          <span style="position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #24160f;"></span>
+        </div>
+        <span style="position: absolute; left: 30%; top: 8%; width: 40%; height: 30%; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,255,255,0.08), rgba(255,255,255,0)); "></span>
+      </div>
+    </div>
+    <!-- Tonearm -->
+    <div style="position: absolute; left: 570px; top: 60px; width: 20px; height: 330px; transform-origin: 10px 10px; animation: vin-arm 3s ease-in-out infinite;">
+      <span style="position: absolute; left: 0; top: 0; width: 20px; height: 20px; border-radius: 50%; background: #c9b48a;"></span>
+      <span style="position: absolute; left: 7px; top: 10px; width: 6px; height: 300px; border-radius: 3px; background: #d9c9a3;"></span>
+      <span style="position: absolute; left: -4px; top: 300px; width: 28px; height: 36px; border-radius: 6px; background: #c9b48a;"></span>
+    </div>
+    <div style="position: absolute; left: 560px; bottom: 40px; display: flex; gap: 6px; align-items: flex-end; height: 60px;">
+      <span style="width: 10px; height: 60px; border-radius: 4px; background: #e8743b; transform-origin: bottom; animation: vin-eq 0.9s ease-in-out infinite;"></span>
+      <span style="width: 10px; height: 60px; border-radius: 4px; background: #e0b23a; transform-origin: bottom; animation: vin-eq 0.7s 0.2s ease-in-out infinite;"></span>
+      <span style="width: 10px; height: 60px; border-radius: 4px; background: #2f7f7a; transform-origin: bottom; animation: vin-eq 1.1s 0.1s ease-in-out infinite;"></span>
+      <span style="width: 10px; height: 60px; border-radius: 4px; background: #e8743b; transform-origin: bottom; animation: vin-eq 0.8s 0.3s ease-in-out infinite;"></span>
+    </div>
+  </div>
+  <div style="position: absolute; right: 80px; top: 760px; width: 700px; display: flex; flex-direction: column; gap: 6px;">
+    <span style="font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.2em; color: #e0b23a;">AHORA SUENA · SPOTIFY</span>
+    <span style="font-family: 'Righteous', sans-serif; font-size: 40px;">[Canción] — [Artista]</span>
+  </div>
+
+  <!-- Shelf with LP covers -->
+  <div style="position: absolute; left: 80px; top: 300px; width: 1000px; display: flex; gap: 22px; align-items: flex-end;">
+    <sc-for list="{{covers}}" as="c" hint-placeholder-count="5">
+      <button onClick="{{c.pick}}" style="{{c.style}}">
+        <span style="{{c.disc}}"></span>
+        <span style="{{c.sleeve}}"><span style="font-family: 'Righteous', sans-serif; font-size: {{c.size}}; line-height: 1.05; color: #24160f; text-align: left;">{{c.name}}</span></span>
+      </button>
+    </sc-for>
+  </div>
+  <div aria-hidden="true" style="position: absolute; left: 50px; top: 690px; width: 1060px; height: 40px; border-radius: 10px; background: linear-gradient(180deg, #8a5a36 0%, #6b4226 60%, #4a2c19 100%); box-shadow: 0 20px 40px rgba(0,0,0,0.5);"></div>
+  <span style="position: absolute; left: 80px; top: 770px; font-family: 'Geist Mono', monospace; font-size: 15px; letter-spacing: 0.2em; color: rgba(243,227,195,0.7);">LADO A · {{count}} DISCOS</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 0 };
+  }
+  renderVals() {
+    const list = [['YouTube', '#e8743b'], ['Netflix', '#c8423a'], ['Spotify', '#2f7f7a'], ['Xuper Hydra', '#e0b23a'], ['Prime Video', '#6f8fbf']];
+    const ease = 'cubic-bezier(0.16,1,0.3,1)';
+    const covers = list.map(([name, color], i) => {
+      const on = i === this.state.sel;
+      const w = on ? 300 : 170;
+      return {
+        name,
+        size: on ? '38px' : '22px',
+        pick: () => this.setState({ sel: i }),
+        style: 'position: relative; width: ' + (on ? 420 : 170) + 'px; height: ' + w + 'px; padding: 0; border: 0; background: transparent; cursor: pointer; transition: width 0.6s ' + ease + ', height 0.6s ' + ease + '; animation: vin-in 0.7s ' + (i * 0.08).toFixed(2) + 's ' + ease + ' both;',
+        disc: 'position: absolute; top: ' + (on ? 10 : 6) + 'px; left: ' + (on ? 130 : 20) + 'px; width: ' + (w - 20) + 'px; height: ' + (w - 20) + 'px; border-radius: 50%; background: repeating-radial-gradient(circle, #111 0px, #111 3px, #222 4px); transition: left 0.6s ' + ease + '; ' + (on ? 'animation: vin-spin 1.8s linear infinite;' : ''),
+        sleeve: 'position: absolute; left: 0; top: 0; width: ' + w + 'px; height: ' + w + 'px; border-radius: 10px; background: ' + color + '; box-shadow: 0 16px 30px rgba(0,0,0,0.45); display: flex; align-items: flex-end; padding: 18px; box-sizing: border-box; ' + (on ? 'outline: 4px solid #f3e3c3; outline-offset: 4px;' : ''),
+      };
+    });
+    return { covers, count: list.length, selected: list[this.state.sel][0], labelColor: list[this.state.sel][1], brand: this.props.brand ?? 'JP-TV' };
+  }
+}
+</script>
+</body>
+</html>

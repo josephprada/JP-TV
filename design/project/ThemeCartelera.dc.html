@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Tema Cartelera</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Limelight&amp;family=Geist:wght@400;500&amp;family=Geist+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1c0a0c}
+a{color:#f6c453}a:hover{color:#fff4d6}
+@keyframes cart-bulb{0%,100%{background:#5a3a10;box-shadow:none}50%{background:#ffe08a;box-shadow:0 0 14px 4px rgba(255,214,110,0.7)}}
+@keyframes cart-sway{0%{transform:rotate(-8deg)}100%{transform:rotate(8deg)}}
+@keyframes cart-rise{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1c0a0c; color: #fff4d6; font-family: 'Geist', system-ui, sans-serif;">
+
+  <!-- Velvet folds (video loop stand-in) -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: repeating-linear-gradient(90deg, #240c0f 0px, #3a1418 60px, #240c0f 120px);"></div>
+  <!-- Spotlight -->
+  <div aria-hidden="true" style="position: absolute; left: 50%; top: -200px; width: 900px; height: 1400px; margin-left: -450px; transform-origin: 50% 0; background: radial-gradient(ellipse at 50% 100%, rgba(255,230,160,0.22) 0%, rgba(255,230,160,0) 60%); animation: cart-sway 7s ease-in-out infinite alternate;"></div>
+
+  <!-- Marquee -->
+  <header style="position: absolute; left: 160px; right: 160px; top: 48px; padding: 28px 48px; border-radius: 28px; background: #2a0f12; border: 3px solid #f6c453; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+    <div aria-hidden="true" style="display: flex; justify-content: space-between; width: 100%;">
+      <sc-for list="{{bulbs}}" as="b" hint-placeholder-count="30">
+        <span style="{{b}}"></span>
+      </sc-for>
+    </div>
+    <div style="display: flex; align-items: baseline; justify-content: space-between; width: 100%;">
+      <span style="font-family: 'Geist Mono', monospace; font-size: 16px; letter-spacing: 0.2em; color: #f6c453;">{{brand}} PRESENTA</span>
+      <span style="font-family: 'Limelight', serif; font-size: 76px; letter-spacing: 0.08em; color: #ffe08a; text-shadow: 0 0 24px rgba(255,214,110,0.45);">ESTA NOCHE</span>
+      <span style="font-family: 'Geist Mono', monospace; font-size: 16px; letter-spacing: 0.2em; color: #f6c453;">FUNCIÓN 21:40</span>
+    </div>
+    <div aria-hidden="true" style="display: flex; justify-content: space-between; width: 100%;">
+      <sc-for list="{{bulbs}}" as="b" hint-placeholder-count="30">
+        <span style="{{b}}"></span>
+      </sc-for>
+    </div>
+  </header>
+
+  <!-- Posters -->
+  <div style="position: absolute; left: 0; right: 0; top: 330px; display: flex; justify-content: center; align-items: flex-end; gap: 36px;">
+    <sc-for list="{{posters}}" as="p" hint-placeholder-count="5">
+      <a href="#" style="{{p.style}}">
+        <span style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.2em; color: #f6c453;">{{p.n}}</span>
+        <span style="font-family: 'Limelight', serif; font-size: {{p.size}}; line-height: 1.05; color: #fff4d6;">{{p.name}}</span>
+      </a>
+    </sc-for>
+  </div>
+
+  <!-- Footer ticket -->
+  <footer style="position: absolute; left: 160px; right: 160px; bottom: 48px; display: flex; justify-content: space-between; align-items: center; font-family: 'Geist Mono', monospace; font-size: 16px; letter-spacing: 0.18em; color: #f6c453;">
+    <a href="Network.dc.html" style="padding: 14px 24px; border-radius: 24px; border: 1px dashed #f6c453; text-decoration: none;">TAQUILLA · [RED WI-FI] · 12 MS</a>
+    <span>EN CARTELERA: YOUTUBE</span>
+    <a href="Settings.dc.html" style="padding: 14px 24px; border-radius: 24px; border: 1px dashed #f6c453; text-decoration: none;">AJUSTES</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const bulbs = Array.from({ length: 30 }, (_, i) =>
+      'width: 16px; height: 16px; border-radius: 50%; background: #5a3a10; animation: cart-bulb 1.2s ' + ((i % 3) * 0.4).toFixed(1) + 's steps(1) infinite;');
+    const names = ['Netflix', 'YouTube', 'Spotify', 'Xuper Hydra', 'Prime Video'];
+    const posters = names.map((name, i) => {
+      const on = i === 1;
+      return {
+        name, n: 'SALA ' + (i + 1),
+        size: on ? '52px' : '34px',
+        style: 'display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 28px; box-sizing: border-box; border-radius: 22px; text-decoration: none; ' +
+          'background: linear-gradient(180deg, #3a1418 0%, #12050a 100%); ' +
+          'animation: cart-rise 0.8s ' + (0.1 + i * 0.08).toFixed(2) + 's cubic-bezier(0.16,1,0.3,1) both; ' +
+          (on ? 'width: 380px; height: 540px; border: 4px solid #ffe08a; box-shadow: 0 0 60px rgba(255,214,110,0.35);' : 'width: 260px; height: 380px; border: 2px solid rgba(246,196,83,0.5); opacity: 0.8;'),
+      };
+    });
+    return { brand: this.props.brand ?? 'JP-TV', bulbs, posters };
+  }
+}
+</script>
+</body>
+</html>

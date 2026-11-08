@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Tema Terminal</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050805}
+a{color:#33ff66}a:hover{color:#b6ffc9}
+@keyframes t-cursor{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes t-flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:0.85}94%{opacity:1}}
+@keyframes t-line{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes t-roll{0%{transform:translateY(-100%)}100%{transform:translateY(1200px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: radial-gradient(110% 100% at 50% 50%, #071407 0%, #030603 100%); color: #33ff66; font-family: 'VT323', monospace; text-shadow: 0 0 6px rgba(51,255,102,0.55); animation: t-flicker 6s infinite;">
+
+  <!-- tmux-like status bar -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: #33ff66; color: #050805; text-shadow: none; font-size: 30px;">
+    <span>[{{brand}}] 0:apps* 1:<a href="Network.dc.html" style="color: #050805;">red</a> 2:<a href="Settings.dc.html" style="color: #050805;">ajustes</a></span>
+    <span>wifi ok · 12ms | 21:40 sáb 08 nov</span>
+  </div>
+
+  <!-- Left: banner + system info -->
+  <div style="position: absolute; left: 64px; top: 110px; width: 860px; display: flex; flex-direction: column; gap: 6px; font-size: 32px; line-height: 1.1;">
+    <pre style="margin: 0 0 24px; font-family: 'VT323', monospace; font-size: 34px; line-height: 1; color: #33ff66;">{{banner}}</pre>
+    <sc-for list="{{info}}" as="row" hint-placeholder-count="7">
+      <span style="{{row.style}}"><span style="color: #ffb000;">{{row.k}}</span> {{row.v}}</span>
+    </sc-for>
+  </div>
+
+  <!-- Right: ls + prompt -->
+  <div style="position: absolute; left: 1000px; top: 110px; right: 64px; display: flex; flex-direction: column; gap: 4px; font-size: 40px; line-height: 1.15;">
+    <span style="color: #1f9940;">jp@tv:~$ ls --apps</span>
+    <sc-for list="{{apps}}" as="a" hint-placeholder-count="8">
+      <button onClick="{{a.pick}}" style="{{a.style}}">{{a.prefix}}{{a.name}}<span style="color: {{a.metaColor}};">{{a.meta}}</span></button>
+    </sc-for>
+    <span style="margin-top: 28px;">jp@tv:~$ open {{cmd}}<span style="display: inline-block; width: 20px; height: 38px; margin-left: 6px; vertical-align: -6px; background: #33ff66; animation: t-cursor 1s steps(1) infinite;"></span></span>
+    <span style="color: #1f9940; font-size: 30px;">↑↓ elegir · OK ejecutar · tab ajustes</span>
+  </div>
+
+  <!-- CRT: scanlines, rolling bar, vignette -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0px, rgba(0,0,0,0.25) 2px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 4px); pointer-events: none;"></div>
+  <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 160px; background: linear-gradient(180deg, rgba(51,255,102,0) 0%, rgba(51,255,102,0.05) 50%, rgba(51,255,102,0) 100%); animation: t-roll 7s linear infinite; pointer-events: none;"></div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%); pointer-events: none;"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 0 };
+  }
+  renderVals() {
+    const banner = [
+      ' ▐█▌ ████▄     ███████ ▐█   █▌',
+      '  █▌ █▌  █▌      █▌     █▌ ▐█ ',
+      '  █▌ ████▀  ███  █▌     ▐█ █▌ ',
+      '▄ █▌ █▌          █▌      ███  ',
+      '▀██▀ █▌          █▌       █   ',
+    ].join('\n');
+    const pairs = [['host', 'V_BOX14'], ['os', 'Android 9 (SDK 28)'], ['shell', 'jp-tv 1.0'], ['ip', '192.168.1.4'], ['dns', '94.140.14.14 (adguard)'], ['disco', '3.5G libres / 11G'], ['tema', 'terminal · fósforo verde']];
+    const info = pairs.map(([k, v], i) => ({ k: (k + ':').padEnd(7, ' '), v, style: 'white-space: pre; animation: t-line 0.3s ' + (0.15 + i * 0.12).toFixed(2) + 's steps(3) both;' }));
+    const list = [['youtube', 'tv'], ['netflix', 'tv'], ['spotify', 'música'], ['xuper-hydra', 'tv'], ['prime-video', 'tv'], ['disney-plus', 'tv'], ['plex', 'media'], ['ajustes', 'sistema']];
+    const apps = list.map(([name, kind], i) => {
+      const on = i === this.state.sel;
+      return {
+        name,
+        prefix: on ? '> ' : '  ',
+        meta: '  [' + kind + ']',
+        metaColor: on ? '#050805' : '#1f9940',
+        pick: () => this.setState({ sel: i }),
+        style: 'align-self: flex-start; padding: 0 10px; border: 0; cursor: pointer; text-align: left; white-space: pre; font-family: "VT323", monospace; font-size: 40px; line-height: 1.15; ' +
+          'animation: t-line 0.3s ' + (0.9 + i * 0.08).toFixed(2) + 's steps(3) both; ' +
+          (on ? 'background: #33ff66; color: #050805; text-shadow: none;' : 'background: transparent; color: #33ff66;'),
+      };
+    });
+    return { banner, info, apps, cmd: list[this.state.sel][0], brand: (this.props.brand ?? 'JP-TV').toLowerCase() };
+  }
+}
+</script>
+</body>
+</html>

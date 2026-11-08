@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>JP-TV — Tema Zen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@200;300;400&amp;family=Geist+Mono:wght@300;400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#2b2f2a}
+a{color:#e8e6df}a:hover{color:#ffffff}
+@keyframes zen-ripple{0%{transform:scale(0.2);opacity:0.55}100%{transform:scale(2.4);opacity:0}}
+@keyframes zen-breathe{0%,100%{opacity:0.45;letter-spacing:0.3em}50%{opacity:1;letter-spacing:0.42em}}
+@keyframes zen-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes zen-in{0%{opacity:0;transform:translateY(24px);filter:blur(8px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: radial-gradient(120% 100% at 50% 30%, #3a4038 0%, #2b2f2a 55%, #1f221e 100%); color: #e8e6df; font-family: 'Geist', system-ui, sans-serif;">
+
+  <!-- Ripples (live wallpaper), one every 4 s -->
+  <div aria-hidden="true" style="position: absolute; left: 50%; top: 46%; width: 0; height: 0;">
+    <span style="position: absolute; left: -400px; top: -400px; width: 800px; height: 800px; border-radius: 50%; border: 1px solid rgba(232,230,223,0.35); animation: zen-ripple 12s linear infinite;"></span>
+    <span style="position: absolute; left: -400px; top: -400px; width: 800px; height: 800px; border-radius: 50%; border: 1px solid rgba(232,230,223,0.35); animation: zen-ripple 12s 4s linear infinite;"></span>
+    <span style="position: absolute; left: -400px; top: -400px; width: 800px; height: 800px; border-radius: 50%; border: 1px solid rgba(232,230,223,0.35); animation: zen-ripple 12s 8s linear infinite;"></span>
+  </div>
+
+  <!-- Clock -->
+  <div style="position: absolute; left: 0; right: 0; top: 300px; display: flex; flex-direction: column; align-items: center; gap: 18px; animation: zen-float 8s ease-in-out infinite;">
+    <span style="font-weight: 200; font-size: 260px; line-height: 1; letter-spacing: -0.03em;">21:40</span>
+    <span style="font-family: 'Geist Mono', monospace; font-weight: 300; font-size: 18px; letter-spacing: 0.3em; color: rgba(232,230,223,0.75);">SÁBADO · 8 DE NOVIEMBRE</span>
+  </div>
+
+  <sc-if value="{{closed}}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{open}}" style="position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); padding: 18px 40px; border-radius: 40px; background: rgba(232,230,223,0.06); border: 1px solid rgba(232,230,223,0.2); color: #e8e6df; font-family: 'Geist', sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 0.3em; cursor: pointer; animation: zen-breathe 4s ease-in-out infinite;">PULSA OK</button>
+  </sc-if>
+
+  <sc-if value="{{opened}}" hint-placeholder-val="{{ false }}">
+    <nav aria-label="Apps" style="position: absolute; left: 50%; bottom: 100px; transform: translateX(-50%); display: flex; gap: 16px; padding: 16px; border-radius: 48px; background: rgba(232,230,223,0.08); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(232,230,223,0.16);">
+      <sc-for list="{{apps}}" as="a" hint-placeholder-count="5">
+        <button onClick="{{close}}" style="{{a.style}}">{{a.name}}</button>
+      </sc-for>
+    </nav>
+    <a href="Settings.dc.html" style="position: absolute; right: 64px; top: 56px; font-family: 'Geist Mono', monospace; font-weight: 300; font-size: 14px; letter-spacing: 0.24em; color: rgba(232,230,223,0.75); text-decoration: none; animation: zen-in 0.8s 0.3s cubic-bezier(0.16,1,0.3,1) both;">{{brand}} · [RED WI-FI] · AJUSTES</a>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: false };
+  }
+  renderVals() {
+    const names = ['YouTube', 'Netflix', 'Spotify', 'Xuper Hydra', 'Prime Video'];
+    const apps = names.map((name, i) => ({
+      name,
+      style: 'height: 72px; padding: 0 32px; border-radius: 36px; border: 0; font-family: "Geist", sans-serif; font-weight: 300; font-size: 24px; cursor: pointer; ' +
+        'animation: zen-in 0.7s ' + (i * 0.07).toFixed(2) + 's cubic-bezier(0.16,1,0.3,1) both; ' +
+        (i === 0 ? 'background: rgba(232,230,223,0.92); color: #1f221e;' : 'background: transparent; color: #e8e6df;'),
+    }));
+    return {
+      brand: this.props.brand ?? 'JP-TV',
+      closed: !this.state.open,
+      opened: this.state.open,
+      open: () => this.setState({ open: true }),
+      close: () => this.setState({ open: false }),
+      apps,
+    };
+  }
+}
+</script>
+</body>
+</html>
