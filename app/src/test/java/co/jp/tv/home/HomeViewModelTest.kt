@@ -5,6 +5,8 @@ import co.jp.tv.apps.domain.AppCatalog
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
+import co.jp.tv.preferences.domain.ConfigStore
+import co.jp.tv.preferences.domain.LauncherConfig
 import java.time.LocalDateTime
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -44,6 +46,14 @@ class HomeViewModelTest {
         override fun probeNow() { probes++ }
     }
 
+    private class FakeConfigStore(initial: LauncherConfig? = null) : ConfigStore {
+        val source = MutableStateFlow(initial)
+        override val config: Flow<LauncherConfig?> = source
+        override suspend fun update(transform: (LauncherConfig?) -> LauncherConfig) {
+            source.value = transform(source.value)
+        }
+    }
+
     private val own = "co.jp.tv"
     private val apps = listOf(
         TvApp("a.yt", "YouTube", true),
@@ -59,7 +69,8 @@ class HomeViewModelTest {
         catalog: FakeCatalog,
         ticks: Flow<LocalDateTime> = flowOf(t0),
         monitor: FakeMonitor = FakeMonitor(),
-    ) = HomeViewModel(catalog, ticks, ownPackage = own, monitor = monitor, initialNow = t0)
+        store: FakeConfigStore = FakeConfigStore(),
+    ) = HomeViewModel(catalog, ticks, ownPackage = own, monitor = monitor, initialNow = t0, configStore = store)
 
     @Test
     fun `state exposes arranged apps without our own package`() = runTest {
@@ -194,5 +205,112 @@ class HomeViewModelTest {
         vm.openNetwork()
         vm.back()
         assertEquals(Screen.Home, vm.screen.value)
+    }
+
+    private val manyApps = listOf(
+        TvApp("a.nf", "Netflix", true),
+        TvApp("a.yt", "YouTube", true),
+        TvApp("a.sp", "Spotify", true),
+        TvApp("a.cam", "Camara", false),
+    )
+
+    private fun visible(vm: HomeViewModel) = vm.state.value.apps.map { it.packageName }
+
+    @Test
+    fun `saved order and hidden apps shape the rail and the count`() = runTest {
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.sp", "a.cam", "a.nf", "a.yt"), hiddenApps = setOf("a.cam")))
+        val vm = vm(FakeCatalog(manyApps), store = store)
+        vm.state.test {
+            expectMostRecentItem().let { if (it.apps.isEmpty()) awaitItem() }
+            assertEquals(listOf("a.sp", "a.nf", "a.yt"), visible(vm))
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `first run persists favorites first and hides system tools`() = runTest {
+        val apps = listOf(
+            TvApp("com.android.tv.settings", "Settings", true),
+            TvApp("a.nf2", "Aaa", true),
+            TvApp("com.spotify.tv.android", "Spotify", true),
+            TvApp("com.xuper.netxxus", "Xuper Hydra", true),
+        )
+        val store = FakeConfigStore()
+        val vm = vm(FakeCatalog(apps), store = store)
+        vm.state.test {
+            expectMostRecentItem().let { if (it.apps.isEmpty()) awaitItem() }
+            assertEquals(listOf("com.xuper.netxxus", "com.spotify.tv.android", "a.nf2"), visible(vm))
+            assertEquals(setOf("com.android.tv.settings"), store.source.value?.hiddenApps)
+            assertEquals("com.xuper.netxxus", store.source.value?.appOrder?.first())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `new apps are appended after the saved order`() = runTest {
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.yt", "a.nf")))
+        val vm = vm(FakeCatalog(manyApps), store = store)
+        vm.state.test {
+            expectMostRecentItem().let { if (it.apps.isEmpty()) awaitItem() }
+            assertEquals(listOf("a.yt", "a.nf", "a.sp", "a.cam"), visible(vm))
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `moving an app persists the new order`() = runTest {
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.nf", "a.yt", "a.sp", "a.cam")))
+        val vm = vm(FakeCatalog(manyApps), store = store)
+        vm.state.test {
+            expectMostRecentItem().let { if (it.apps.isEmpty()) awaitItem() }
+            vm.moveApp("a.sp", up = true)
+            assertEquals(listOf("a.nf", "a.sp", "a.yt", "a.cam"), store.source.value?.appOrder)
+            vm.moveApp("a.nf", up = false)
+            assertEquals(listOf("a.sp", "a.nf", "a.yt", "a.cam"), visible(vm))
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `hiding and showing an app persists and updates the edit lists`() = runTest {
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.nf", "a.yt", "a.sp", "a.cam")))
+        val vm = vm(FakeCatalog(manyApps), store = store)
+        vm.editState.test {
+            expectMostRecentItem().let { if (it.visible.isEmpty()) awaitItem() }
+            vm.setAppHidden("a.yt", hidden = true)
+            expectMostRecentItem().let {
+                assertEquals(listOf("a.nf", "a.sp", "a.cam"), it.visible.map { a -> a.packageName })
+                assertEquals(listOf("a.yt"), it.hidden.map { a -> a.packageName })
+            }
+            assertEquals(setOf("a.yt"), store.source.value?.hiddenApps)
+            vm.setAppHidden("a.yt", hidden = false)
+            assertEquals(listOf("a.nf", "a.yt", "a.sp", "a.cam"), expectMostRecentItem().visible.map { it.packageName })
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `reset restores the first run arrangement`() = runTest {
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.cam", "a.sp", "a.yt", "a.nf"), hiddenApps = setOf("a.nf")))
+        val vm = vm(FakeCatalog(manyApps), store = store)
+        vm.state.test {
+            expectMostRecentItem().let { if (it.apps.isEmpty()) awaitItem() }
+            vm.resetApps()
+            assertEquals(emptySet<String>(), store.source.value?.hiddenApps)
+            assertEquals(listOf("a.nf", "a.sp", "a.yt", "a.cam"), visible(vm))
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `opening the editor remembers which app to focus and back closes it`() {
+        val vm = vm(FakeCatalog(manyApps))
+        vm.openEditApps(manyApps[1])
+        assertEquals(Screen.EditApps, vm.screen.value)
+        assertEquals("a.yt", vm.editFocusPackage)
+        vm.back()
+        assertEquals(Screen.Home, vm.screen.value)
+        vm.openEditApps(null)
+        assertEquals(null, vm.editFocusPackage)
     }
 }
