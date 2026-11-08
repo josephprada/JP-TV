@@ -1,17 +1,29 @@
 package co.jp.tv.network.domain
 
-/** Connectivity snapshot. Real data arrives in phase 3; until then themes get [Unknown]. */
+/** Connectivity snapshot shown by the chip and the network panel. */
 data class NetworkStatus(
-    val kind: Kind,
-    val ssid: String?,
-    val ip: String?,
-    val latencyMs: Int?,
+    val state: State = State.UNKNOWN,
+    val transport: Transport? = null,
+    /** Null when unknown or hidden by Android (no location permission). */
+    val ssid: String? = null,
+    val ip: String? = null,
+    val gateway: String? = null,
+    val dns: List<String> = emptyList(),
     /** 0..4 */
-    val signalBars: Int,
+    val signalLevel: Int = 0,
+    val routerLatencyMs: Int? = null,
+    val internetLatencyMs: Int? = null,
+    val hasInternet: Boolean = false,
+    /** Only present when obtainable without extra permissions. */
+    val mac: String? = null,
 ) {
-    enum class Kind { WIFI, ETHERNET, OFFLINE, UNKNOWN }
+    enum class State { CONNECTED, DISCONNECTED, UNKNOWN }
+    enum class Transport { WIFI, ETHERNET }
+
+    val isConnected: Boolean get() = state == State.CONNECTED
 
     companion object {
-        val Unknown = NetworkStatus(Kind.UNKNOWN, null, null, null, 0)
+        val Unknown = NetworkStatus()
+        val Disconnected = NetworkStatus(state = State.DISCONNECTED)
     }
 }
