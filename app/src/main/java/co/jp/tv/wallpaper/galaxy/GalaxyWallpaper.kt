@@ -34,7 +34,7 @@ object GalaxyWallpaper : Wallpaper {
         val scene = remember(starBudget) { GalaxyScene(starBudget) }
 
         // Own layer: a redraw here must not re-record the UI above it.
-        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
+        Canvas(modifier.fillMaxSize().graphicsLayer()) {
             val t = frame.longValue
             val s = scene.prepare(size.width, size.height, density, accent)
             s.engine.update(t)

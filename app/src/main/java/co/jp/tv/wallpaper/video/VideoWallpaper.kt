@@ -31,6 +31,8 @@ import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.wallpaper.Wallpaper
 import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Looped, muted video wallpaper from `/sdcard/JPTV/loop.mp4`.
@@ -50,8 +52,8 @@ object VideoWallpaper : Wallpaper {
     override fun Render(accent: Color, paused: Boolean, modifier: Modifier) {
         val context = LocalContext.current
         val file = remember { externalFile() }
-        var exists by remember { mutableStateOf(file.isFile) }
-        LaunchedEffect(Unit) { exists = file.isFile }
+        var exists by remember { mutableStateOf(false) }
+        LaunchedEffect(file) { exists = withContext(Dispatchers.IO) { file.isFile } }
 
         Box(modifier.fillMaxSize().background(JpColors.Ink), contentAlignment = Alignment.Center) {
             if (!exists) {

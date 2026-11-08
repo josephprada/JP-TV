@@ -47,6 +47,7 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
+import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.preferences.domain.AccentPreset
 import co.jp.tv.preferences.domain.AccentPresets
 import co.jp.tv.preferences.domain.LauncherConfig
@@ -161,7 +162,7 @@ fun CustomizeScreen(
                     .background(Color(0xFF07070A), RoundedCornerShape(20.dp)),
             ) {
                 WallpaperRegistry.byId(draft.wallpaperId)
-                    .Render(accent, paused = false, modifier = Modifier.fillMaxSize())
+                    .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
                 PreviewRail(brand = draft.brand, accent = accent, titleFont = titleFont)
                 PreviewClock(accent = accent, titleFont = titleFont)
                 ApplyButton(
