@@ -96,6 +96,7 @@ class MainActivity : ComponentActivity() {
                                 appCount = editState.visible.size + editState.hidden.size,
                                 storage = remember { container.deviceInfo.storage() },
                                 display = remember { container.deviceInfo.display() },
+                                themeName = ThemeRegistry.byId(state.config.themeId).displayName,
                             ),
                             network = state.network,
                             accent = accent,

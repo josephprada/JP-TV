@@ -63,6 +63,8 @@ data class QuickSettingsInfo(
     val storage: DeviceInfo.Storage?,
     /** Display height in pixels and refresh rate in Hz. */
     val display: Pair<Int, Int>?,
+    /** Display name of the active home theme. */
+    val themeName: String,
 )
 
 /** Compact header, a 4-column grid of shortcuts and a big "all Android settings" button. dp = design px / 2. */
@@ -76,7 +78,7 @@ fun QuickSettingsScreen(
     onEditApps: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val tiles = SettingsShortcuts.tiles + SettingsShortcuts.upcoming
+    val tiles = SettingsShortcuts.tiles
     val firstFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) { firstFocus.requestFocus() }
 
@@ -158,7 +160,7 @@ private fun tileValue(shortcut: SettingsShortcut, info: QuickSettingsInfo, netwo
         SettingsShortcut.Id.STORAGE -> info.storage?.let {
             stringResource(R.string.tile_storage_value, SettingsShortcuts.formatGb(it.freeBytes), SettingsShortcuts.formatGb(it.totalBytes))
         }
-        SettingsShortcut.Id.THEME -> stringResource(R.string.settings_coming_soon)
+        SettingsShortcut.Id.THEME -> info.themeName.uppercase()
         else -> null
     }
 

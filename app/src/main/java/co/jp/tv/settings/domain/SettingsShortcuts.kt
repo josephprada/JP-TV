@@ -21,9 +21,6 @@ object SettingsShortcuts {
         native(SettingsShortcut.Id.APPS, "android.settings.APPLICATION_SETTINGS"),
         native(SettingsShortcut.Id.STORAGE, "android.settings.INTERNAL_STORAGE_SETTINGS"),
         native(SettingsShortcut.Id.DATE_TIME, "android.settings.DATE_SETTINGS"),
-    )
-
-    val upcoming: List<SettingsShortcut> = listOf(
         SettingsShortcut(SettingsShortcut.Id.THEME, ShortcutTarget.Themes),
     )
 

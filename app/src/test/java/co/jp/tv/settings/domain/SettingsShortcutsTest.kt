@@ -43,9 +43,9 @@ class SettingsShortcutsTest {
 
     @Test
     fun `theme tile opens the themes screen`() {
-        val upcoming = SettingsShortcuts.upcoming
-        assertEquals(listOf(SettingsShortcut.Id.THEME), upcoming.map { it.id })
-        assertTrue(upcoming.all { it.target == ShortcutTarget.Themes })
+        val theme = SettingsShortcuts.tiles.single { it.id == SettingsShortcut.Id.THEME }
+        assertEquals(ShortcutTarget.Themes, theme.target)
+        assertEquals(SettingsShortcut.Id.THEME, SettingsShortcuts.tiles.last().id)
     }
 
     @Test
