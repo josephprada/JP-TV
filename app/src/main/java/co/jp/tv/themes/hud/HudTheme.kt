@@ -24,8 +24,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -50,7 +51,10 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeKeyNavigation
 import kotlin.math.PI
 import kotlin.math.cos
@@ -64,15 +68,20 @@ object HudTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         val selected = state.apps.getOrNull(state.focusedIndex)
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Brush.radialGradient(listOf(HudPalette.BackgroundGlow, HudPalette.Background)))
                 .hudGrid()
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { it == Key.DirectionDown },
+                    toList = { it == Key.DirectionUp },
+                )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
             HudRings()
@@ -98,6 +107,7 @@ object HudTheme : LauncherTheme {
                 )
             }
             HudWheel(state.apps, state.focusedIndex, Modifier.fillMaxSize())
+            HudSettingsButton(actions, focus, Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp))
         }
     }
 }
@@ -125,6 +135,27 @@ private fun HudTelemetry(network: NetworkStatus, actions: HomeActions, modifier:
         BasicText("PING   ${ms?.let { "$it MS" } ?: "—"}", style = TextStyle(color = HudPalette.Text, fontSize = 10.sp, fontFamily = JpFonts.Mono))
         BasicText("IP     ${network.ip ?: "—"}", style = TextStyle(color = HudPalette.Text, fontSize = 10.sp, fontFamily = JpFonts.Mono))
     }
+}
+
+@Composable
+private fun HudSettingsButton(actions: HomeActions, focus: ThemeControlFocus, modifier: Modifier = Modifier) {
+    val color = if (focus.onControl) HudPalette.Cyan else HudPalette.Cyan.copy(alpha = 0.4f)
+    BasicText(
+        stringResource(R.string.cd_settings).uppercase(),
+        modifier = modifier
+            .focusRequester(focus.control)
+            .onFocusChanged { focus.onControl = it.isFocused }
+            .background(HudPalette.PanelBg)
+            .border(if (focus.onControl) 1.5.dp else 1.dp, color)
+            .clickable(onClick = actions::openSettings)
+            .padding(horizontal = 18.dp, vertical = 6.dp),
+        style = TextStyle(
+            color = if (focus.onControl) HudPalette.Core else HudPalette.Text,
+            fontSize = 8.sp,
+            fontFamily = JpFonts.Orbitron,
+            letterSpacing = 0.3.em,
+        ),
+    )
 }
 
 @Composable

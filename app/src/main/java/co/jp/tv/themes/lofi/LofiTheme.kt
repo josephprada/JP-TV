@@ -7,6 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -26,27 +27,36 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.network.domain.NetworkRules
+import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeKeyNavigation
 
 object LofiTheme : LauncherTheme {
@@ -56,8 +66,8 @@ object LofiTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         val listState = rememberLazyListState()
         LaunchedEffect(state.focusedIndex) {
             if (state.apps.isNotEmpty()) listState.animateScrollToItem(state.focusedIndex)
@@ -70,7 +80,12 @@ object LofiTheme : LauncherTheme {
                         listOf(LofiPalette.BackgroundTop, LofiPalette.BackgroundMid, LofiPalette.BackgroundBottom),
                     ),
                 )
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { it == Key.DirectionRight || (it == Key.DirectionDown && state.focusedIndex >= state.apps.lastIndex) },
+                    toList = { it == Key.DirectionUp || it == Key.DirectionLeft },
+                )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
             LofiDesk()
@@ -78,7 +93,7 @@ object LofiTheme : LauncherTheme {
             Row(
                 Modifier
                     .fillMaxSize()
-                    .padding(start = 60.dp, end = 40.dp, top = 60.dp, bottom = 40.dp),
+                    .padding(start = 60.dp, end = 40.dp, top = 60.dp, bottom = 96.dp),
             ) {
                 Box(Modifier.weight(1.2f))
                 Column(
@@ -106,7 +121,39 @@ object LofiTheme : LauncherTheme {
                     }
                 }
             }
+            LofiBottomBar(state.network, actions, focus, Modifier.align(Alignment.BottomCenter))
         }
+    }
+}
+
+@Composable
+private fun LofiBottomBar(network: NetworkStatus, actions: HomeActions, focus: ThemeControlFocus, modifier: Modifier = Modifier) {
+    val ms = NetworkRules.formatLatency(network.routerLatencyMs ?: network.internetLatencyMs)
+    val net = network.ssid ?: stringResource(R.string.network_wifi)
+    Row(
+        modifier
+            .fillMaxWidth()
+            .padding(start = 60.dp, end = 40.dp, bottom = 28.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BasicText(
+            stringResource(R.string.theme_lofi_status, net, ms),
+            style = TextStyle(color = LofiPalette.Paper.copy(alpha = 0.8f), fontSize = 12.sp, fontFamily = JpFonts.Caveat, letterSpacing = 0.12.em),
+        )
+        val shape = RoundedCornerShape(26.dp)
+        BasicText(
+            stringResource(R.string.cd_settings).lowercase(),
+            modifier = Modifier
+                .focusRequester(focus.control)
+                .onFocusChanged { focus.onControl = it.isFocused }
+                .clip(shape)
+                .background(LofiPalette.Paper.copy(alpha = if (focus.onControl) 0.25f else 0.1f))
+                .border(1.5.dp, if (focus.onControl) LofiPalette.Accent else Color.Transparent, shape)
+                .clickable(onClick = actions::openSettings)
+                .padding(horizontal = 18.dp, vertical = 8.dp),
+            style = TextStyle(color = LofiPalette.Paper, fontSize = 15.sp, fontFamily = JpFonts.Caveat, letterSpacing = 0.12.em),
+        )
     }
 }
 
