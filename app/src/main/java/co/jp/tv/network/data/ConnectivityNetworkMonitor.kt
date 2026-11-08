@@ -68,7 +68,10 @@ class ConnectivityNetworkMonitor(context: Context) : NetworkMonitor {
             }
 
             override fun onLinkPropertiesChanged(network: Network, props: LinkProperties) {
+                val previousGateway = link.value?.takeIf { it.network == network }?.props?.let(::gatewayOf)
                 link.update { (it?.takeIf { l -> l.network == network } ?: Link(network)).copy(props = props) }
+                // Routes usually arrive after the first probe started: probe again once the gateway is known.
+                if (gatewayOf(props) != previousGateway) probeTrigger.trySend(Unit)
             }
 
             override fun onLost(network: Network) {
@@ -84,7 +87,13 @@ class ConnectivityNetworkMonitor(context: Context) : NetworkMonitor {
                 val current = link.value
                 val network = current?.network
                 val gateway = current?.props?.let(::gatewayOf)
-                latency.value = if (network == null) Latency() else probe(network, gateway)
+                if (network == null) {
+                    latency.value = Latency()
+                } else {
+                    val result = probe(network, gateway)
+                    // The network may have been lost (and latency reset) while probing: drop stale results.
+                    if (link.value?.network == network) latency.value = result
+                }
                 withTimeoutOrNull(PROBE_INTERVAL_MS) { probeTrigger.receive() }
             }
         }
