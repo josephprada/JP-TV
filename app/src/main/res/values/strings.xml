@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">JP-TV</string>
-    <string name="phase_0_subtitle">Fase 0 — listo para construir</string>
+    <string name="rail_total_apps">%1$d APPS</string>
+    <string name="rail_above">%1$d ARRIBA</string>
+    <string name="rail_below">%1$d MÁS</string>
+    <string name="rail_start">INICIO</string>
+    <string name="rail_end">FIN</string>
 </resources>
