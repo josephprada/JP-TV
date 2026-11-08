@@ -31,6 +31,16 @@ object JpFonts {
         weighted(R.font.geist_mono, 500),
     )
 
+    val PressStart2P = FontFamily(Font(R.font.press_start_2p))
+    val Vt323 = FontFamily(Font(R.font.vt323))
+    val Limelight = FontFamily(Font(R.font.limelight))
+    val Orbitron = FontFamily(Font(R.font.orbitron))
+    val Righteous = FontFamily(Font(R.font.righteous))
+    val Caveat = FontFamily(
+        weighted(R.font.caveat, 500),
+        weighted(R.font.caveat, 700),
+    )
+
     fun title(id: String): FontFamily = when (id) {
         "bebas_neue" -> BebasNeue
         "archivo_black" -> ArchivoBlack
