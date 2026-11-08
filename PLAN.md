@@ -134,8 +134,8 @@ Each phase ends with an APK installed on the box and a screenshot that matches t
 | 4. Edit apps | Reorder, hide and show, persisted in DataStore. |
 | 5. Customize | Brand name, accent (6 presets plus custom), title font, wallpaper (Galaxia, Brasas, my video, still image). |
 | 6. Themes | Pixel, Terminal, Cartelera, Zen, HUD, Vinilo, Lo-fi, one per PR, each matching its artboard. |
-| 7. Polish | Low-end mode, screenshot tests, cold-start profiling, baseline profile. |
-| 8. Projector | Test on the second device; adjust density and safe areas; release build signed. |
+| 7. Polish | Low-end mode (fewer stars, 30 fps, no galaxy orbs). Roborazzi / baseline profile deferred (AGP + CI cost on API 28). Cold-start measured on the box; further cuts are follow-ups. |
+| 8. Projector | Checklist in [`docs/phase-8-projector.md`](docs/phase-8-projector.md); run when the second device is on the LAN. |
 
 ## 5. Workflow (optimized for an AI agent)
 

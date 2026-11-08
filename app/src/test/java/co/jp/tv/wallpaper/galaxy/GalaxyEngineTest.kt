@@ -12,6 +12,11 @@ class GalaxyEngineTest {
     }
 
     @Test
+    fun `low-end star budget halves the field`() {
+        assertEquals(51, GalaxyEngine(1280f, 720f, 1f, starBudget = 0.5f).starCount)
+    }
+
+    @Test
     fun `star properties stay inside the documented ranges`() {
         val e = GalaxyEngine(1280f, 720f, density = 1f)
         for (i in 0 until e.starCount) {

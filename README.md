@@ -2,7 +2,7 @@
 
 A custom launcher for Android TV and Google TV: glass UI, live wallpapers (galaxy, embers or your own video loop), a left app rail, network status at a glance, quick access to native Android settings, and switchable themes that reshape the whole home screen.
 
-**Status:** planning done, design approved, code starting. See [PLAN.md](PLAN.md).
+**Status:** phases 0–7 on `main` (launcher, network, edit apps, customize, eight themes, low-end polish). Projector verification is pending — see [docs/phase-8-projector.md](docs/phase-8-projector.md). Plan: [PLAN.md](PLAN.md).
 
 ## Themes
 

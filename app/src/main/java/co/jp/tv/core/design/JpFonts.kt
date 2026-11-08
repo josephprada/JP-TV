@@ -13,12 +13,8 @@ import co.jp.tv.preferences.domain.TitleFonts
 /** JP design tokens: bundled fonts (all OFL, see assets/licenses). */
 @OptIn(ExperimentalTextApi::class)
 object JpFonts {
+    /** Eager: used on the default JP-TV home from the first frame. */
     val Display = FontFamily(Font(R.font.anton))
-
-    val BebasNeue = FontFamily(Font(R.font.bebas_neue))
-    val ArchivoBlack = FontFamily(Font(R.font.archivo_black))
-    val SpaceGrotesk = FontFamily(weighted(R.font.space_grotesk, 700))
-    val InstrumentSerif = FontFamily(Font(R.font.instrument_serif))
 
     val Body = FontFamily(
         weighted(R.font.geist, 400),
@@ -31,15 +27,23 @@ object JpFonts {
         weighted(R.font.geist_mono, 500),
     )
 
-    val PressStart2P = FontFamily(Font(R.font.press_start_2p))
-    val Vt323 = FontFamily(Font(R.font.vt323))
-    val Limelight = FontFamily(Font(R.font.limelight))
-    val Orbitron = FontFamily(Font(R.font.orbitron))
-    val Righteous = FontFamily(Font(R.font.righteous))
-    val Caveat = FontFamily(
-        weighted(R.font.caveat, 500),
-        weighted(R.font.caveat, 700),
-    )
+    /** Lazy: customize / alternate themes only. Avoids decoding every TTF on cold start. */
+    val BebasNeue by lazy { FontFamily(Font(R.font.bebas_neue)) }
+    val ArchivoBlack by lazy { FontFamily(Font(R.font.archivo_black)) }
+    val SpaceGrotesk by lazy { FontFamily(weighted(R.font.space_grotesk, 700)) }
+    val InstrumentSerif by lazy { FontFamily(Font(R.font.instrument_serif)) }
+
+    val PressStart2P by lazy { FontFamily(Font(R.font.press_start_2p)) }
+    val Vt323 by lazy { FontFamily(Font(R.font.vt323)) }
+    val Limelight by lazy { FontFamily(Font(R.font.limelight)) }
+    val Orbitron by lazy { FontFamily(Font(R.font.orbitron)) }
+    val Righteous by lazy { FontFamily(Font(R.font.righteous)) }
+    val Caveat by lazy {
+        FontFamily(
+            weighted(R.font.caveat, 500),
+            weighted(R.font.caveat, 700),
+        )
+    }
 
     fun title(id: String): FontFamily = when (id) {
         "bebas_neue" -> BebasNeue

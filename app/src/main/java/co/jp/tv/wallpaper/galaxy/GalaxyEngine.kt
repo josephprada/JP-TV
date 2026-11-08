@@ -15,6 +15,8 @@ internal class GalaxyEngine(
     val width: Float,
     val height: Float,
     density: Float,
+    /** 1f = full field; 0.5f is the low-end budget (PLAN: fewer stars on ≤2 GB). */
+    starBudget: Float = 1f,
     seed: Long = 7L,
 ) {
     private val random = Random(seed)
@@ -22,7 +24,7 @@ internal class GalaxyEngine(
     // Design is 1920 wide; meteor speed and length scale with the actual width.
     private val designScale = width / 1920f
 
-    val starCount: Int = ((width * height) / 9000f).toInt()
+    val starCount: Int = (((width * height) / 9000f) * starBudget.coerceIn(0.25f, 1f)).toInt().coerceAtLeast(40)
     val starX = FloatArray(starCount)
     val starY = FloatArray(starCount)
     val starRadius = FloatArray(starCount)

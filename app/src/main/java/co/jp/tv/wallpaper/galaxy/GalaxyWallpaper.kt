@@ -28,17 +28,18 @@ object GalaxyWallpaper : Wallpaper {
     @Composable
     override fun Render(accent: Color, paused: Boolean, modifier: Modifier) {
         val context = LocalContext.current
-        val lowEnd = remember { DeviceProfile.isLowEnd(context) }
-        val frame = rememberFrameMillis(paused, maxFps = if (lowEnd) 30 else 60)
-        val scene = remember { GalaxyScene() }
+        val starBudget = remember { DeviceProfile.galaxyStarBudget(context) }
+        val orbsEnabled = remember { DeviceProfile.galaxyOrbsEnabled(context) }
+        val frame = rememberFrameMillis(paused, maxFps = DeviceProfile.wallpaperMaxFps(context))
+        val scene = remember(starBudget) { GalaxyScene(starBudget) }
 
         // Own layer: a redraw here must not re-record the UI above it.
-        Canvas(modifier.fillMaxSize().graphicsLayer()) {
+        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val t = frame.longValue
             val s = scene.prepare(size.width, size.height, density, accent)
             s.engine.update(t)
             drawRect(s.background)
-            drawOrbs(s, t)
+            if (orbsEnabled) drawOrbs(s, t)
             drawStars(s, t, accent)
             drawMeteors(s, accent)
         }
@@ -60,7 +61,7 @@ private val Orbs = listOf(
 )
 
 /** Everything that depends on the canvas size or accent, built once and reused each frame. */
-private class GalaxyScene {
+private class GalaxyScene(private val starBudget: Float) {
     private var cached: Prepared? = null
 
     class Prepared(
@@ -94,8 +95,11 @@ private class GalaxyScene {
             0f to Color(0xFF0A0A0C), 0.45f to Color(0xFF110D10), 1f to Color(0xFF140A0B),
             start = start, end = end,
         )
-        return Prepared(width, height, accent, GalaxyEngine(width, height, density), bg, brushes, centers, k)
-            .also { cached = it }
+        return Prepared(
+            width, height, accent,
+            GalaxyEngine(width, height, density, starBudget = starBudget),
+            bg, brushes, centers, k,
+        ).also { cached = it }
     }
 }
 

@@ -13,4 +13,13 @@ object DeviceProfile {
         val info = ActivityManager.MemoryInfo().also(am::getMemoryInfo)
         return am.isLowRamDevice || info.totalMem <= LOW_END_MAX_BYTES
     }
+
+    /** Galaxy star-field multiplier; half the particles on low-end boxes. */
+    fun galaxyStarBudget(context: Context): Float = if (isLowEnd(context)) 0.5f else 1f
+
+    /** Target wallpaper FPS; PLAN caps low-end at 30. */
+    fun wallpaperMaxFps(context: Context): Int = if (isLowEnd(context)) 30 else 60
+
+    /** Soft orb glow under the galaxy; skipped on low-end to save fill rate. */
+    fun galaxyOrbsEnabled(context: Context): Boolean = !isLowEnd(context)
 }
