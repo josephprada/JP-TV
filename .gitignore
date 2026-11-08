@@ -18,3 +18,6 @@ build/
 
 # OS
 .DS_Store
+
+# Personal wallpapers live on the TV (/sdcard/JPTV), never in the repo
+/app/src/main/assets/wallpapers/

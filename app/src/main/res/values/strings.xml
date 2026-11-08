@@ -94,6 +94,7 @@
     <string name="customize_brand">NOMBRE</string>
     <string name="customize_accent">COLOR DE ACENTO</string>
     <string name="customize_font">FUENTE DE TÍTULOS Y RELOJ</string>
+    <string name="wallpaper_image_hint">IMAGEN FIJA · /sdcard/JPTV/fondo.jpg</string>
     <string name="customize_wallpaper">LIVE WALLPAPER</string>
     <string name="customize_apply">APLICAR</string>
 
