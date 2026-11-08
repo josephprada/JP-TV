@@ -4,6 +4,8 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +45,7 @@ internal fun ClockCard(now: LocalDateTime, accent: Color, modifier: Modifier = M
         modifier = modifier
             .padding(end = 20.dp, bottom = 20.dp)
             .riseIn(delayMs = 350, distanceDp = 12f)
+            .width(IntrinsicSize.Max)
             .glass(JpDimens.RailShape)
             .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.End,
