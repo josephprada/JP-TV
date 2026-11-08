@@ -34,8 +34,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
@@ -52,7 +53,11 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
+import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 
 object ViniloTheme : LauncherTheme {
@@ -62,8 +67,8 @@ object ViniloTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         val listState = rememberLazyListState()
         LaunchedEffect(state.focusedIndex) {
             if (state.apps.isNotEmpty()) listState.animateScrollToItem(state.focusedIndex)
@@ -73,11 +78,16 @@ object ViniloTheme : LauncherTheme {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Brush.radialGradient(listOf(ViniloPalette.BackgroundGlow, ViniloPalette.Background)))
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { it == Key.DirectionRight || (it == Key.DirectionUp && state.focusedIndex <= 0) },
+                    toList = { it == Key.DirectionDown || it == Key.DirectionLeft },
+                )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
             Column(Modifier.fillMaxSize()) {
-                ViniloHeader(state.brand, state.network, state.now, actions)
+                ViniloHeader(state.brand, state.network, state.now, actions, focus)
                 Row(
                     Modifier
                         .fillMaxSize()
@@ -103,7 +113,13 @@ object ViniloTheme : LauncherTheme {
 }
 
 @Composable
-private fun ViniloHeader(brand: String, network: NetworkStatus, now: java.time.LocalDateTime, actions: HomeActions) {
+private fun ViniloHeader(
+    brand: String,
+    network: NetworkStatus,
+    now: java.time.LocalDateTime,
+    actions: HomeActions,
+    focus: ThemeControlFocus,
+) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -133,8 +149,10 @@ private fun ViniloHeader(brand: String, network: NetworkStatus, now: java.time.L
             BasicText(
                 "AJUSTES",
                 modifier = Modifier
+                    .themeControlTarget(focus)
                     .clip(RoundedCornerShape(12.dp))
-                    .border(1.dp, ViniloPalette.Gold, RoundedCornerShape(12.dp))
+                    .background(if (focus.onControl) ViniloPalette.Gold.copy(alpha = 0.25f) else Color.Transparent)
+                    .border(if (focus.onControl) 2.dp else 1.dp, ViniloPalette.Gold, RoundedCornerShape(12.dp))
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },

@@ -29,8 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -49,7 +49,11 @@ import co.jp.tv.network.ui.SignalBars
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
+import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import java.time.LocalDateTime
 
@@ -60,8 +64,8 @@ object PixelTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         val listState = rememberLazyListState()
         LaunchedEffect(state.focusedIndex) {
             if (state.apps.isNotEmpty()) listState.animateScrollToItem(state.focusedIndex)
@@ -72,12 +76,17 @@ object PixelTheme : LauncherTheme {
                 .fillMaxSize()
                 .background(PixelPalette.Background)
                 .pixelScanlines()
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { it == Key.DirectionUp },
+                    toList = { it == Key.DirectionDown },
+                )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
             PixelGround()
             Column(Modifier.fillMaxSize()) {
-                PixelTopBar(state.brand, state.network, state.now, actions)
+                PixelTopBar(state.brand, state.network, state.now, actions, focus)
                 LazyRow(
                     state = listState,
                     modifier = Modifier
@@ -115,7 +124,13 @@ object PixelTheme : LauncherTheme {
 }
 
 @Composable
-private fun PixelTopBar(brand: String, network: NetworkStatus, now: LocalDateTime, actions: HomeActions) {
+private fun PixelTopBar(
+    brand: String,
+    network: NetworkStatus,
+    now: LocalDateTime,
+    actions: HomeActions,
+    focus: ThemeControlFocus,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,7 +172,9 @@ private fun PixelTopBar(brand: String, network: NetworkStatus, now: LocalDateTim
             Box(
                 modifier = Modifier
                     .size(32.dp)
+                    .themeControlTarget(focus)
                     .background(PixelPalette.Panel)
+                    .border(if (focus.onControl) 3.dp else 0.dp, PixelPalette.Gold)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },

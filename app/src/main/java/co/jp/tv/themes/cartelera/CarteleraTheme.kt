@@ -31,8 +31,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
@@ -51,7 +51,11 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
+import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 
 object CarteleraTheme : LauncherTheme {
@@ -61,8 +65,8 @@ object CarteleraTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         val listState = rememberLazyListState()
         LaunchedEffect(state.focusedIndex) {
             if (state.apps.isNotEmpty()) listState.animateScrollToItem(state.focusedIndex)
@@ -71,7 +75,12 @@ object CarteleraTheme : LauncherTheme {
             modifier = Modifier
                 .fillMaxSize()
                 .background(CarteleraPalette.Background)
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { it == Key.DirectionDown },
+                    toList = { it == Key.DirectionUp },
+                )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
             VelvetBackdrop()
@@ -92,7 +101,7 @@ object CarteleraTheme : LauncherTheme {
                         CarteleraPoster(app, index, index == state.focusedIndex)
                     }
                 }
-                CarteleraFooter(state.network, state.now, actions)
+                CarteleraFooter(state.network, state.now, actions, focus)
             }
         }
     }
@@ -227,7 +236,12 @@ private fun CarteleraPoster(app: TvApp, index: Int, focused: Boolean) {
 }
 
 @Composable
-private fun CarteleraFooter(network: NetworkStatus, now: java.time.LocalDateTime, actions: HomeActions) {
+private fun CarteleraFooter(
+    network: NetworkStatus,
+    now: java.time.LocalDateTime,
+    actions: HomeActions,
+    focus: ThemeControlFocus,
+) {
     val ms = network.routerLatencyMs ?: network.internetLatencyMs
     Row(
         modifier = Modifier
@@ -254,12 +268,16 @@ private fun CarteleraFooter(network: NetworkStatus, now: java.time.LocalDateTime
         )
         BasicText(
             stringResource(R.string.cd_settings).uppercase() + " →",
-            modifier = Modifier.clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = actions::openSettings,
-            ),
-            style = TextStyle(color = CarteleraPalette.Gold, fontSize = 8.sp, fontFamily = JpFonts.Mono),
+            modifier = Modifier
+                .themeControlTarget(focus)
+                .border(if (focus.onControl) 2.dp else 0.dp, CarteleraPalette.BulbOn, RoundedCornerShape(12.dp))
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = actions::openSettings,
+                )
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            style = TextStyle(color = if (focus.onControl) CarteleraPalette.BulbOn else CarteleraPalette.Gold, fontSize = 8.sp, fontFamily = JpFonts.Mono),
         )
     }
 }

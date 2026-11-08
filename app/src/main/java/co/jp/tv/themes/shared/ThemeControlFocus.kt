@@ -8,6 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -52,3 +54,8 @@ fun Modifier.themeControlRouting(
         else -> false
     }
 }
+
+/** Marks a composable as the theme's focusable control, wired to [focus]. Follow with clickable. */
+fun Modifier.themeControlTarget(focus: ThemeControlFocus): Modifier = this
+    .focusRequester(focus.control)
+    .onFocusChanged { focus.onControl = it.isFocused }

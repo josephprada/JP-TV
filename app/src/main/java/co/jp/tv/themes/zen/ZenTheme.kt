@@ -29,8 +29,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
@@ -48,7 +49,11 @@ import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
+import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import java.time.LocalDateTime
 
@@ -60,8 +65,8 @@ object ZenTheme : LauncherTheme {
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
         var menuOpen by remember { mutableStateOf(false) }
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,7 +76,12 @@ object ZenTheme : LauncherTheme {
                         radius = 1200f,
                     ),
                 )
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { menuOpen && it == Key.DirectionUp },
+                    toList = { it == Key.DirectionDown },
+                )
                 .themeKeyNavigation(
                     apps = state.apps,
                     focusedIndex = state.focusedIndex,
@@ -80,6 +90,15 @@ object ZenTheme : LauncherTheme {
                     onBeforeLaunch = {
                         if (!menuOpen) {
                             menuOpen = true
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                    onBack = {
+                        if (menuOpen) {
+                            menuOpen = false
+                            focus.list.requestFocus()
                             true
                         } else {
                             false
@@ -116,7 +135,7 @@ object ZenTheme : LauncherTheme {
                 )
             }
             if (menuOpen) {
-                ZenAppStrip(state.apps, state.focusedIndex, state.brand, actions, Modifier.align(Alignment.BottomCenter))
+                ZenAppStrip(state.apps, state.focusedIndex, state.brand, actions, focus, Modifier.align(Alignment.BottomCenter))
             } else {
                 BasicText(
                     stringResource(R.string.theme_zen_press_ok),
@@ -173,6 +192,7 @@ private fun ZenAppStrip(
     focusedIndex: Int,
     brand: String,
     actions: HomeActions,
+    focus: ThemeControlFocus,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.padding(bottom = 50.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -181,12 +201,16 @@ private fun ZenAppStrip(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = 32.dp, bottom = 12.dp)
+                .themeControlTarget(focus)
+                .clip(RoundedCornerShape(12.dp))
+                .background(if (focus.onControl) ZenPalette.GlassBorder else Color.Transparent)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = actions::openSettings,
-                ),
-            style = TextStyle(color = ZenPalette.PaperSoft, fontSize = 7.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.24.em),
+                )
+                .padding(horizontal = 10.dp, vertical = 5.dp),
+            style = TextStyle(color = if (focus.onControl) ZenPalette.Paper else ZenPalette.PaperSoft, fontSize = 7.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.24.em),
         )
         Row(
             modifier = Modifier

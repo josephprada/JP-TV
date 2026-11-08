@@ -19,8 +19,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -37,7 +37,11 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
+import co.jp.tv.themes.shared.rememberThemeControlFocus
+import co.jp.tv.themes.shared.themeControlRouting
+import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import java.time.LocalDateTime
 import java.util.Locale
@@ -49,8 +53,8 @@ object TerminalTheme : LauncherTheme {
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        val focus = rememberThemeControlFocus()
+        LaunchedEffect(Unit) { focus.list.requestFocus() }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -61,11 +65,16 @@ object TerminalTheme : LauncherTheme {
                     ),
                 )
                 .terminalScanlines()
-                .focusRequester(focusRequester)
+                .focusRequester(focus.list)
+                .themeControlRouting(
+                    focus,
+                    toControl = { it == Key.DirectionLeft || (it == Key.DirectionUp && state.focusedIndex <= 0) },
+                    toList = { it == Key.DirectionDown || it == Key.DirectionRight },
+                )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
             Column(Modifier.fillMaxSize()) {
-                TerminalStatusBar(state.brand, state.network, state.now, actions)
+                TerminalStatusBar(state.brand, state.network, state.now, actions, focus)
                 Row(Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 28.dp)) {
                     TerminalInfoPanel(state.brand, state.apps.size, state.network, Modifier.weight(1f))
                     TerminalAppList(
@@ -83,7 +92,13 @@ object TerminalTheme : LauncherTheme {
 }
 
 @Composable
-private fun TerminalStatusBar(brand: String, network: NetworkStatus, now: LocalDateTime, actions: HomeActions) {
+private fun TerminalStatusBar(
+    brand: String,
+    network: NetworkStatus,
+    now: LocalDateTime,
+    actions: HomeActions,
+    focus: ThemeControlFocus,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -108,12 +123,19 @@ private fun TerminalStatusBar(brand: String, network: NetworkStatus, now: LocalD
             )
             BasicText(
                 "2:ajustes",
-                modifier = Modifier.clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = actions::openSettings,
+                modifier = Modifier
+                    .themeControlTarget(focus)
+                    .background(if (focus.onControl) TerminalPalette.BarFg else TerminalPalette.Green)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = actions::openSettings,
+                    ),
+                style = TextStyle(
+                    color = if (focus.onControl) TerminalPalette.Green else TerminalPalette.BarFg,
+                    fontSize = 15.sp,
+                    fontFamily = JpFonts.Vt323,
                 ),
-                style = TextStyle(color = TerminalPalette.BarFg, fontSize = 15.sp, fontFamily = JpFonts.Vt323),
             )
         }
         val latency = network.routerLatencyMs ?: network.internetLatencyMs

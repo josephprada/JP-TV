@@ -29,13 +29,20 @@ fun Modifier.themeKeyNavigation(
     axis: ThemeNavAxis,
     onBeforeLaunch: () -> Boolean = { false },
     onMenu: () -> Unit = { actions.openSettings() },
+    /** Short Back press; return true when consumed (e.g. closing a strip). */
+    onBack: () -> Boolean = { false },
 ): Modifier {
     val currentApps by rememberUpdatedState(apps)
     val currentFocus by rememberUpdatedState(focusedIndex)
     val okPress = remember { ThemeOkPress() }
+    val backPress = remember { ThemeOkPress() }
+    val currentOnBack by rememberUpdatedState(onBack)
     return focusable()
         .onKeyEvent { event ->
-            handleThemeKey(event, currentApps, currentFocus, actions, axis, onBeforeLaunch, onMenu, okPress)
+            handleThemeKey(
+                event, currentApps, currentFocus, actions, axis, onBeforeLaunch, onMenu,
+                okPress, backPress, currentOnBack,
+            )
         }
 }
 
@@ -48,10 +55,12 @@ private fun handleThemeKey(
     onBeforeLaunch: () -> Boolean,
     onMenu: () -> Unit,
     ok: ThemeOkPress,
+    back: ThemeOkPress,
+    onBack: () -> Boolean,
 ): Boolean {
     val key = event.key
     val isOk = key == Key.DirectionCenter || key == Key.Enter || key == Key.NumPadEnter
-  return when {
+    return when {
         isOk && event.type == KeyEventType.KeyDown -> {
             val native = event.nativeKeyEvent
             if (native.repeatCount == 0) {
@@ -70,6 +79,22 @@ private fun handleThemeKey(
                 }
             }
             true
+        }
+        // Long-press Back opens Settings from every fixed theme: works on any remote.
+        key == Key.Back && event.type == KeyEventType.KeyDown -> {
+            val native = event.nativeKeyEvent
+            if (native.repeatCount == 0) {
+                back.pending = true
+            } else if (native.isLongPress && back.pending) {
+                back.pending = false
+                onMenu()
+            }
+            true
+        }
+        key == Key.Back && event.type == KeyEventType.KeyUp -> {
+            val wasShort = back.pending
+            back.pending = false
+            wasShort && onBack()
         }
         event.type != KeyEventType.KeyDown -> false
         key == Key.Menu -> {
