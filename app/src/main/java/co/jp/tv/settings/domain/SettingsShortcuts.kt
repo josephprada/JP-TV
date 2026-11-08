@@ -1,0 +1,33 @@
+package co.jp.tv.settings.domain
+
+import java.util.Locale
+
+/**
+ * The quick settings tiles. Actions are the string values of the `android.provider.Settings.ACTION_*`
+ * constants so this file stays free of Android imports.
+ */
+object SettingsShortcuts {
+    const val ALL_SETTINGS_ACTION = "android.settings.SETTINGS"
+    const val WIFI_SETTINGS_ACTION = "android.settings.WIFI_SETTINGS"
+
+    private fun native(id: SettingsShortcut.Id, action: String) =
+        SettingsShortcut(id, ShortcutTarget.Native(action, ALL_SETTINGS_ACTION))
+
+    val tiles: List<SettingsShortcut> = listOf(
+        SettingsShortcut(SettingsShortcut.Id.NETWORK, ShortcutTarget.NetworkPanel),
+        native(SettingsShortcut.Id.BLUETOOTH, "android.settings.BLUETOOTH_SETTINGS"),
+        native(SettingsShortcut.Id.DISPLAY, "android.settings.DISPLAY_SETTINGS"),
+        native(SettingsShortcut.Id.SOUND, "android.settings.SOUND_SETTINGS"),
+        native(SettingsShortcut.Id.APPS, "android.settings.APPLICATION_SETTINGS"),
+        native(SettingsShortcut.Id.STORAGE, "android.settings.INTERNAL_STORAGE_SETTINGS"),
+        native(SettingsShortcut.Id.DATE_TIME, "android.settings.DATE_SETTINGS"),
+    )
+
+    /** Customization tile that arrives in phase 5; shown disabled. The launcher-name tile waits for it too. */
+    val upcoming: List<SettingsShortcut> = listOf(
+        SettingsShortcut(SettingsShortcut.Id.THEME, ShortcutTarget.Disabled),
+    )
+
+    /** Bytes as GiB with one decimal, e.g. "3.5". */
+    fun formatGb(bytes: Long): String = String.format(Locale.ROOT, "%.1f", bytes / (1024.0 * 1024.0 * 1024.0))
+}
