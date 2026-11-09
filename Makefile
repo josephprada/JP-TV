@@ -24,6 +24,7 @@ check-host:
 deploy: check-host build
 	adb connect $(TV)
 	adb -s $(TV) install -r $(APK)
+	-adb -s $(TV) shell pm grant $(PKG) android.permission.READ_EXTERNAL_STORAGE
 	adb -s $(TV) shell cmd package set-home-activity $(PKG)/.MainActivity
 	adb -s $(TV) shell input keyevent KEYCODE_HOME
 

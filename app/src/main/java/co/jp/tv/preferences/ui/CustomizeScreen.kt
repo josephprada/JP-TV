@@ -25,6 +25,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,6 +68,8 @@ fun CustomizeScreen(
     modifier: Modifier = Modifier,
 ) {
     var draft by remember(initial) { mutableStateOf(initial) }
+    var permissionRevision by remember { mutableIntStateOf(0) }
+    val requestMedia = rememberMediaPermissionRequester { permissionRevision++ }
     val accent = Color(draft.accent)
     val titleFont = rememberTitleFont(draft.titleFontId)
     val firstFocus = remember { FocusRequester() }
@@ -147,7 +151,10 @@ fun CustomizeScreen(
                                 label = wall.displayName,
                                 selected = draft.wallpaperId == wall.id,
                                 accent = accent,
-                                onClick = { draft = draft.copy(wallpaperId = wall.id) },
+                                onClick = {
+                                    draft = draft.copy(wallpaperId = wall.id)
+                                    requestMedia(wall.id)
+                                },
                             )
                         }
                     }
@@ -161,8 +168,10 @@ fun CustomizeScreen(
                     .border(1.dp, JpColors.Paper.copy(alpha = 0.12f), RoundedCornerShape(20.dp))
                     .background(Color(0xFF07070A), RoundedCornerShape(20.dp)),
             ) {
-                WallpaperRegistry.byId(draft.wallpaperId)
-                    .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
+                key(permissionRevision) {
+                    WallpaperRegistry.byId(draft.wallpaperId)
+                        .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
+                }
                 PreviewRail(brand = draft.brand, accent = accent, titleFont = titleFont)
                 PreviewClock(accent = accent, titleFont = titleFont)
                 ApplyButton(
