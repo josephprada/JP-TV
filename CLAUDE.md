@@ -19,6 +19,7 @@ Read [PLAN.md](PLAN.md) for the why. This file is the how: map, commands, conven
 | `make deploy` | build, `adb install -r`, set as HOME, press HOME |
 | `make shot` | screenshot from the TV to `shots/<timestamp>.png` |
 | `make logs` | `adb logcat` filtered to `co.jp.tv` |
+| `make screens` | off-device renders to `screens/` (app) and `screens/design/` (artboards); no TV needed |
 
 The TV address comes from `local.properties` (`tv.host=…`). If the TV is unreachable, say so; don't guess an IP.
 
@@ -46,6 +47,10 @@ The TV address comes from `local.properties` (`tv.host=…`). If the TV is unrea
 
 **Add a quick-settings tile**
 1. Add an entry to `settings/domain/SettingsShortcuts.kt` with the intent action and a fallback.
+
+## Off-device loop (no TV)
+
+`make screens` renders with Roborazzi + Robolectric (tests in `app/src/test/.../screens/`, fixtures in `ScreenFixtures.kt`) at 1280x720 / 213 dpi with a frozen clock and paused animations: `home-<theme>.png`, `themes`, `customize-<wallpaper>`, `customize-focus-*` (D-pad presses), `settings`, `network`, `edit`. `tools/design-shots/render.sh` renders `design/project/*.dc.html` headless (Chromium + a small shim, since the canvas runtime is not in the repo) to `screens/design/<Board>.png` at 1280x720 (`@1920` = native). `python3 tools/design-shots/compare.py` writes side-by-side sheets to `screens/compare/`. Loop: edit, `make screens-app`, open the PNG next to the artboard. Limits: no real video, app icons or blur; confirm those on the TV.
 
 ## Verify before saying "done"
 
