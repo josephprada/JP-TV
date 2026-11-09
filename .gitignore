@@ -16,6 +16,9 @@ build/
 # Device artifacts
 /shots/
 
+# Off-device renders (make screens)
+/screens/
+
 # OS
 .DS_Store
 

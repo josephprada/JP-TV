@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -31,14 +32,32 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests {
+            // Robolectric needs merged resources (fonts, strings) for the off-device screenshots.
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kotlin {
     jvmToolchain(17)
 }
 
+// Off-device screenshots (Roborazzi + Robolectric, JUnit 4) live in co.jp.tv.screens and only run
+// through `make screens` (-Pscreens); the plain unit-test run skips them.
+val runScreens = providers.gradleProperty("screens").isPresent
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    if (runScreens) {
+        filter.includeTestsMatching("co.jp.tv.screens.*")
+        maxHeapSize = "3g"
+        systemProperty("screens.dir", rootProject.layout.projectDirectory.dir("screens").asFile.path)
+    } else {
+        filter.excludeTestsMatching("co.jp.tv.screens.*")
+    }
 }
 
 dependencies {
@@ -63,4 +82,11 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.vintage.engine)
+    testImplementation(libs.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

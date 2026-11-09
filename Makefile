@@ -10,7 +10,7 @@ TV := $(TV_HOST):5555
 APK := app/build/outputs/apk/debug/app-debug.apk
 PKG := co.jp.tv
 
-.PHONY: build test deploy shot logs check-host
+.PHONY: build test deploy shot logs check-host screens screens-app screens-design
 
 build:
 	./gradlew :app:assembleDebug
@@ -34,3 +34,13 @@ shot: check-host
 
 logs: check-host
 	adb -s $(TV) logcat --pid=$$(adb -s $(TV) shell pidof $(PKG))
+
+# Off-device loop: no TV needed. Renders to screens/ (gitignored); design references to screens/design/.
+screens: screens-app screens-design
+
+screens-app:
+	@mkdir -p screens
+	./gradlew :app:testDebugUnitTest -Pscreens -Proborazzi.test.record=true --rerun-tasks --tests 'co.jp.tv.screens.*'
+
+screens-design:
+	tools/design-shots/render.sh
