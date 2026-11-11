@@ -1,9 +1,12 @@
 package co.jp.tv.themes
 
 import co.jp.tv.themes.cartelera.CarteleraTheme
+import co.jp.tv.themes.cyberpunk.CyberpunkTheme
+import co.jp.tv.themes.gotham.GothamTheme
 import co.jp.tv.themes.hud.HudTheme
 import co.jp.tv.themes.jptv.JpTvTheme
 import co.jp.tv.themes.lofi.LofiTheme
+import co.jp.tv.themes.multiverso.MultiversoTheme
 import co.jp.tv.themes.pixel.PixelTheme
 import co.jp.tv.themes.terminal.TerminalTheme
 import co.jp.tv.themes.vinilo.ViniloTheme
@@ -22,6 +25,9 @@ object ThemeRegistry {
         HudTheme,
         ViniloTheme,
         LofiTheme,
+        GothamTheme,
+        MultiversoTheme,
+        CyberpunkTheme,
     )
 
     fun byId(id: String): LauncherTheme = all.firstOrNull { it.id == id } ?: default
