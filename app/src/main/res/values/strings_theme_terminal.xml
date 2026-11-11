@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="theme_terminal_net_wifi">wifi ok</string>
+    <string name="theme_terminal_net_eth">eth ok</string>
+    <string name="theme_terminal_net_down">sin red</string>
+    <string name="theme_terminal_apps_value">%1$d visibles</string>
+    <string name="theme_terminal_net_connected">conectado</string>
+    <string name="theme_terminal_net_offline">offline</string>
+    <string name="theme_terminal_theme_value">terminal · fósforo verde</string>
+    <string name="theme_terminal_kind_tv">tv</string>
+    <string name="theme_terminal_kind_app">app</string>
+    <string-array name="theme_terminal_days">
+        <item>lun</item>
+        <item>mar</item>
+        <item>mié</item>
+        <item>jue</item>
+        <item>vie</item>
+        <item>sáb</item>
+        <item>dom</item>
+    </string-array>
+    <string-array name="theme_terminal_months">
+        <item>ene</item>
+        <item>feb</item>
+        <item>mar</item>
+        <item>abr</item>
+        <item>may</item>
+        <item>jun</item>
+        <item>jul</item>
+        <item>ago</item>
+        <item>sep</item>
+        <item>oct</item>
+        <item>nov</item>
+        <item>dic</item>
+    </string-array>
+</resources>

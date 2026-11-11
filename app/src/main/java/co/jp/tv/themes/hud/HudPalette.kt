@@ -10,5 +10,19 @@ object HudPalette {
     val Core = Color(0xFFE9FDFF)
     val Amber = Color(0xFFFFB547)
     val PanelBg = Color(0x9905141E)
-    val Grid = Color(0x384DE8FF)
+    val White = Color(0xFFFFFFFF)
+
+    val PanelBorder = Color(0x664DE8FF)
+    val BarTrack = Color(0x264DE8FF)
+    val BarGlow = Color(0x4D4DE8FF)
+    val NodeIdle = Color(0x244DE8FF)
+    val ClockGlow = Color(0x994DE8FF)
+
+    val RingDashed = Color(0x594DE8FF)
+    val RingMid = Color(0x404DE8FF)
+    val RingOuter = Color(0x1F4DE8FF)
+
+    val ScanClear = Color(0x004DE8FF)
+    val ScanMid = Color(0x1F4DE8FF)
+    val ScanHead = Color(0x804DE8FF)
 }

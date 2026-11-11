@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="theme_hud_telemetry">TELEMETRÍA</string>
+    <string name="theme_hud_signal">SEÑAL</string>
+    <string name="theme_hud_ping">PING</string>
+    <string name="theme_hud_ip">IP</string>
+    <string name="theme_hud_unit">UNIDAD %1$s</string>
+    <string name="theme_hud_apps">APPS</string>
+    <string name="theme_hud_dns">DNS</string>
+    <string name="theme_hud_settings">AJUSTES</string>
+    <string name="theme_hud_rec">REC</string>
+    <string-array name="theme_hud_days">
+        <item>LUN</item>
+        <item>MAR</item>
+        <item>MIE</item>
+        <item>JUE</item>
+        <item>VIE</item>
+        <item>SAB</item>
+        <item>DOM</item>
+    </string-array>
+    <string-array name="theme_hud_months">
+        <item>ENE</item>
+        <item>FEB</item>
+        <item>MAR</item>
+        <item>ABR</item>
+        <item>MAY</item>
+        <item>JUN</item>
+        <item>JUL</item>
+        <item>AGO</item>
+        <item>SEP</item>
+        <item>OCT</item>
+        <item>NOV</item>
+        <item>DIC</item>
+    </string-array>
+</resources>

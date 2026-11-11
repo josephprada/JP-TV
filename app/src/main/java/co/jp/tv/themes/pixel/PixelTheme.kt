@@ -1,61 +1,48 @@
 package co.jp.tv.themes.pixel
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import co.jp.tv.R
-import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
-import co.jp.tv.core.design.JpMotion
-import co.jp.tv.core.util.ClockFormat
-import co.jp.tv.network.domain.NetworkStatus
-import co.jp.tv.network.ui.SignalBars
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
-import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
-import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
-import java.time.LocalDateTime
 
 object PixelTheme : LauncherTheme {
     override val id = "pixel"
@@ -66,16 +53,13 @@ object PixelTheme : LauncherTheme {
     override fun Home(state: HomeState, actions: HomeActions) {
         val focus = rememberThemeControlFocus()
         LaunchedEffect(Unit) { focus.list.requestFocus() }
-        val listState = rememberLazyListState()
-        LaunchedEffect(state.focusedIndex) {
-            if (state.apps.isNotEmpty()) listState.animateScrollToItem(state.focusedIndex)
-        }
+        val count = state.apps.size
+        val focused = state.apps.getOrNull(state.focusedIndex)
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PixelPalette.Background)
-                .pixelScanlines()
+                .pixelBackdrop()
                 .focusRequester(focus.list)
                 .themeControlRouting(
                     focus,
@@ -84,177 +68,150 @@ object PixelTheme : LauncherTheme {
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
-            PixelGround()
-            Column(Modifier.fillMaxSize()) {
-                PixelTopBar(state.brand, state.network, state.now, state.config.hourFormat, actions, focus)
-                LazyRow(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(horizontal = 32.dp, vertical = 40.dp),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    itemsIndexed(state.apps, key = { _, app -> app.packageName }) { index, app ->
-                        PixelCartridge(app, focused = index == state.focusedIndex, index = index)
-                    }
-                }
-            }
-            val focused = state.apps.getOrNull(state.focusedIndex)
-            if (focused != null) {
-                Column(
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(32.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    BasicText(
-                        "▶ ${focused.label.uppercase()}",
-                        style = TextStyle(color = PixelPalette.Gold, fontSize = 22.sp, fontFamily = JpFonts.PressStart2P),
-                    )
-                    BasicText(
-                        stringResource(R.string.theme_pixel_launch),
-                        style = TextStyle(color = PixelPalette.Paper, fontSize = 9.sp, fontFamily = JpFonts.PressStart2P),
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PixelTopBar(
-    brand: String,
-    network: NetworkStatus,
-    now: LocalDateTime,
-    hourFormat: ClockFormat.HourFormat,
-    actions: HomeActions,
-    focus: ThemeControlFocus,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 28.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        BasicText(
-            "P1 ★ $brand",
-            style = TextStyle(color = PixelPalette.Gold, fontSize = 14.sp, fontFamily = JpFonts.PressStart2P),
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Row(
-                modifier = Modifier.clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = actions::openNetwork,
-                ),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                BasicText(
-                    if (network.transport == NetworkStatus.Transport.ETHERNET) "ETH" else "WIFI",
-                    style = TextStyle(color = PixelPalette.Green, fontSize = 9.sp, fontFamily = JpFonts.PressStart2P),
-                )
-                SignalBars(level = network.signalLevel.coerceIn(0, 4))
-                val ms = network.routerLatencyMs ?: network.internetLatencyMs
-                if (ms != null) {
-                    BasicText(
-                        "${ms}MS",
-                        style = TextStyle(color = PixelPalette.Green, fontSize = 9.sp, fontFamily = JpFonts.PressStart2P),
-                    )
-                }
-            }
-            BasicText(
-                ClockFormat.time(now, hourFormat),
-                style = TextStyle(color = PixelPalette.Cyan, fontSize = 18.sp, fontFamily = JpFonts.PressStart2P),
+            PixelShapes()
+            PixelGridFloor()
+            PixelBrand(
+                state.brand,
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 40.dp, top = 24.dp),
             )
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .themeControlTarget(focus)
-                    .background(PixelPalette.Panel)
-                    .border(if (focus.onControl) 3.dp else 0.dp, PixelPalette.Gold)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = actions::openSettings,
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                BasicText("⚙", style = TextStyle(color = PixelPalette.Paper, fontSize = 11.sp, fontFamily = JpFonts.PressStart2P))
+            PixelTopBar(
+                state.network,
+                state.now,
+                state.config.hourFormat,
+                actions,
+                focus,
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(end = 40.dp, top = 22.dp),
+            )
+            PixelShelf(
+                state.apps,
+                state.focusedIndex,
+                Modifier
+                    .align(Alignment.TopStart)
+                    .offset(y = 95.dp),
+            )
+            if (count > 0) {
+                PixelArrow(
+                    PixelIconKind.ChevronLeft,
+                    Modifier.align(Alignment.TopStart).padding(start = 32.dp, top = 220.dp),
+                    onClick = { actions.focus((state.focusedIndex - 1).coerceIn(0, count - 1)) },
+                )
+                PixelArrow(
+                    PixelIconKind.ChevronRight,
+                    Modifier.align(Alignment.TopEnd).padding(end = 32.dp, top = 220.dp),
+                    onClick = { actions.focus((state.focusedIndex + 1).coerceIn(0, count - 1)) },
+                )
+            }
+            if (focused != null) {
+                PixelSelection(
+                    name = focused.label,
+                    glow = PixelPalette.Tints[state.focusedIndex % PixelPalette.Tints.size].top,
+                    position = "%02d / %02d".format(state.focusedIndex + 1, count),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 48.dp),
+                )
             }
         }
     }
 }
 
+/** J-P-dash-... in the console's four colors, one per character. */
 @Composable
-private fun PixelCartridge(app: TvApp, focused: Boolean, index: Int) {
-    val shell = PixelPalette.CartridgeColors[index % PixelPalette.CartridgeColors.size]
-    val lift by animateFloatAsState(
-        if (focused) -20f else 0f,
-        tween(JpMotion.FocusMs, easing = JpMotion.Entrance),
-        label = "pixelLift",
-    )
-    val width = if (focused) 150.dp else 120.dp
-    val height = if (focused) 180.dp else 150.dp
-    val darkText = shell == PixelPalette.CartridgeColors[2] || shell == PixelPalette.CartridgeColors[3]
-    Column(
-        modifier = Modifier
-            .width(width)
-            .height(height)
-            .offset(y = lift.dp)
-            .drawBehind {
-                drawRect(PixelPalette.Shadow, topLeft = Offset(6.dp.toPx(), 6.dp.toPx()), size = size)
+private fun PixelBrand(brand: String, modifier: Modifier = Modifier) {
+    val letters = listOf(PixelPalette.Red, PixelPalette.Green, PixelPalette.White, PixelPalette.Gold, PixelPalette.Blue)
+    val text: AnnotatedString = remember(brand) {
+        buildAnnotatedString {
+            brand.forEachIndexed { i, c ->
+                withStyle(SpanStyle(color = letters[i % letters.size])) { append(c) }
             }
-            .background(shell)
-            .then(if (focused) Modifier.border(4.dp, PixelPalette.Gold).padding(4.dp) else Modifier)
-            .padding(12.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Box(Modifier.fillMaxWidth().height(if (focused) 75.dp else 55.dp).background(shell.copy(alpha = 0.55f)))
-        BasicText(
-            app.label.uppercase(),
-            style = TextStyle(
-                color = if (darkText) PixelPalette.Background else PixelPalette.Paper,
-                fontSize = if (focused) 13.sp else 9.sp,
-                fontFamily = JpFonts.PressStart2P,
-            ),
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-        )
+        }
     }
+    BasicText(
+        text,
+        modifier = modifier.pixelEntrance(0),
+        style = TextStyle(
+            fontSize = 30.sp,
+            lineHeight = 1.em,
+            letterSpacing = 0.02.em,
+            fontFamily = JpFonts.Righteous,
+            shadow = rememberPixelShadow(PixelPalette.ShadowBrand, 2.5f),
+        ),
+    )
 }
 
 @Composable
-private fun BoxScope.PixelGround() {
-    Column(Modifier.align(Alignment.BottomCenter)) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(90.dp)
-                .background(Color(0xFF29366F))
-                .drawBehind {
-                    drawRect(Color(0xFF3B5DC9), size = Size(size.width, 4.dp.toPx()))
-                },
-        )
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(40.dp)
-                .background(Color(0xFF257179))
-                .drawBehind {
-                    drawRect(Color(0xFF38B764), size = Size(size.width, 4.dp.toPx()))
-                },
+private fun PixelArrow(kind: PixelIconKind, modifier: Modifier, onClick: () -> Unit) {
+    Box(
+        modifier
+            .size(36.dp)
+            .drawBehind {
+                // box-shadow: 0 6px 0 — a hard edge under the button.
+                drawCircle(PixelPalette.GoldDark, radius = size.minDimension / 2f, center = center + Offset(0f, 3.dp.toPx()))
+            }
+            .background(PixelPalette.Gold, CircleShape)
+            .pixelTap(onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        PixelIcon(kind, PixelPalette.Ink, 3.4f, 15.dp)
+    }
+}
+
+/** The focused app's name with a glow in its cartridge color, and its position in the list. */
+@Composable
+private fun PixelSelection(name: String, glow: androidx.compose.ui.graphics.Color, position: String, modifier: Modifier) {
+    val density = LocalDensity.current
+    val glowShadow = remember(glow, density) { Shadow(glow.copy(alpha = 0.6f), Offset.Zero, with(density) { 22.dp.toPx() }) }
+    val nameShadow = rememberPixelShadow(PixelPalette.ShadowName, 3f)
+    val positionShadow = rememberPixelShadow(PixelPalette.ShadowBrand, 1.5f)
+    val nameStyle = TextStyle(
+        color = PixelPalette.White,
+        fontSize = 38.sp,
+        lineHeight = 1.em,
+        letterSpacing = 0.01.em,
+        fontFamily = JpFonts.Righteous,
+        textAlign = TextAlign.Center,
+    )
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(7.dp)) {
+        // text-shadow takes two layers in the design; Compose takes one per text, so the glow is a copy underneath.
+        Box(contentAlignment = Alignment.Center) {
+            BasicText(name, style = nameStyle.copy(shadow = glowShadow), maxLines = 1)
+            BasicText(name, style = nameStyle.copy(shadow = nameShadow), maxLines = 1)
+        }
+        BasicText(
+            position,
+            style = TextStyle(
+                color = PixelPalette.SubtleWhite,
+                fontSize = 12.sp,
+                letterSpacing = 0.16.em,
+                fontFamily = JpFonts.Righteous,
+                shadow = positionShadow,
+            ),
         )
     }
 }
 
-private fun Modifier.pixelScanlines(): Modifier = drawBehind {
-    var y = 0f
-    while (y < size.height) {
-        drawRect(PixelPalette.Shadow.copy(alpha = 0.12f), topLeft = Offset(0f, y), size = Size(size.width, 1f))
-        y += 3f
+/** Vertical purple gradient plus the boot-screen glow (radial-gradient 60% 50% at 50% 38%). */
+private fun Modifier.pixelBackdrop(): Modifier = drawWithCache {
+    val sky = Brush.verticalGradient(
+        0f to PixelPalette.BackgroundTop,
+        0.52f to PixelPalette.BackgroundMid,
+        1f to PixelPalette.BackgroundBottom,
+    )
+    val ry = size.height * 0.5f
+    val sx = (size.width * 0.6f) / ry
+    val center = Offset(size.width * 0.5f, size.height * 0.38f)
+    val glow = Brush.radialGradient(
+        0f to PixelPalette.GlowCore,
+        0.7f to PixelPalette.GlowClear,
+        center = center,
+        radius = ry,
+    )
+    onDrawBehind {
+        drawRect(sky)
+        scale(sx, 1f, pivot = center) { drawRect(glow, size = size) }
     }
 }
