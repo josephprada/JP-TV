@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
@@ -105,7 +106,7 @@ internal fun AppRail(
                 text = brand,
                 style = TextStyle(color = accent, fontSize = 30.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
             )
-            BasicText(text = stringResource(R.string.rail_total_apps, count), style = monoLabel())
+            BasicText(text = stringResource(R.string.rail_total_apps, count), style = monoLabel(fontSize = 7.sp, letterSpacing = 0.2.em))
         }
 
         PagerLabel(
@@ -147,11 +148,12 @@ private fun PagerLabel(up: Boolean, text: String) {
     }
 }
 
-private fun monoLabel() = TextStyle(
+/** Design: header count 14px / 0.2em, pager labels 13px / 0.14em (dp = px / 2). */
+private fun monoLabel(fontSize: TextUnit = 6.5.sp, letterSpacing: TextUnit = 0.14.em) = TextStyle(
     color = JpColors.Faint,
-    fontSize = 8.sp,
+    fontSize = fontSize,
     fontFamily = JpFonts.Mono,
-    letterSpacing = 0.14.em,
+    letterSpacing = letterSpacing,
 )
 
 /** Tracks an OK press so a short press launches on release and a long press opens the editor instead. */

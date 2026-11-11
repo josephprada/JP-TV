@@ -37,6 +37,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import co.jp.tv.apps.domain.TvApp
@@ -165,8 +166,9 @@ private fun AppTile(app: TvApp, focus: Float, accent: Color) {
                 text = initials(app.label),
                 style = TextStyle(
                     color = lerp(JpColors.Paper, JpColors.Ink, focus),
-                    fontSize = 8.sp,
+                    fontSize = 7.5.sp,
                     fontFamily = JpFonts.Mono,
+                    letterSpacing = 0.06.em,
                 ),
             )
         }

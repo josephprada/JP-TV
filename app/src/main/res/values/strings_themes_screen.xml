@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="themes_try">PROBAR</string>
+
+    <string name="theme_blurb_jptv">Vidrio oscuro, galaxia o brasas. Colores y fuente a tu gusto.</string>
+    <string name="theme_blurb_pixel">Consola de 64 bits: cada app es un cartucho sobre una pista de rejilla.</string>
+    <string name="theme_blurb_terminal">Fósforo verde. Las apps son comandos.</string>
+    <string name="theme_blurb_cartelera">Marquesina de cine con apps como afiches.</string>
+    <string name="theme_blurb_zen">Estilo Apple: sin cajas, icono grande en la app activa y el resto en acordeón.</string>
+    <string name="theme_blurb_hud">Cabina sci-fi: rueda de apps alrededor del reloj.</string>
+    <string name="theme_blurb_vinilo">Tienda de discos: portadas LP y giradiscos.</string>
+    <string name="theme_blurb_lofi">Cuarto de noche: lluvia, lámpara, gato y apps en un cuaderno.</string>
+    <string name="theme_blurb_gotham">Ciudad noir bajo la lluvia: apps como expedientes clavados en la pared.</string>
+    <string name="theme_blurb_multiverso">Líneas del tiempo: cada app es un nexo que abre su propia rama de luz.</string>
+    <string name="theme_blurb_cyberpunk">Calle de neón bajo la lluvia: cada app es un letrero que se enciende.</string>
+    <string name="theme_blurb_oceano">Bajo el mar: arrecife, peces y apps como medusas que brillan.</string>
+
+    <string name="theme_preview_cartelera_marquee">ESTA NOCHE</string>
+</resources>

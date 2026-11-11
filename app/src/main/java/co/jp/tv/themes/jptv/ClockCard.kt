@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.design.JpDimens
 import co.jp.tv.core.design.JpFonts
+import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
@@ -46,12 +49,13 @@ internal fun ClockCard(
     accent: Color,
     titleFontId: String,
     modifier: Modifier = Modifier,
+    hourFormat: ClockFormat.HourFormat = ClockFormat.HourFormat.H24,
 ) {
     val titleFont = rememberTitleFont(titleFontId)
     Column(
         modifier = modifier
             .padding(end = 20.dp, bottom = 20.dp)
-            .riseIn(delayMs = 350, distanceDp = 12f)
+            .riseIn(delayMs = 350, durationMs = JpMotion.FadeMs, distanceDp = 12f)
             .width(IntrinsicSize.Max)
             .glass(JpDimens.RailShape)
             .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 16.dp),
@@ -64,9 +68,9 @@ internal fun ClockCard(
         )
         BasicText(
             text = ClockFormat.date(now),
-            style = TextStyle(color = accent, fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.2.em),
+            style = TextStyle(color = accent, fontSize = 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.2.em),
         )
-        MinuteLine(accent)
+        MinuteLine(now, accent)
     }
 }
 
@@ -89,15 +93,20 @@ private fun timeText(now: LocalDateTime, hourFormat: ClockFormat.HourFormat): An
     }
 }
 
-/** Thin accent line that fills over each wall-clock minute. */
+/**
+ * Thin accent line that fills over each wall-clock minute. Each run is seeded from the [now] given by
+ * HomeState (second resolution, at most 1 s behind), then eased per frame, because the once-per-second
+ * tick alone would make the line jump 1/60 of its width at a time. Not running while paused.
+ */
 @Composable
-private fun MinuteLine(accent: Color) {
+private fun MinuteLine(now: LocalDateTime, accent: Color) {
     val paused = LocalPaused.current
     val fill = remember { Animatable(0f) }
+    val latestNow by rememberUpdatedState(now)
     LaunchedEffect(paused) {
         if (paused) return@LaunchedEffect
-        val now = LocalDateTime.now()
-        val elapsed = (now.second * 1000L + now.nano / 1_000_000L)
+        val seed = latestNow
+        val elapsed = seed.second * 1000L + seed.nano / 1_000_000L
         fill.snapTo(elapsed / 60_000f)
         fill.animateTo(1f, tween((60_000L - elapsed).toInt(), easing = LinearEasing))
         while (true) {

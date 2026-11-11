@@ -111,7 +111,7 @@ private fun NetworkChip(network: NetworkStatus, accent: Color, onClick: () -> Un
                 )
                 BasicText(
                     detail,
-                    style = TextStyle(JpColors.Muted, 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
+                    style = TextStyle(JpColors.Muted, 6.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
                     maxLines = 1,
                 )
             }
