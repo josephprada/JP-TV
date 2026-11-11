@@ -30,16 +30,16 @@ Out of scope unless the user asks: the non-theme screens (`Network`, `Edit`, `Se
 
 ## Tasks
 
-- [ ] T1 — S3, S4 — Foundation: `DayPhase` rule, clock format preference, formatter, Customize card, tests. Route: delegated (user instruction: "delega la implementacion a los subagentes"), runs alone first because T2-T9 depend on it. Commit: —
-- [ ] T2 — S1, S3, S5 — `lofi` with day/night. Route: delegated, parallel. Commit: —
-- [ ] T3 — S2, S3, S5 — `cyberpunk` (new) with day/night. Route: delegated, parallel. Commit: —
-- [ ] T4 — S2, S3, S5 — `oceano` (new) with day/night. Route: delegated, parallel. Commit: —
-- [ ] T5 — S2, S5 — `gotham` (new). Route: delegated, parallel. Commit: —
-- [ ] T6 — S2, S5 — `multiverso` (new). Route: delegated, parallel. Commit: —
-- [ ] T7 — S1, S5 — `pixel`, `terminal`, `hud`. Route: delegated, parallel. Commit: —
-- [ ] T8 — S1, S5 — `cartelera`, `vinilo`, `zen`. Route: delegated, parallel. Commit: —
-- [ ] T9 — S1, S5 — `jptv` home and the Themes selector screen. Route: delegated, parallel. Commit: —
-- [ ] T10 — S2 — Register the four new themes in `ThemeRegistry`; seam check (full unit suite, `assembleDebug`). Route: inline (parent owns the shared file). Commit: —
+- [~] T1 — S3, S4 — Foundation: `DayPhase` rule, clock format preference, formatter, Customize card, tests. Route: delegated (user instruction: "delega la implementacion a los subagentes"), runs alone first because T2-T9 depend on it. Commit: e3b2ec7 (written, not compiled or tested)
+- [~] T2 — S1, S3, S5 — `lofi` with day/night. Route: delegated, parallel. Commit: fe3736a (written, not compiled or tested)
+- [~] T3 — S2, S3, S5 — `cyberpunk` (new) with day/night. Route: delegated, parallel. Commit: 21f5a35 (written, not compiled or tested)
+- [~] T4 — S2, S3, S5 — `oceano` (new) with day/night. Route: delegated, parallel. Commit: 0b18369 (written, not compiled or tested)
+- [~] T5 — S2, S5 — `gotham` (new). Route: delegated, parallel. Commit: 012de03 (written, not compiled or tested)
+- [~] T6 — S2, S5 — `multiverso` (new). Route: delegated, parallel. Commit: 08b33e8 (written, not compiled or tested)
+- [~] T7 — S1, S5 — `pixel`, `terminal`, `hud`. Route: delegated, parallel. Commit: 19e2963 (written, not compiled or tested)
+- [~] T8 — S1, S5 — `cartelera`, `vinilo`, `zen`. Route: delegated, parallel. Commit: 86d65dc (written, not compiled or tested)
+- [~] T9 — S1, S5 — `jptv` home and the Themes selector screen. Route: delegated, parallel. Commit: f4ecdd2 (written, not compiled or tested)
+- [~] T10 — S2 — Register the four new themes in `ThemeRegistry`; seam check (full unit suite, `assembleDebug`). Route: inline (parent owns the shared file). Commit: 16503a2, 6dd1cd6 (written, not compiled or tested)
 
 Parallel-writer rules for T2-T9: one tree, disjoint surfaces, the parent owns git. No writer edits `ThemeRegistry.kt`, `res/values/strings.xml`, `core/design/*` or `themes/shared/*`. New strings go in `res/values/strings_theme_<id>.xml`. No font downloads: use the fonts already in `res/font`, and report any design font that is missing.
 
@@ -51,3 +51,5 @@ Parallel-writer rules for T2-T9: one tree, disjoint surfaces, the parent owns gi
 - L6 (2026-11-11): T1 written by a delegated Opus writer, uncommitted, 17 files, +194/-26. Unverified: RED/GREEN, compile and suite were not observed (L5); the parent spot-checked the `ClockFormat` diff by reading. API for T2-T9: `DayPhase.of(state.now).isNight` (`themes/shared/DayPhase.kt`); `ClockFormat.HourFormat { H24, H12 }`; `ClockFormat.parts(now, format): TimeParts(hours, minutes, meridiem?)`; `ClockFormat.time(now, format)` gives "21:40" or "9:40 PM"; the preference is `state.config.hourFormat` (default H24). Open item for T9: `JpTvTheme.kt` must pass `hourFormat = state.config.hourFormat` to `ClockCard`, otherwise the JP-TV home clock stays 24-hour. cartelera, pixel, terminal and vinilo gained an `hourFormat` parameter on their private clock composables.
 - L5 (2026-11-11): the build cannot run on this machine. Gradle needs `JAVA_TOOL_OPTIONS="-Djdk.net.unixdomain.tmpdir=C:/Users/j.prada/.gradle"` to get past "Unable to establish loopback connection", and then fails to resolve `com.android.application` 8.7.3 because the proxy answers 403 for `dl.google.com` (Maven Central and the Gradle plugin portal answer 200). No Android artifacts are cached, and WSL Ubuntu has no JDK, SDK or cache. No baseline test run exists; RED/GREEN, compile and suite results are unobserved until the user restores access or builds elsewhere.
 - L4 (2026-11-11): environment. No `local.properties`, so there is no `tv.host`: `make deploy` and `make shot` cannot run, and visual verification on the TV is pending. The SDK is at `%LOCALAPPDATA%\Android\Sdk`.
+
+- L7 (2026-11-12): all tasks written and committed on `feat/themes-design-sync`; marked [~] = written but NOT compiled or run (L5). Pending on a machine with Google Maven access: `make test`, `make build`, then `make deploy`/`make shot` against each artboard. Known risks: Compose API signatures, cartelera `cameraDistance`/`rotationY` sign, hud perspective grid omitted (computed off-screen), fonts not bundled (Special Elite, Fredoka, Share Tech Mono, Chakra Petch, DM Mono). Unused strings to remove: `themes_use`, `theme_zen_press_ok`, `theme_pixel_launch`, `theme_lofi_status`.
