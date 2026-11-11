@@ -1,7 +1,10 @@
 package co.jp.tv.themes.vinilo
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -14,36 +17,51 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
@@ -53,12 +71,27 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.themes.shared.RailWindow
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
+import co.jp.tv.wallpaper.cssGradientLine
+import java.time.LocalDateTime
+import kotlinx.coroutines.delay
+
+// The design is 1920x1080; dp and sp are half of its px.
+
+/** The shelf shows this many sleeves, as in the artboard. */
+private const val ShelfSlots = 5
+
+private val SleeveShape = RoundedCornerShape(5.dp)
+
+private class EqBar(val halfCycleMs: Int, val delayMs: Int)
+
+private val EqBars = listOf(EqBar(450, 0), EqBar(350, 200), EqBar(550, 100), EqBar(400, 300))
 
 object ViniloTheme : LauncherTheme {
     override val id = "vinilo"
@@ -69,46 +102,135 @@ object ViniloTheme : LauncherTheme {
     override fun Home(state: HomeState, actions: HomeActions) {
         val focus = rememberThemeControlFocus()
         LaunchedEffect(Unit) { focus.list.requestFocus() }
-        val listState = rememberLazyListState()
-        LaunchedEffect(state.focusedIndex) {
-            if (state.apps.isNotEmpty()) listState.animateScrollToItem(state.focusedIndex)
-        }
+        val deck = rememberDeckMotion()
         val selected = state.apps.getOrNull(state.focusedIndex)
+        val labelColor = ViniloPalette.LabelColors[state.focusedIndex.coerceAtLeast(0) % ViniloPalette.LabelColors.size]
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Brush.radialGradient(listOf(ViniloPalette.BackgroundGlow, ViniloPalette.Background)))
+                .viniloBackdrop()
                 .focusRequester(focus.list)
                 .themeControlRouting(
                     focus,
-                    toControl = { it == Key.DirectionRight || (it == Key.DirectionUp && state.focusedIndex <= 0) },
-                    toList = { it == Key.DirectionDown || it == Key.DirectionLeft },
+                    toControl = { it == Key.DirectionUp },
+                    toList = { it == Key.DirectionDown },
                 )
-                .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
+                .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
-            Column(Modifier.fillMaxSize()) {
-                ViniloHeader(state.brand, state.network, state.now, state.config.hourFormat, actions, focus)
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 40.dp),
-                ) {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .padding(end = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        itemsIndexed(state.apps, key = { _, app -> app.packageName }) { index, app ->
-                            ViniloRecordCard(app, index == state.focusedIndex, index)
-                        }
-                    }
-                    ViniloTurntable(selected?.label.orEmpty(), state.focusedIndex)
-                }
-            }
+            ViniloHeader(
+                brand = state.brand,
+                network = state.network,
+                now = state.now,
+                hourFormat = state.config.hourFormat,
+                actions = actions,
+                focus = focus,
+                modifier = Modifier.align(Alignment.TopStart),
+            )
+            ViniloTurntable(
+                deck = deck,
+                labelName = selected?.label.orEmpty(),
+                labelColor = labelColor,
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 40.dp, top = 85.dp),
+            )
+            ViniloNowPlaying(
+                selected = selected?.label.orEmpty(),
+                modifier = Modifier.align(Alignment.TopEnd).padding(end = 40.dp, top = 380.dp),
+            )
+            ViniloShelfBoard()
+            ViniloShelf(
+                apps = state.apps,
+                focusedIndex = state.focusedIndex,
+                spin = deck.spin,
+                modifier = Modifier.align(Alignment.TopStart).offset(x = 40.dp, y = 150.dp),
+            )
+            BasicText(
+                stringResource(R.string.vinilo_side, state.apps.size),
+                modifier = Modifier.align(Alignment.TopStart).offset(x = 40.dp, y = 385.dp),
+                style = TextStyle(
+                    color = ViniloPalette.CreamDim,
+                    fontSize = 7.5.sp,
+                    fontFamily = JpFonts.Mono,
+                    letterSpacing = 0.2.em,
+                ),
+            )
         }
+    }
+}
+
+/** radial-gradient(90% 80% at 30% 20%, deck 0, background 60%, edge 100%): a circle scaled into an ellipse. */
+private fun Modifier.viniloBackdrop(): Modifier = drawWithCache {
+    val center = Offset(size.width * 0.3f, size.height * 0.2f)
+    val radiusX = size.width * 0.9f
+    val radiusY = size.height * 0.8f
+    val glow = Brush.radialGradient(
+        0f to ViniloPalette.BackgroundGlow,
+        0.6f to ViniloPalette.Background,
+        1f to ViniloPalette.BackgroundEdge,
+        center = center,
+        radius = radiusX,
+    )
+    val reach = size.width * 4f
+    onDrawBehind {
+        scale(1f, radiusY / radiusX, pivot = center) {
+            drawRect(
+                brush = glow,
+                topLeft = Offset(center.x - reach, center.y - reach),
+                size = Size(reach * 2f, reach * 2f),
+            )
+        }
+    }
+}
+
+/** Everything that loops on this theme. While paused no transition is created, so it all rests. */
+private class DeckMotion(
+    /** Record rotation, degrees. */
+    val spin: () -> Float,
+    /** Tonearm angle, degrees. */
+    val arm: () -> Float,
+    /** Equalizer bar heights, 0.3..1, in [EqBars] order. */
+    val eq: List<() -> Float>,
+)
+
+private val StillDeck = DeckMotion(
+    spin = { 0f },
+    arm = { 22f },
+    eq = EqBars.map { { 0.3f } },
+)
+
+@Composable
+private fun rememberDeckMotion(): DeckMotion {
+    if (LocalPaused.current) return StillDeck
+    val transition = rememberInfiniteTransition(label = "vinDeck")
+    val spin = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(1800, easing = LinearEasing), RepeatMode.Restart),
+        label = "spin",
+    )
+    val arm = transition.animateFloat(
+        initialValue = 22f,
+        targetValue = 24f,
+        animationSpec = infiniteRepeatable(tween(1500, easing = JpMotion.InOut), RepeatMode.Reverse),
+        label = "arm",
+    )
+    val eq = EqBars.map { bar ->
+        transition.animateFloat(
+            initialValue = 0.3f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(bar.halfCycleMs, easing = JpMotion.InOut),
+                repeatMode = RepeatMode.Reverse,
+                initialStartOffset = StartOffset(bar.delayMs),
+            ),
+            label = "eq",
+        )
+    }
+    return remember(transition) {
+        DeckMotion(
+            spin = { spin.value },
+            arm = { arm.value },
+            eq = eq.map { bar -> { bar.value } },
+        )
     }
 }
 
@@ -116,20 +238,28 @@ object ViniloTheme : LauncherTheme {
 private fun ViniloHeader(
     brand: String,
     network: NetworkStatus,
-    now: java.time.LocalDateTime,
+    now: LocalDateTime,
     hourFormat: ClockFormat.HourFormat,
     actions: HomeActions,
     focus: ThemeControlFocus,
+    modifier: Modifier = Modifier,
 ) {
+    val records = stringResource(R.string.vinilo_records)
+    val title = remember(brand, records) {
+        buildAnnotatedString {
+            append("$brand ")
+            withStyle(SpanStyle(color = ViniloPalette.Gold)) { append(records) }
+        }
+    }
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 40.dp, vertical = 28.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicText(
-            "$brand Records",
+            title,
             style = TextStyle(color = ViniloPalette.Orange, fontSize = 28.sp, fontFamily = JpFonts.Righteous),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -148,7 +278,7 @@ private fun ViniloHeader(
                 style = TextStyle(color = ViniloPalette.Cream, fontSize = 22.sp, fontFamily = JpFonts.Righteous),
             )
             BasicText(
-                "AJUSTES",
+                stringResource(R.string.cd_settings).uppercase(),
                 modifier = Modifier
                     .themeControlTarget(focus)
                     .clip(RoundedCornerShape(12.dp))
@@ -166,68 +296,193 @@ private fun ViniloHeader(
     }
 }
 
+/** Wooden shelf under the sleeves. */
 @Composable
-private fun ViniloRecordCard(app: TvApp, focused: Boolean, index: Int) {
-    val labelColor = ViniloPalette.LabelColors[index % ViniloPalette.LabelColors.size]
+private fun ViniloShelfBoard() {
+    val shape = RoundedCornerShape(5.dp)
+    Box(
+        Modifier
+            .offset(x = 25.dp, y = 345.dp)
+            .size(530.dp, 20.dp)
+            .shadow(10.dp, shape)
+            .clip(shape)
+            .background(
+                Brush.verticalGradient(
+                    0f to ViniloPalette.ShelfTop,
+                    0.6f to ViniloPalette.ShelfMid,
+                    1f to ViniloPalette.ShelfBottom,
+                ),
+            ),
+    )
+}
+
+@Composable
+private fun ViniloShelf(
+    apps: List<TvApp>,
+    focusedIndex: Int,
+    spin: () -> Float,
+    modifier: Modifier = Modifier,
+) {
+    var previousTop by remember { mutableStateOf(0) }
+    val top = RailWindow.top(previousTop, focusedIndex, apps.size, ShelfSlots)
+    SideEffect { previousTop = top }
+    val visible = apps.size.coerceAtMost(top + ShelfSlots) - top
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(ViniloPalette.Deck.copy(alpha = if (focused) 0.95f else 0.65f))
-            .border(if (focused) 1.5.dp else 1.dp, if (focused) ViniloPalette.Gold else ViniloPalette.Orange.copy(0.35f), RoundedCornerShape(12.dp))
-            .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        modifier,
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
+        verticalAlignment = Alignment.Bottom,
     ) {
-        Box(Modifier.size(44.dp).clip(CircleShape).background(ViniloPalette.Vinyl).border(2.dp, labelColor, CircleShape))
-        Column {
+        for (slot in 0 until visible) {
+            val index = top + slot
+            val app = apps[index]
+            key(app.packageName) {
+                ViniloCover(
+                    app = app,
+                    focused = index == focusedIndex,
+                    color = ViniloPalette.LabelColors[index % ViniloPalette.LabelColors.size],
+                    slot = slot,
+                    spin = spin,
+                )
+            }
+        }
+    }
+}
+
+/** An LP sleeve; the focused one grows and slides its record out to the right. */
+@Composable
+private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, spin: () -> Float) {
+    val spec = tween<Dp>(600, easing = JpMotion.Entrance)
+    val sleeve by animateDpAsState(if (focused) 150.dp else 85.dp, spec, label = "sleeve")
+    val width by animateDpAsState(if (focused) 210.dp else 85.dp, spec, label = "coverWidth")
+    val discLeft by animateDpAsState(if (focused) 65.dp else 10.dp, spec, label = "discLeft")
+    val discTop = if (focused) 5.dp else 3.dp
+    val entrance = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        delay(slot * 80L)
+        entrance.animateTo(1f, tween(JpMotion.RiseMs, easing = JpMotion.Entrance))
+    }
+    Box(
+        Modifier
+            .width(width)
+            .size(width, sleeve)
+            .graphicsLayer {
+                alpha = entrance.value
+                translationY = (1f - entrance.value) * 20.dp.toPx()
+            },
+    ) {
+        Box(
+            Modifier
+                .offset(x = discLeft, y = discTop)
+                .size(sleeve - 10.dp)
+                .graphicsLayer { rotationZ = if (focused) spin() else 0f }
+                .clip(CircleShape)
+                .vinylGrooves(sheen = false),
+        )
+        Box(
+            Modifier
+                .size(sleeve)
+                .shadow(8.dp, SleeveShape)
+                .clip(SleeveShape)
+                .background(color)
+                .focusRing(focused),
+            contentAlignment = Alignment.BottomStart,
+        ) {
             BasicText(
                 app.label,
-                style = TextStyle(color = ViniloPalette.Cream, fontSize = 11.sp, fontFamily = JpFonts.Body),
-                maxLines = 1,
+                modifier = Modifier.padding(9.dp),
+                style = TextStyle(
+                    color = ViniloPalette.Background,
+                    fontSize = if (focused) 19.sp else 11.sp,
+                    lineHeight = if (focused) 20.sp else 12.sp,
+                    fontFamily = JpFonts.Righteous,
+                ),
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-            )
-            BasicText(
-                "SIDE ${('A' + index % 26)}",
-                style = TextStyle(color = ViniloPalette.Gold, fontSize = 6.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.16.em),
             )
         }
     }
 }
 
-@Composable
-private fun ViniloTurntable(selected: String, focusedIndex: Int) {
-    val paused = LocalPaused.current
-    val labelColor = ViniloPalette.LabelColors[focusedIndex % ViniloPalette.LabelColors.size]
-    val transition = rememberInfiniteTransition(label = "vinSpin")
-    val spin by transition.animateFloat(
-        0f,
-        360f,
-        infiniteRepeatable(tween(1800, easing = LinearEasing), RepeatMode.Restart),
-        label = "spin",
+/** 2 dp cream outline drawn 2 dp outside the sleeve. */
+private fun Modifier.focusRing(focused: Boolean): Modifier = if (!focused) this else drawWithCache {
+    val ring = Stroke(width = 2.dp.toPx())
+    val outset = 3.dp.toPx()
+    val corner = CornerRadius(8.dp.toPx())
+    onDrawWithContent {
+        drawContent()
+        drawRoundRect(
+            color = ViniloPalette.Cream,
+            topLeft = Offset(-outset, -outset),
+            size = Size(size.width + outset * 2f, size.height + outset * 2f),
+            cornerRadius = corner,
+            style = ring,
+        )
+    }
+}
+
+/** Black vinyl: concentric grooves, plus an optional soft sheen near the top. */
+private fun Modifier.vinylGrooves(sheen: Boolean): Modifier = drawWithCache {
+    val center = Offset(size.width / 2f, size.height / 2f)
+    val radius = size.minDimension / 2f
+    val pitch = 2.5.dp.toPx()
+    val line = Stroke(width = 0.75.dp.toPx())
+    val glint = Brush.radialGradient(
+        colors = listOf(ViniloPalette.Sheen, ViniloPalette.SheenClear),
+        center = Offset(size.width * 0.5f, size.height * 0.23f),
+        radius = size.width * 0.2f,
     )
-    Column(
-        Modifier
-            .width(350.dp)
-            .fillMaxHeight()
-            .padding(vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    val glintTopLeft = Offset(size.width * 0.3f, size.height * 0.08f)
+    val glintSize = Size(size.width * 0.4f, size.height * 0.3f)
+    onDrawBehind {
+        drawCircle(ViniloPalette.Groove, radius = radius, center = center)
+        var ring = pitch * 0.8f
+        while (ring < radius) {
+            drawCircle(ViniloPalette.GrooveLine, radius = ring, center = center, style = line)
+            ring += pitch
+        }
+        if (sheen) drawOval(glint, topLeft = glintTopLeft, size = glintSize)
+    }
+}
+
+@Composable
+private fun ViniloTurntable(
+    deck: DeckMotion,
+    labelName: String,
+    labelColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    val plinth = RoundedCornerShape(18.dp)
+    Box(
+        modifier
+            .size(350.dp, 280.dp)
+            .shadow(16.dp, plinth)
+            .clip(plinth)
+            .drawWithCache {
+                val (start, end) = cssGradientLine(160f, size.width, size.height)
+                val wood = Brush.linearGradient(
+                    colors = listOf(ViniloPalette.DeckTop, ViniloPalette.Deck),
+                    start = start,
+                    end = end,
+                )
+                onDrawBehind { drawRect(wood) }
+            },
     ) {
+        // Platter and record.
         Box(
             Modifier
-                .fillMaxWidth()
-                .height(280.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .background(Brush.linearGradient(listOf(ViniloPalette.Deck, ViniloPalette.BackgroundGlow))),
+                .offset(x = 25.dp, y = 20.dp)
+                .size(240.dp)
+                .shadow(6.dp, CircleShape)
+                .clip(CircleShape)
+                .background(ViniloPalette.Vinyl),
             contentAlignment = Alignment.Center,
         ) {
             Box(
                 Modifier
-                    .size(240.dp)
-                    .graphicsLayer { rotationZ = if (paused) 0f else spin }
+                    .size(226.dp)
+                    .graphicsLayer { rotationZ = deck.spin() }
                     .clip(CircleShape)
-                    .background(ViniloPalette.Vinyl)
-                    .border(8.dp, ViniloPalette.Vinyl.copy(alpha = 0.6f), CircleShape),
+                    .vinylGrooves(sheen = true),
                 contentAlignment = Alignment.Center,
             ) {
                 Box(
@@ -238,18 +493,94 @@ private fun ViniloTurntable(selected: String, focusedIndex: Int) {
                     contentAlignment = Alignment.Center,
                 ) {
                     BasicText(
-                        selected.take(8).uppercase(),
-                        style = TextStyle(color = ViniloPalette.Background, fontSize = 8.sp, fontFamily = JpFonts.Righteous),
+                        labelName,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        style = TextStyle(
+                            color = ViniloPalette.Background,
+                            fontSize = 10.sp,
+                            fontFamily = JpFonts.Righteous,
+                            textAlign = TextAlign.Center,
+                        ),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
+                    Box(Modifier.size(6.dp).clip(CircleShape).background(ViniloPalette.Background))
                 }
             }
         }
+        ViniloTonearm(deck.arm, Modifier.offset(x = 285.dp, y = 30.dp))
+        Row(
+            Modifier
+                .align(Alignment.BottomStart)
+                .offset(x = 280.dp, y = (-20).dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            ViniloPalette.EqColors.forEachIndexed { i, tint ->
+                val level = deck.eq[i]
+                Box(
+                    Modifier
+                        .size(5.dp, 30.dp)
+                        .graphicsLayer {
+                            transformOrigin = TransformOrigin(0.5f, 1f)
+                            scaleY = level()
+                        }
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(tint),
+                )
+            }
+        }
+    }
+}
+
+/** Pivot cap, rod and cartridge, swaying around the pivot. */
+@Composable
+private fun ViniloTonearm(angle: () -> Float, modifier: Modifier = Modifier) {
+    Box(
+        modifier
+            .size(10.dp, 168.dp)
+            .graphicsLayer {
+                transformOrigin = TransformOrigin(0.5f, 5f / 168f)
+                rotationZ = angle()
+            }
+            .drawWithCache {
+                val dp = 1.dp.toPx()
+                onDrawBehind {
+                    drawCircle(ViniloPalette.ArmMetal, radius = 5f * dp, center = Offset(5f * dp, 5f * dp))
+                    drawRoundRect(
+                        color = ViniloPalette.ArmRod,
+                        topLeft = Offset(3.5f * dp, 5f * dp),
+                        size = Size(3f * dp, 150f * dp),
+                        cornerRadius = CornerRadius(1.5f * dp),
+                    )
+                    drawRoundRect(
+                        color = ViniloPalette.ArmMetal,
+                        topLeft = Offset(-2f * dp, 150f * dp),
+                        size = Size(14f * dp, 18f * dp),
+                        cornerRadius = CornerRadius(3f * dp),
+                    )
+                }
+            },
+    )
+}
+
+@Composable
+private fun ViniloNowPlaying(selected: String, modifier: Modifier = Modifier) {
+    Column(modifier.width(350.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
         BasicText(
-            "AHORA SUENA · ${selected.uppercase()}",
-            modifier = Modifier.padding(top = 12.dp),
-            style = TextStyle(color = ViniloPalette.Gold, fontSize = 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.2.em),
+            stringResource(R.string.vinilo_now_playing, selected.uppercase()),
+            style = TextStyle(
+                color = ViniloPalette.Gold,
+                fontSize = 7.5.sp,
+                fontFamily = JpFonts.Mono,
+                letterSpacing = 0.2.em,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        BasicText(
+            stringResource(R.string.vinilo_track),
+            style = TextStyle(color = ViniloPalette.Cream, fontSize = 20.sp, fontFamily = JpFonts.Righteous),
         )
     }
 }
