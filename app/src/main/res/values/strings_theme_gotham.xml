@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="theme_gotham_case_number">CASO Nº %1$s</string>
+    <string name="theme_gotham_case_file">ARCHIVO</string>
+    <string name="theme_gotham_network_wifi">[RED WI-FI]</string>
+    <string name="theme_gotham_network_ethernet">[RED ETHERNET]</string>
+    <string name="theme_gotham_network_offline">[SIN RED]</string>
+    <string name="theme_gotham_previous_app">App anterior</string>
+    <string name="theme_gotham_next_app">App siguiente</string>
+</resources>
