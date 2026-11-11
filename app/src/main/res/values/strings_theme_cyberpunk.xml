@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cyberpunk home: network pill, design "[RED WI-FI]"; %1$s is the network name in capitals. -->
+    <string name="theme_cyberpunk_network">[%1$s]</string>
+    <!-- Cyberpunk home: app position, design "02 / 10". -->
+    <string name="theme_cyberpunk_position">%1$s / %2$s</string>
+</resources>
