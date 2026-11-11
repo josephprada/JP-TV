@@ -201,6 +201,7 @@ class HomeViewModel(
                 accent = config.accent,
                 titleFontId = config.titleFontId,
                 wallpaperId = config.wallpaperId,
+                hourFormat = config.hourFormat,
             )
         }
         back()

@@ -74,7 +74,7 @@ object TerminalTheme : LauncherTheme {
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
             Column(Modifier.fillMaxSize()) {
-                TerminalStatusBar(state.brand, state.network, state.now, actions, focus)
+                TerminalStatusBar(state.brand, state.network, state.now, state.config.hourFormat, actions, focus)
                 Row(Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 28.dp)) {
                     TerminalInfoPanel(state.brand, state.apps.size, state.network, Modifier.weight(1f))
                     TerminalAppList(
@@ -96,6 +96,7 @@ private fun TerminalStatusBar(
     brand: String,
     network: NetworkStatus,
     now: LocalDateTime,
+    hourFormat: ClockFormat.HourFormat,
     actions: HomeActions,
     focus: ThemeControlFocus,
 ) {
@@ -143,7 +144,7 @@ private fun TerminalStatusBar(
         val lat = latency?.let { " · ${it}ms" }.orEmpty()
         val date = ClockFormat.date(now).lowercase(Locale.forLanguageTag("es"))
         BasicText(
-            "$net$lat | ${ClockFormat.time(now)} $date",
+            "$net$lat | ${ClockFormat.time(now, hourFormat)} $date",
             style = TextStyle(color = TerminalPalette.BarFg, fontSize = 15.sp, fontFamily = JpFonts.Vt323),
         )
     }

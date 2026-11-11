@@ -115,7 +115,7 @@ object ZenTheme : LauncherTheme {
                 verticalArrangement = Arrangement.spacedBy(9.dp),
             ) {
                 BasicText(
-                    ClockFormat.time(state.now),
+                    ClockFormat.time(state.now, state.config.hourFormat),
                     style = TextStyle(
                         color = ZenPalette.Paper,
                         fontSize = 130.sp,

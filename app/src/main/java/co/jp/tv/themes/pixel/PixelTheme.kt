@@ -86,7 +86,7 @@ object PixelTheme : LauncherTheme {
         ) {
             PixelGround()
             Column(Modifier.fillMaxSize()) {
-                PixelTopBar(state.brand, state.network, state.now, actions, focus)
+                PixelTopBar(state.brand, state.network, state.now, state.config.hourFormat, actions, focus)
                 LazyRow(
                     state = listState,
                     modifier = Modifier
@@ -128,6 +128,7 @@ private fun PixelTopBar(
     brand: String,
     network: NetworkStatus,
     now: LocalDateTime,
+    hourFormat: ClockFormat.HourFormat,
     actions: HomeActions,
     focus: ThemeControlFocus,
 ) {
@@ -166,7 +167,7 @@ private fun PixelTopBar(
                 }
             }
             BasicText(
-                ClockFormat.time(now),
+                ClockFormat.time(now, hourFormat),
                 style = TextStyle(color = PixelPalette.Cyan, fontSize = 18.sp, fontFamily = JpFonts.PressStart2P),
             )
             Box(

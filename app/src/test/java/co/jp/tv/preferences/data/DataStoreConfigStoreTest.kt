@@ -1,6 +1,10 @@
 package co.jp.tv.preferences.data
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.preferences.domain.LauncherConfig
 import java.io.File
 import kotlinx.coroutines.flow.first
@@ -44,6 +48,27 @@ class DataStoreConfigStoreTest {
         )
         store.update { written }
         assertEquals(written, store.config.first())
+    }
+
+    @Test
+    fun `12 hour clock format round trips`() = runTest {
+        val store = store()
+        store.update { LauncherConfig.Default.copy(hourFormat = HourFormat.H12) }
+        assertEquals(HourFormat.H12, store.config.first()?.hourFormat)
+        store.update { it!!.copy(hourFormat = HourFormat.H24) }
+        assertEquals(HourFormat.H24, store.config.first()?.hourFormat)
+    }
+
+    @Test
+    fun `a saved config without a clock format reads as 24 hour`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "legacy.preferences_pb") })
+        dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("saved")] = true
+            prefs[stringPreferencesKey("brand")] = "Casa"
+        }
+        val read = DataStoreConfigStore(dataStore).config.first()
+        assertEquals("Casa", read?.brand)
+        assertEquals(HourFormat.H24, read?.hourFormat)
     }
 
     @Test

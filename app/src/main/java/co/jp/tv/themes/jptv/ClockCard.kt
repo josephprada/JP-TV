@@ -59,7 +59,7 @@ internal fun ClockCard(
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         BasicText(
-            text = timeText(now),
+            text = timeText(now, hourFormat),
             style = TextStyle(color = JpColors.Paper, fontSize = 74.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
         )
         BasicText(
@@ -70,14 +70,22 @@ internal fun ClockCard(
     }
 }
 
-/** Colon dims on odd seconds; driven by the per-second tick, so it stops when the activity stops. */
-private fun timeText(now: LocalDateTime): AnnotatedString {
-    val (hh, mm) = ClockFormat.time(now).split(":")
+/**
+ * Colon dims on odd seconds; driven by the per-second tick, so it stops when the activity stops.
+ * In 12-hour mode the AM/PM marker trails the minutes at a third of the size, in the muted color.
+ */
+private fun timeText(now: LocalDateTime, hourFormat: ClockFormat.HourFormat): AnnotatedString {
+    val time = ClockFormat.parts(now, hourFormat)
     val colon = if (ClockFormat.colonVisible(now)) 1f else 0.25f
     return buildAnnotatedString {
-        append(hh)
+        append(time.hours)
         withStyle(SpanStyle(color = JpColors.Paper.copy(alpha = colon))) { append(":") }
-        append(mm)
+        append(time.minutes)
+        time.meridiem?.let { meridiem ->
+            withStyle(SpanStyle(color = JpColors.Muted, fontSize = 0.33.em, letterSpacing = 0.1.em)) {
+                append(" $meridiem")
+            }
+        }
     }
 }
 

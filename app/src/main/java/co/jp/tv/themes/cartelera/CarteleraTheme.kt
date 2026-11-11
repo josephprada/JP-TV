@@ -86,7 +86,7 @@ object CarteleraTheme : LauncherTheme {
             VelvetBackdrop()
             CarteleraSpotlight()
             Column(Modifier.fillMaxSize()) {
-                CarteleraMarquee(state.brand, state.now)
+                CarteleraMarquee(state.brand, state.now, state.config.hourFormat)
                 LazyRow(
                     state = listState,
                     modifier = Modifier
@@ -147,7 +147,7 @@ private fun CarteleraSpotlight() {
 }
 
 @Composable
-private fun CarteleraMarquee(brand: String, now: java.time.LocalDateTime) {
+private fun CarteleraMarquee(brand: String, now: java.time.LocalDateTime, hourFormat: ClockFormat.HourFormat) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -174,7 +174,7 @@ private fun CarteleraMarquee(brand: String, now: java.time.LocalDateTime) {
                 style = TextStyle(color = CarteleraPalette.BulbOn, fontSize = 38.sp, fontFamily = JpFonts.Limelight),
             )
             BasicText(
-                "FUNCIÓN ${ClockFormat.time(now)}",
+                "FUNCIÓN ${ClockFormat.time(now, hourFormat)}",
                 style = TextStyle(color = CarteleraPalette.Gold, fontSize = 8.sp, fontFamily = JpFonts.Mono),
             )
         }

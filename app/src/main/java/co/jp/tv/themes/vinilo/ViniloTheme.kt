@@ -87,7 +87,7 @@ object ViniloTheme : LauncherTheme {
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
             Column(Modifier.fillMaxSize()) {
-                ViniloHeader(state.brand, state.network, state.now, actions, focus)
+                ViniloHeader(state.brand, state.network, state.now, state.config.hourFormat, actions, focus)
                 Row(
                     Modifier
                         .fillMaxSize()
@@ -117,6 +117,7 @@ private fun ViniloHeader(
     brand: String,
     network: NetworkStatus,
     now: java.time.LocalDateTime,
+    hourFormat: ClockFormat.HourFormat,
     actions: HomeActions,
     focus: ThemeControlFocus,
 ) {
@@ -143,7 +144,7 @@ private fun ViniloHeader(
                 style = TextStyle(color = ViniloPalette.Cream, fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.16.em),
             )
             BasicText(
-                ClockFormat.time(now),
+                ClockFormat.time(now, hourFormat),
                 style = TextStyle(color = ViniloPalette.Cream, fontSize = 22.sp, fontFamily = JpFonts.Righteous),
             )
             BasicText(

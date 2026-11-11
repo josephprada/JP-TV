@@ -96,6 +96,9 @@
     <string name="customize_font">FUENTE DE TÍTULOS Y RELOJ</string>
     <string name="wallpaper_image_hint">IMAGEN FIJA · /sdcard/JPTV/fondo.jpg</string>
     <string name="customize_wallpaper">LIVE WALLPAPER</string>
+    <string name="customize_hour_format">FORMATO DE HORA</string>
+    <string name="customize_hour_format_24">24 h</string>
+    <string name="customize_hour_format_12">12 h</string>
     <string name="customize_apply">APLICAR</string>
 
     <string name="theme_pixel_launch">PULSA OK PARA JUGAR</string>

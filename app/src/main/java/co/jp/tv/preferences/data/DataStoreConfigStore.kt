@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.domain.ConfigStore
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
             prefs[THEME] = next.themeId
             prefs[APP_ORDER] = next.appOrder.joinToString(SEPARATOR)
             prefs[HIDDEN_APPS] = next.hiddenApps
+            prefs[HOUR_FORMAT] = next.hourFormat.name
         }
     }
 
@@ -43,6 +45,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
                 themeId = this[THEME] ?: LauncherConfig.DEFAULT_THEME_ID,
                 appOrder = this[APP_ORDER].orEmpty().split(SEPARATOR).filter { it.isNotEmpty() },
                 hiddenApps = this[HIDDEN_APPS].orEmpty(),
+                hourFormat = HourFormat.entries.firstOrNull { it.name == this[HOUR_FORMAT] } ?: HourFormat.H24,
             )
         }
 
@@ -56,5 +59,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         val THEME = stringPreferencesKey("theme")
         val APP_ORDER = stringPreferencesKey("app_order")
         val HIDDEN_APPS = stringSetPreferencesKey("hidden_apps")
+
+        /** Absent on installs from before the setting existed; reads as 24-hour. */
+        val HOUR_FORMAT = stringPreferencesKey("hour_format")
     }
 }

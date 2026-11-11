@@ -3,6 +3,7 @@ package co.jp.tv.home
 import app.cash.turbine.test
 import co.jp.tv.apps.domain.AppCatalog
 import co.jp.tv.apps.domain.TvApp
+import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.preferences.domain.ConfigStore
@@ -324,6 +325,16 @@ class HomeViewModelTest {
         catalog.source.value = manyApps
         advanceUntilIdle()
         assertEquals(setOf("a.nf", "a.yt", "a.sp", "a.cam"), store.source.value?.appOrder?.toSet())
+    }
+
+    @Test
+    fun `applying customize persists the clock format with the other appearance fields`() = runTest {
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.yt")))
+        val vm = vm(FakeCatalog(apps), store = store)
+        vm.applyCustomize(LauncherConfig(brand = "Casa", hourFormat = HourFormat.H12))
+        advanceUntilIdle()
+        assertEquals(HourFormat.H12, store.source.value?.hourFormat)
+        assertEquals("Casa", store.source.value?.brand)
     }
 
     @Test

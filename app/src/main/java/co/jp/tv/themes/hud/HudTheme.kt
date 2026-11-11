@@ -98,7 +98,7 @@ object HudTheme : LauncherTheme {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 BasicText(
-                    ClockFormat.time(state.now),
+                    ClockFormat.time(state.now, state.config.hourFormat),
                     style = TextStyle(color = HudPalette.Core, fontSize = 56.sp, fontFamily = JpFonts.Orbitron, letterSpacing = 0.04.em),
                 )
                 BasicText(

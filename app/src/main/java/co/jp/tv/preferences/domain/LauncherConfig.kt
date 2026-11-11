@@ -1,5 +1,7 @@
 package co.jp.tv.preferences.domain
 
+import co.jp.tv.core.util.ClockFormat.HourFormat
+
 /** User-facing launcher configuration persisted in DataStore. */
 data class LauncherConfig(
     val brand: String = DEFAULT_BRAND,
@@ -12,6 +14,8 @@ data class LauncherConfig(
     val appOrder: List<String> = emptyList(),
     /** Package names kept off the home rail. */
     val hiddenApps: Set<String> = emptySet(),
+    /** 24-hour (default) or 12-hour AM/PM clock in every theme. */
+    val hourFormat: HourFormat = HourFormat.H24,
 ) {
     companion object {
         const val DEFAULT_BRAND = "JP-TV"

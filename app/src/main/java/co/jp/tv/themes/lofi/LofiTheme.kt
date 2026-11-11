@@ -103,7 +103,7 @@ object LofiTheme : LauncherTheme {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     BasicText(
-                        ClockFormat.time(state.now),
+                        ClockFormat.time(state.now, state.config.hourFormat),
                         style = TextStyle(color = LofiPalette.Paper, fontSize = 36.sp, fontFamily = JpFonts.Caveat),
                     )
                     BasicText(

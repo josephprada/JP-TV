@@ -49,6 +49,8 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
+import co.jp.tv.core.util.ClockFormat
+import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.preferences.domain.AccentPreset
 import co.jp.tv.preferences.domain.AccentPresets
@@ -56,6 +58,16 @@ import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.domain.TitleFont
 import co.jp.tv.preferences.domain.TitleFonts
 import co.jp.tv.wallpaper.WallpaperRegistry
+import java.time.LocalDateTime
+
+/** Fixed sample instant the preview clock shows, so only the chosen format changes. */
+private val PreviewTime: LocalDateTime = LocalDateTime.of(2025, 11, 8, 21, 40)
+
+/** Clock format chips in display order, each with its label resource. */
+private val HourFormatOptions = listOf(
+    HourFormat.H24 to R.string.customize_hour_format_24,
+    HourFormat.H12 to R.string.customize_hour_format_12,
+)
 
 /**
  * Draft customize panel: accent, title font, wallpaper and brand chips with a live preview.
@@ -159,6 +171,18 @@ fun CustomizeScreen(
                         }
                     }
                 }
+                OptionsCard(stringResource(R.string.customize_hour_format), delayMs = 160) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        HourFormatOptions.forEach { (format, label) ->
+                            Chip(
+                                label = stringResource(label),
+                                selected = draft.hourFormat == format,
+                                accent = accent,
+                                onClick = { draft = draft.copy(hourFormat = format) },
+                            )
+                        }
+                    }
+                }
             }
 
             Box(
@@ -173,7 +197,7 @@ fun CustomizeScreen(
                         .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
                 }
                 PreviewRail(brand = draft.brand, accent = accent, titleFont = titleFont)
-                PreviewClock(accent = accent, titleFont = titleFont)
+                PreviewClock(accent = accent, titleFont = titleFont, hourFormat = draft.hourFormat)
                 ApplyButton(
                     accent = accent,
                     onClick = { onApply(draft) },
@@ -341,7 +365,7 @@ private fun PreviewAppRow(label: String, focused: Boolean, accent: Color) {
 }
 
 @Composable
-private fun BoxScope.PreviewClock(accent: Color, titleFont: FontFamily) {
+private fun BoxScope.PreviewClock(accent: Color, titleFont: FontFamily, hourFormat: HourFormat) {
     Column(
         Modifier
             .align(Alignment.BottomEnd)
@@ -350,9 +374,22 @@ private fun BoxScope.PreviewClock(accent: Color, titleFont: FontFamily) {
             .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalAlignment = Alignment.End,
     ) {
-        BasicText("21:40", style = TextStyle(color = JpColors.Paper, fontSize = 36.sp, fontFamily = titleFont))
+        val time = ClockFormat.parts(PreviewTime, hourFormat)
+        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            BasicText(
+                "${time.hours}:${time.minutes}",
+                style = TextStyle(color = JpColors.Paper, fontSize = 36.sp, fontFamily = titleFont),
+            )
+            time.meridiem?.let { meridiem ->
+                BasicText(
+                    meridiem,
+                    style = TextStyle(color = JpColors.Muted, fontSize = 12.sp, fontFamily = titleFont),
+                    modifier = Modifier.padding(bottom = 7.dp),
+                )
+            }
+        }
         BasicText(
-            "SÁBADO · 8 NOV",
+            ClockFormat.date(PreviewTime),
             style = TextStyle(color = accent, fontSize = 6.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.2.em),
         )
     }
