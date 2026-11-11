@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
+
+
+<meta charset="utf-8">
+<title>JP-TV — Tema Multiverso</title>
+<script src="f809a585-8f82-46fa-840c-e91ccdb57cbd"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>/* cyrillic-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("8d72bc8a-9a20-414d-8cb9-37e8331855b3") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("596d4f8f-e178-45d7-8780-49155183d2a3") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("61d8bc05-2fa4-47ec-a3d7-ee05bf406402") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("707a4c44-deed-40ae-84a3-e40b3976120b") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("b6fea687-0684-4cc3-8d5a-e3015add79bc") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("8d72bc8a-9a20-414d-8cb9-37e8331855b3") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("596d4f8f-e178-45d7-8780-49155183d2a3") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("61d8bc05-2fa4-47ec-a3d7-ee05bf406402") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("707a4c44-deed-40ae-84a3-e40b3976120b") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("b6fea687-0684-4cc3-8d5a-e3015add79bc") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("8d72bc8a-9a20-414d-8cb9-37e8331855b3") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("596d4f8f-e178-45d7-8780-49155183d2a3") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("61d8bc05-2fa4-47ec-a3d7-ee05bf406402") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("707a4c44-deed-40ae-84a3-e40b3976120b") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("b6fea687-0684-4cc3-8d5a-e3015add79bc") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("8d72bc8a-9a20-414d-8cb9-37e8331855b3") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("596d4f8f-e178-45d7-8780-49155183d2a3") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("61d8bc05-2fa4-47ec-a3d7-ee05bf406402") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("707a4c44-deed-40ae-84a3-e40b3976120b") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("b6fea687-0684-4cc3-8d5a-e3015add79bc") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3yQ6H-1_WfwkMZI_qYPLs1a-t7PU0AbeE9KK5Z5ClqOw.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3yQ6H-1_WfwkMZI_qYPLs1a-t7PU0AbeE9KK5Q5ClqOw.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* symbols2 */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3yQ6H-1_WfwkMZI_qYPLs1a-t7PU0AbeE9KK7uxQxXAuk.woff2) format('woff2');
+  unicode-range: U+2000-2001, U+2004-2008, U+200A, U+23B8-23BD, U+2500-259F;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3yQ6H-1_WfwkMZI_qYPLs1a-t7PU0AbeE9KK5b5ClqOw.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3yQ6H-1_WfwkMZI_qYPLs1a-t7PU0AbeE9KK5a5ClqOw.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("85d2e2ee-e9b5-4275-846e-6bf0f2a7f2c6") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+body{margin:0;background:#030418}
+a{color:#eaf2ff}a:hover{color:#ffffff}
+button:focus-visible,a:focus-visible{outline:2px solid #ffffff;outline-offset:6px;border-radius:50%}
+a:focus-visible{border-radius:12px}
+@keyframes mv-flow{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-460}}
+@keyframes mv-flow-trunk{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-720}}
+@keyframes mv-twinkle{0%,100%{opacity:0.15}50%{opacity:1}}
+@keyframes mv-neb{0%{transform:translate(0,0) scale(1)}100%{transform:translate(80px,-40px) scale(1.12)}}
+@keyframes mv-spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes mv-ripple{0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.7}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+@keyframes mv-pulse{0%,100%{opacity:0.8}50%{opacity:1}}
+@keyframes mv-in{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: radial-gradient(90% 80% at 50% 56%, #101a5c 0%, #070c38 45%, #030418 100%); color: #eaf2ff; font-family: 'Geist', system-ui, sans-serif;">
+
+  <!-- Shared filters and gradients -->
+  <svg width="0" height="0" aria-hidden="true" style="position: absolute;">
+    <defs>
+      <filter id="mvBlurXL" sc-camel-filter-units="userSpaceOnUse" x="-400" y="-400" width="2800" height="1900"><feGaussianBlur sc-camel-std-deviation="26"></feGaussianBlur></filter>
+      <filter id="mvBlurL" sc-camel-filter-units="userSpaceOnUse" x="-400" y="-400" width="2800" height="1900"><feGaussianBlur sc-camel-std-deviation="8"></feGaussianBlur></filter>
+      <filter id="mvBlurM" sc-camel-filter-units="userSpaceOnUse" x="-400" y="-400" width="2800" height="1900"><feGaussianBlur sc-camel-std-deviation="3.5"></feGaussianBlur></filter>
+      <filter id="mvBlurS" sc-camel-filter-units="userSpaceOnUse" x="-400" y="-400" width="2800" height="1900"><feGaussianBlur sc-camel-std-deviation="1.2"></feGaussianBlur></filter>
+      <linearGradient id="mvFadeUp" sc-camel-gradient-units="userSpaceOnUse" x1="0" y1="600" x2="0" y2="-40">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.55" stop-color="#d6e9ff" stop-opacity="0.85"></stop>
+        <stop offset="1" stop-color="#9d7bff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="mvFadeDown" sc-camel-gradient-units="userSpaceOnUse" x1="0" y1="600" x2="0" y2="1120">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.5" stop-color="#d6e9ff" stop-opacity="0.7"></stop>
+        <stop offset="1" stop-color="#9d7bff" stop-opacity="0"></stop>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Nebulae -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <span style="position: absolute; left: -260px; top: -200px; width: 1100px; height: 800px; border-radius: 50%; background: radial-gradient(ellipse, rgba(124,92,255,0.32) 0%, rgba(124,92,255,0) 68%); filter: blur(30px); animation: mv-neb 28s ease-in-out infinite alternate;"></span>
+    <span style="position: absolute; left: 1100px; top: -260px; width: 1100px; height: 760px; border-radius: 50%; background: radial-gradient(ellipse, rgba(80,190,255,0.22) 0%, rgba(80,190,255,0) 68%); filter: blur(30px); animation: mv-neb 34s ease-in-out infinite alternate-reverse;"></span>
+    <span style="position: absolute; left: 1200px; top: 640px; width: 1000px; height: 700px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,111,216,0.16) 0%, rgba(255,111,216,0) 68%); filter: blur(30px); animation: mv-neb 30s ease-in-out infinite alternate;"></span>
+    <span style="position: absolute; left: -120px; top: 680px; width: 1000px; height: 640px; border-radius: 50%; background: radial-gradient(ellipse, rgba(60,90,255,0.22) 0%, rgba(60,90,255,0) 68%); filter: blur(30px); animation: mv-neb 38s ease-in-out infinite alternate-reverse;"></span>
+  </div>
+
+  <!-- Deep stars (parallax) -->
+  <div aria-hidden="true" style="{{starsFarStyle}}">
+    <sc-for list="{{starsFar}}" as="s" hint-placeholder-count="60">
+      <span style="{{s}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Distant timelines (parallax, out of focus) -->
+  <div aria-hidden="true" style="{{farLinesStyle}}">
+    <svg width="2100" height="1080" sc-camel-view-box="-90 0 2100 1080" style="display: block;">
+      <g fill="none" stroke-linecap="round">
+        <path d="{{farLines.l0}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l1}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l2}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l3}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l4}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l5}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l6}}" stroke="#8a7cff" stroke-opacity="0.35" stroke-width="10" filter="url(#mvBlurL)"></path>
+        <path d="{{farLines.l0}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+        <path d="{{farLines.l1}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+        <path d="{{farLines.l2}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+        <path d="{{farLines.l3}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+        <path d="{{farLines.l4}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+        <path d="{{farLines.l5}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+        <path d="{{farLines.l6}}" stroke="#bcd4ff" stroke-opacity="0.22" stroke-width="1.2" filter="url(#mvBlurS)"></path>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Near stars (parallax) -->
+  <div aria-hidden="true" style="{{starsNearStyle}}">
+    <sc-for list="{{starsNear}}" as="s" hint-placeholder-count="30">
+      <span style="{{s}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Horizon haze around the main timeline -->
+  <div aria-hidden="true" style="position: absolute; left: -200px; top: 470px; width: 2320px; height: 260px; border-radius: 50%; background: radial-gradient(ellipse, rgba(96,84,255,0.26) 0%, rgba(96,84,255,0) 68%);"></div>
+
+  <!-- Main timeline: braided strands -->
+  <svg aria-hidden="true" width="1920" height="1080" sc-camel-view-box="0 0 1920 1080" style="position: absolute; left: 0; top: 0;">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="{{trunkMain}}" stroke="#5b48ff" stroke-opacity="0.45" stroke-width="90" filter="url(#mvBlurXL)"></path>
+      <path d="{{trunkMain}}" stroke="#6fe3ff" stroke-opacity="0.5" stroke-width="22" filter="url(#mvBlurL)"></path>
+      <path d="{{trunkMain}}" stroke="#bfe9ff" stroke-opacity="0.7" stroke-width="6" filter="url(#mvBlurM)"></path>
+      <path d="{{fringe}}" stroke="#ff6fd8" stroke-opacity="0.5" stroke-width="1.4" transform="translate(0 7)"></path>
+      <path d="{{strands.s0}}" stroke="#ffffff" stroke-opacity="0.95" stroke-width="2.6"></path>
+      <path d="{{strands.s1}}" stroke="#ffffff" stroke-opacity="0.6" stroke-width="1.4"></path>
+      <path d="{{strands.s2}}" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.2"></path>
+      <path d="{{strands.s3}}" stroke="#ffffff" stroke-opacity="0.7" stroke-width="1"></path>
+      <path d="{{strands.s4}}" stroke="#ffffff" stroke-opacity="0.42" stroke-width="1.6"></path>
+      <path d="{{trunkMain}}" stroke="#ffffff" stroke-width="5" stroke-dasharray="130 590" filter="url(#mvBlurS)" style="animation: mv-flow-trunk 6s linear infinite;"></path>
+    </g>
+  </svg>
+
+  <!-- Nexus points: one branch per app, the selected one lit -->
+  <nav aria-label="Apps" style="position: absolute; inset: 0; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);">
+    <div style="{{trackStyle}}">
+      <sc-for list="{{nodes}}" as="n" hint-placeholder-count="10">
+        <div style="position: relative; flex-shrink: 0; width: 300px; height: 1080px;">
+          <svg aria-hidden="true" width="700" height="1080" sc-camel-view-box="0 0 700 1080" style="position: absolute; left: -200px; top: 0; pointer-events: none; overflow: visible;">
+            <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="{{n.upD}}" stroke="{{n.tint}}" stroke-width="26" filter="url(#mvBlurL)" style="{{n.haloStyle}}"></path>
+              <path d="{{n.downD}}" stroke="{{n.tint}}" stroke-width="20" filter="url(#mvBlurL)" style="{{n.haloStyle}}"></path>
+              <path d="{{n.upD}}" stroke="url(#mvFadeUp)" style="{{n.coreStyle}}"></path>
+              <path d="{{n.downD}}" stroke="url(#mvFadeDown)" style="{{n.coreStyle}}"></path>
+              <path d="{{n.twigD}}" stroke="{{n.twigTint}}" stroke-width="1.3" filter="url(#mvBlurS)" style="{{n.twigStyle}}"></path>
+              <path d="{{n.twigD}}" stroke="#ff6fd8" stroke-width="1" transform="translate(2 2)" style="{{n.fringeStyle}}"></path>
+              <path d="{{n.upD}}" stroke="#ffffff" stroke-width="3.4" stroke-dasharray="44 416" filter="url(#mvBlurS)" style="{{n.flowStyle}}"></path>
+            </g>
+          </svg>
+          <button sc-camel-on-click="{{n.pick}}" aria-current="{{n.current}}" aria-label="{{n.name}}" style="position: absolute; left: 90px; top: 540px; width: 120px; height: 120px; padding: 0; border: 0; background: none; cursor: pointer; font-family: inherit; color: #eaf2ff;">
+            <span style="{{n.bloomStyle}}"></span>
+            <span style="{{n.streakSoftStyle}}"></span>
+            <span style="{{n.streakStyle}}"></span>
+            <span style="{{n.rippleA}}"></span>
+            <span style="{{n.rippleB}}"></span>
+            <span style="{{n.ringStyle}}"></span>
+            <span style="{{n.orbStyle}}">{{n.initial}}</span>
+            <span style="{{n.labelStyle}}">{{n.name}}</span>
+          </button>
+        </div>
+      </sc-for>
+    </div>
+  </nav>
+
+  <!-- Vignette + film grain -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(75% 70% at 50% 54%, rgba(3,4,24,0) 55%, rgba(2,3,16,0.85) 100%);"></div>
+  <svg aria-hidden="true" width="1920" height="1080" style="position: absolute; left: 0; top: 0; opacity: 0.07; mix-blend-mode: overlay; pointer-events: none;">
+    <filter id="mvGrain"><feTurbulence type="fractalNoise" sc-camel-base-frequency="0.85" sc-camel-num-octaves="2" sc-camel-stitch-tiles="stitch"></feTurbulence></filter>
+    <rect width="1920" height="1080" filter="url(#mvGrain)"></rect>
+  </svg>
+
+  <!-- Brand -->
+  <span style="position: absolute; left: 96px; top: 60px; font-weight: 600; font-size: 30px; letter-spacing: -0.01em; color: #ffffff; text-shadow: 0 0 28px rgba(140,180,255,0.7); animation: mv-in 0.9s cubic-bezier(0.16,1,0.3,1) both;">JP-TV</span>
+
+  <!-- Top-right -->
+  <div style="position: absolute; right: 96px; top: 48px; display: flex; align-items: center; gap: 32px; animation: mv-in 0.9s 0.12s cubic-bezier(0.16,1,0.3,1) both;">
+    <a href="Network.dc.html" aria-label="Ver detalles de red" style="min-height: 48px; display: flex; align-items: center; gap: 12px; color: rgba(234,242,255,0.85); text-decoration: none; font-weight: 400; font-size: 19px;">
+      <svg width="24" height="24" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      [RED WI-FI]
+    </a>
+    <a href="Settings.dc.html" aria-label="Ajustes" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: rgba(234,242,255,0.85);">
+      <svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+    </a>
+    <a href="Themes.dc.html" aria-label="Temas" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: rgba(234,242,255,0.85);">
+      <svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+    </a>
+    <span style="font-weight: 300; font-size: 46px; line-height: 1; letter-spacing: -0.02em;">21:40</span>
+  </div>
+
+  <!-- Timeline scrubber -->
+  <div style="position: absolute; left: 460px; width: 1000px; bottom: 64px; height: 48px; animation: mv-in 0.9s 0.25s cubic-bezier(0.16,1,0.3,1) both;">
+    <span aria-hidden="true" style="position: absolute; left: -40px; right: -40px; top: 50%; height: 1px; background: linear-gradient(90deg, rgba(200,220,255,0) 0%, rgba(200,220,255,0.38) 15%, rgba(200,220,255,0.38) 85%, rgba(200,220,255,0) 100%);"></span>
+    <sc-for list="{{ticks}}" as="t" hint-placeholder-count="10">
+      <button sc-camel-on-click="{{t.pick}}" aria-label="{{t.name}}" style="{{t.btnStyle}}"><span style="{{t.markStyle}}"></span></button>
+    </sc-for>
+  </div>
+  <span style="position: absolute; left: 1520px; bottom: 78px; font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.22em; color: rgba(234,242,255,0.7);">{{position}}</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { focus: 1 };
+  }
+  renderVals() {
+    const list = [
+      ['Xuper Hydra', '#9d7bff'],
+      ['YouTube', '#ff7aa8'],
+      ['Netflix', '#ff6f91'],
+      ['Spotify', '#6ff0b4'],
+      ['Prime Video', '#6fc8ff'],
+      ['Disney+', '#7a9bff'],
+      ['Crunchyroll', '#ffb36f'],
+      ['Plex', '#ffe07a'],
+      ['Ajustes', '#b8c4ff'],
+      ['Todas las apps', '#c58bff'],
+    ];
+    const n = list.length;
+    const focus = this.state.focus;
+    const STEP = 300;
+    const ease = 'cubic-bezier(0.32,0.72,0,1)';
+    const T = '0.7s ' + ease;
+    const go = (i) => this.setState({ focus: Math.max(0, Math.min(n - 1, i)) });
+    const center = 'position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none;';
+    const bez = (p0, p1, p2, p3, t) => {
+      const u = 1 - t;
+      return [0, 1].map((k) => u * u * u * p0[k] + 3 * u * u * t * p1[k] + 3 * u * t * t * p2[k] + t * t * t * p3[k]);
+    };
+    const f = (v) => v.toFixed(1);
+    const nodes = list.map(([name, tint], i) => {
+      const on = i === focus;
+      const d = Math.abs(i - focus);
+      // Per-app branch, deterministic
+      let sd = 97 + i * 131;
+      const r = () => { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
+      const sign = i % 2 ? 1 : -1;
+      const dx = sign * (120 + r() * 170);
+      const P0 = [350, 600], P1 = [350 + dx * 0.05, 470], P2 = [350 + dx * 0.6, 250], P3 = [350 + dx, -40];
+      const Q = bez(P0, P1, P2, P3, 0.42);
+      const fx = dx * 0.55 + sign * 90;
+      const F3 = [Q[0] + fx, Q[1] - 300];
+      const upD = 'M' + P0.join(' ') + ' C' + P1.join(' ') + ', ' + P2.join(' ') + ', ' + P3.join(' ') +
+        ' M' + f(Q[0]) + ' ' + f(Q[1]) + ' C' + f(Q[0] + fx * 0.15) + ' ' + f(Q[1] - 90) + ', ' + f(Q[0] + fx * 0.6) + ' ' + f(Q[1] - 190) + ', ' + f(F3[0]) + ' ' + f(F3[1]);
+      const dd = -dx * 0.55;
+      const D1 = [350 + dd * 0.05, 700], D2 = [350 + dd * 0.6, 880], D3 = [350 + dd, 1120];
+      const downD = 'M350 600 C' + D1.map(f).join(' ') + ', ' + D2.map(f).join(' ') + ', ' + D3.map(f).join(' ');
+      const twig = (p, base) => {
+        let s = 'M' + f(p[0]) + ' ' + f(p[1]);
+        let a = base;
+        for (let k = 0; k < 4; k++) {
+          a += (k % 2 ? 1 : -1) * (0.5 + r() * 0.4);
+          const len = 14 + r() * 14;
+          s += ' l' + f(Math.cos(a) * len) + ' ' + f(Math.sin(a) * len);
+        }
+        return s;
+      };
+      const twigs = [0.3, 0.58, 0.8].map((t) => twig(bez(P0, P1, P2, P3, t), -Math.PI / 2 + (r() > 0.5 ? 0.9 : -0.9)));
+      twigs.push(twig(bez(Q, [Q[0] + fx * 0.15, Q[1] - 90], [Q[0] + fx * 0.6, Q[1] - 190], F3, 0.6), -Math.PI / 2 + sign * 0.8));
+      twigs.push(twig(bez(P0, D1, D2, D3, 0.5), Math.PI / 2 + (r() > 0.5 ? 0.8 : -0.8)));
+      const orb = on ? 132 : 52;
+      return {
+        name,
+        tint,
+        twigTint: on ? '#e3f0ff' : '#b8c8ff',
+        initial: name.charAt(0),
+        current: on ? 'true' : 'false',
+        pick: () => go(i),
+        upD,
+        downD,
+        twigD: twigs.join(' '),
+        haloStyle: 'opacity: ' + (on ? 0.55 : 0) + '; transition: opacity ' + T + ';',
+        coreStyle: 'stroke-width: ' + (on ? 2.8 : 1.1) + 'px; opacity: ' + (on ? 1 : d === 1 ? 0.32 : 0.2) + '; transition: opacity ' + T + ', stroke-width ' + T + ';',
+        twigStyle: 'opacity: ' + (on ? 0.95 : 0.18) + '; transition: opacity ' + T + ';',
+        fringeStyle: 'opacity: ' + (on ? 0.55 : 0) + '; transition: opacity ' + T + ';',
+        flowStyle: 'opacity: ' + (on ? 1 : 0) + '; transition: opacity ' + T + '; animation: mv-flow 3.4s linear infinite;',
+        bloomStyle: center + ' width: 560px; height: 560px; border-radius: 50%; background: radial-gradient(circle, ' + tint + '59 0%, ' + tint + '1f 35%, ' + tint + '00 68%); opacity: ' + (on ? 1 : 0) + '; transition: opacity ' + T + ';',
+        streakSoftStyle: center + ' width: 1500px; height: 22px; border-radius: 50%; filter: blur(8px); background: linear-gradient(90deg, rgba(111,227,255,0) 0%, rgba(111,227,255,0.45) 40%, rgba(255,255,255,0.8) 50%, rgba(111,227,255,0.45) 60%, rgba(111,227,255,0) 100%); opacity: ' + (on ? 1 : 0) + '; transition: opacity ' + T + ';',
+        streakStyle: center + ' width: 1300px; height: 2px; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, ' + tint + ' 35%, #ffffff 50%, ' + tint + ' 65%, rgba(255,255,255,0) 100%); opacity: ' + (on ? 0.9 : 0) + '; transition: opacity ' + T + ';',
+        rippleA: center + ' width: 140px; height: 140px; border-radius: 50%; border: 1px solid ' + tint + '; opacity: 0; ' + (on ? 'animation: mv-ripple 3.2s ease-out infinite;' : ''),
+        rippleB: center + ' width: 140px; height: 140px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.6); opacity: 0; ' + (on ? 'animation: mv-ripple 3.2s 1.6s ease-out infinite;' : ''),
+        ringStyle: center + ' width: ' + (on ? 196 : 74) + 'px; height: ' + (on ? 196 : 74) + 'px; border-radius: 50%; border: 1px dashed rgba(255,255,255,' + (on ? 0.5 : 0.22) + '); animation: mv-spin ' + (on ? 22 : 60) + 's linear infinite; transition: width ' + T + ', height ' + T + ';',
+        orbStyle: center + ' width: ' + orb + 'px; height: ' + orb + 'px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; ' +
+          'font-size: ' + (on ? 56 : 21) + 'px; color: ' + (on ? '#ffffff' : tint) + '; ' +
+          'background: ' + (on ? 'radial-gradient(circle at 34% 28%, rgba(255,255,255,0.9) 0%, ' + tint + ' 22%, rgba(18,22,92,0.96) 72%)' : 'radial-gradient(circle at 34% 28%, rgba(255,255,255,0.12) 0%, rgba(10,14,62,0.92) 60%)') + '; ' +
+          'border: 1.5px solid ' + (on ? 'rgba(255,255,255,0.85)' : tint + 'b3') + '; ' +
+          'box-shadow: 0 0 ' + (on ? 80 : 18) + 'px ' + tint + (on ? 'a6' : '55') + ', inset 0 0 ' + (on ? 30 : 10) + 'px rgba(255,255,255,' + (on ? 0.35 : 0.12) + '); ' +
+          'text-shadow: ' + (on ? '0 2px 12px rgba(10,14,62,0.8)' : 'none') + '; ' +
+          'transition: width ' + T + ', height ' + T + ', font-size ' + T + ', box-shadow ' + T + ', background ' + T + ';',
+        labelStyle: 'position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; pointer-events: none; top: ' + (on ? 60 + 66 + 40 : 60 + 26 + 18) + 'px; ' +
+          'font-size: ' + (on ? 64 : 17) + 'px; font-weight: ' + (on ? 600 : 400) + '; letter-spacing: ' + (on ? '-0.035em' : '0.01em') + '; line-height: 1.05; ' +
+          'color: ' + (on ? '#ffffff' : 'rgba(234,242,255,0.72)') + '; text-shadow: ' + (on ? '0 0 40px ' + tint + 'aa, 0 2px 18px rgba(3,4,24,0.8)' : '0 1px 8px rgba(3,4,24,0.9)') + '; ' +
+          'transition: top ' + T + ', font-size ' + T + ', color ' + T + ';',
+      };
+    });
+    // Braided main timeline
+    const strand = (amp, freq, ph, off) => {
+      let s = '';
+      for (let x = -60; x <= 1980; x += 30) {
+        const y = 600 + off + amp * Math.sin(x * freq + ph) + amp * 0.4 * Math.sin(x * freq * 2.3 + ph * 1.7);
+        s += (s ? ' L' : 'M') + x + ' ' + y.toFixed(1);
+      }
+      return s;
+    };
+    const strandSpec = [[3, 0.004, 0, 0, 0.95, 2.6], [7, 0.003, 1.2, -2, 0.6, 1.4], [10, 0.0026, 2.4, 3, 0.5, 1.2], [5, 0.005, 4, 1, 0.7, 1], [12, 0.002, 0.7, -1, 0.42, 1.6]];
+    const strandList = strandSpec.map(([a, fr, ph, off]) => strand(a, fr, ph, off));
+    const strands = {};
+    strandList.forEach((d, k) => { strands['s' + k] = d; });
+    // Background
+    let seed = 5;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const star = (big) => 'position: absolute; left: ' + Math.floor(rnd() * 2000) + 'px; top: ' + Math.floor(rnd() * 1080) + 'px; width: ' + big + 'px; height: ' + big + 'px; border-radius: 50%; ' +
+      'background: ' + (rnd() > 0.75 ? '#ffb8ee' : '#d8e8ff') + '; ' + (big > 2 ? 'box-shadow: 0 0 6px rgba(200,220,255,0.8); ' : '') +
+      'animation: mv-twinkle ' + (3 + rnd() * 5).toFixed(1) + 's ' + (rnd() * 5).toFixed(1) + 's ease-in-out infinite;';
+    const starsFar = Array.from({ length: 90 }, () => star(rnd() > 0.8 ? 2 : 1));
+    const starsNear = Array.from({ length: 26 }, () => star(3));
+    const farList = Array.from({ length: 7 }, (_, k) => {
+      const y0 = 80 + rnd() * 920, y1 = 80 + rnd() * 920;
+      return 'M-90 ' + y0.toFixed(0) + ' C' + (400 + rnd() * 300).toFixed(0) + ' ' + (y0 + (rnd() - 0.5) * 500).toFixed(0) + ', ' + (1300 + rnd() * 300).toFixed(0) + ' ' + (y1 + (rnd() - 0.5) * 500).toFixed(0) + ', 2010 ' + y1.toFixed(0);
+    });
+    const farLines = {};
+    farList.forEach((d, k) => { farLines['l' + k] = d; });
+    const ticks = list.map(([name, tint], i) => {
+      const on = i === focus;
+      return {
+        name,
+        pick: () => go(i),
+        btnStyle: 'position: absolute; left: ' + (i * (1000 / (n - 1)) - 22).toFixed(1) + 'px; top: 2px; width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 12px;',
+        markStyle: 'position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 2px; width: ' + (on ? 4 : 2) + 'px; height: ' + (on ? 30 : 10) + 'px; ' +
+          'background: ' + (on ? tint : 'rgba(220,232,255,0.5)') + '; box-shadow: ' + (on ? '0 0 14px ' + tint + ', 0 0 4px #ffffff' : 'none') + '; transition: height ' + T + ', width ' + T + ', background ' + T + ';',
+      };
+    });
+    return {
+      nodes,
+      strands,
+      trunkMain: strandList[0],
+      fringe: strandList[2],
+      starsFar,
+      starsNear,
+      farLines,
+      ticks,
+      starsFarStyle: 'position: absolute; left: -40px; top: 0; width: 2000px; height: 1080px; transform: translateX(' + (-focus * 5) + 'px); transition: transform 1.1s ' + ease + ';',
+      starsNearStyle: 'position: absolute; left: -40px; top: 0; width: 2000px; height: 1080px; transform: translateX(' + (-focus * 14) + 'px); transition: transform 1.1s ' + ease + ';',
+      farLinesStyle: 'position: absolute; left: -90px; top: 0; width: 2100px; height: 1080px; opacity: 0.8; transform: translateX(' + (-focus * 8) + 'px); transition: transform 1.1s ' + ease + ';',
+      trackStyle: 'position: absolute; left: 0; top: 0; display: flex; transform: translateX(' + (960 - (focus * STEP + 150)) + 'px); transition: transform 0.7s ' + ease + ';',
+      position: String(focus + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0'),
+    };
+  }
+}
+</script>
+
+
+</body></html>

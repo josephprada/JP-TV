@@ -1,15 +1,106 @@
-<!doctype html>
-<html lang="es">
-<head>
+<!DOCTYPE html>
+<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
+
+
 <meta charset="utf-8">
 <title>JP-TV — Tema Lo-fi</title>
-<script src="./support.js"></script>
+<script src="bd9f51b2-fc6d-4a61-97a3-f98155166d30"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;family=DM+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<style>/* cyrillic-ext */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("6e43d481-ea1c-4f3d-b11e-3e7accc3e0c7") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("ab097f5f-d693-4af3-b431-079b25714935") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("0a4ce965-0128-4993-8461-f854e04b1785") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("a90a67d4-f04e-44f3-89e2-b8097a438595") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("6e43d481-ea1c-4f3d-b11e-3e7accc3e0c7") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("ab097f5f-d693-4af3-b431-079b25714935") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("0a4ce965-0128-4993-8461-f854e04b1785") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("a90a67d4-f04e-44f3-89e2-b8097a438595") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/dmmono/v16/aFTU7PB1QTsUX8KYthSQBLyM.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("ea9c04bb-f6d9-4fcb-809b-8642f188c033") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
 <style>
 body{margin:0;background:#1e1b3a}
 a{color:#f2a65a}a:hover{color:#f6e7d0}
@@ -19,18 +110,22 @@ a{color:#f2a65a}a:hover{color:#f6e7d0}
 @keyframes lo-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 @keyframes lo-tail{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
 @keyframes lo-grain{0%{transform:translate(0,0)}25%{transform:translate(-8px,6px)}50%{transform:translate(6px,-4px)}75%{transform:translate(-4px,-8px)}100%{transform:translate(0,0)}}
+@keyframes lo-cloud{0%{transform:translateX(0)}100%{transform:translateX(90px)}}
 @keyframes lo-in{0%{opacity:0;transform:translateX(30px) rotate(var(--r,0deg))}100%{opacity:1;transform:translateX(0) rotate(var(--r,0deg))}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
-<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(180deg, #2a2350 0%, #1e1b3a 60%, #17142c 100%); color: #f6e7d0; font-family: 'DM Mono', monospace;">
+<div style="{{rootStyle}}">
 
   <!-- Window -->
-  <div style="position: absolute; left: 120px; top: 120px; width: 760px; height: 520px; border-radius: 24px; overflow: hidden; background: linear-gradient(180deg, #3b2d5c 0%, #7a4a72 55%, #f2a65a 100%); box-shadow: 0 0 0 18px #3a2d4a, 0 30px 80px rgba(0,0,0,0.5);">
-    <span aria-hidden="true" style="position: absolute; left: 520px; top: 70px; width: 90px; height: 90px; border-radius: 50%; background: #f6e7d0; box-shadow: 0 0 60px rgba(246,231,208,0.6);"></span>
+  <div style="{{windowStyle}}">
+    <span aria-hidden="true" style="{{orbStyle}}"></span>
+    <sc-for list="{{clouds}}" as="c" hint-placeholder-count="3">
+      <span aria-hidden="true" style="{{c}}"></span>
+    </sc-for>
     <!-- skyline -->
     <div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 220px; display: flex; align-items: flex-end; gap: 6px;">
-      <span style="width: 90px; height: 150px; background: #231c3d;"></span><span style="width: 70px; height: 200px; background: #2a2148;"></span><span style="width: 110px; height: 120px; background: #231c3d;"></span><span style="width: 60px; height: 180px; background: #2a2148;"></span><span style="width: 120px; height: 140px; background: #231c3d;"></span><span style="width: 80px; height: 210px; background: #2a2148;"></span><span style="width: 100px; height: 160px; background: #231c3d;"></span><span style="width: 90px; height: 130px; background: #2a2148;"></span>
+      <span style="width: 90px; height: 150px; background: {{bA}};"></span><span style="width: 70px; height: 200px; background: {{bB}};"></span><span style="width: 110px; height: 120px; background: {{bA}};"></span><span style="width: 60px; height: 180px; background: {{bB}};"></span><span style="width: 120px; height: 140px; background: {{bA}};"></span><span style="width: 80px; height: 210px; background: {{bB}};"></span><span style="width: 100px; height: 160px; background: {{bA}};"></span><span style="width: 90px; height: 130px; background: {{bB}};"></span>
     </div>
     <sc-for list="{{lights}}" as="l" hint-placeholder-count="10">
       <span aria-hidden="true" style="{{l}}"></span>
@@ -45,9 +140,10 @@ a{color:#f2a65a}a:hover{color:#f6e7d0}
   </div>
 
   <!-- Desk -->
-  <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 760px; bottom: 0; background: linear-gradient(180deg, #4a3047 0%, #331f33 100%);"></div>
+  <div aria-hidden="true" style="{{deskStyle}}"></div>
+  <div aria-hidden="true" style="{{sunbeamStyle}}"></div>
   <!-- Lamp glow -->
-  <div aria-hidden="true" style="position: absolute; left: 820px; top: 520px; width: 640px; height: 520px; border-radius: 50%; background: radial-gradient(ellipse, rgba(242,166,90,0.35) 0%, rgba(242,166,90,0) 65%); animation: lo-lamp 7s ease-in-out infinite;"></div>
+  <div aria-hidden="true" style="{{lampWrapStyle}}"><div style="position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(ellipse, rgba(242,166,90,0.35) 0%, rgba(242,166,90,0) 65%); animation: lo-lamp 7s ease-in-out infinite;"></div></div>
   <div aria-hidden="true" style="position: absolute; left: 1080px; top: 560px; width: 140px; height: 80px; border-radius: 70px 70px 10px 10px; background: #e98ca8;"></div>
   <div aria-hidden="true" style="position: absolute; left: 1144px; top: 640px; width: 12px; height: 130px; background: #c9708c;"></div>
   <!-- Mug + steam -->
@@ -65,16 +161,16 @@ a{color:#f2a65a}a:hover{color:#f6e7d0}
   <!-- VHS stamp + clock -->
   <div style="position: absolute; left: 120px; top: 48px; display: flex; gap: 28px; align-items: baseline; font-size: 22px; letter-spacing: 0.14em; color: #f6e7d0;">
     <span><span style="color: #e98ca8; animation: lo-blink 1s steps(1) infinite;">▶</span> PLAY</span>
-    <span>21:40 · SÁB 08 NOV</span>
+    <span>{{clock}} · {{date}}</span>
   </div>
 
   <!-- Notebook with apps -->
   <div style="position: absolute; right: 120px; top: 110px; width: 640px; height: 700px; border-radius: 18px; background: repeating-linear-gradient(180deg, #f6e7d0 0px, #f6e7d0 62px, #d8c7ad 63px, #f6e7d0 64px); box-shadow: 0 30px 70px rgba(0,0,0,0.5); transform: rotate(1.5deg); padding: 56px 56px 0 92px; box-sizing: border-box; color: #2a2350;">
     <span aria-hidden="true" style="position: absolute; left: 64px; top: 0; bottom: 0; width: 2px; background: #e98ca8;"></span>
-    <span style="font-family: 'Caveat', cursive; font-weight: 700; font-size: 56px; line-height: 1; color: #7a4a72;">{{brand}} — esta noche</span>
+    <span style="font-family: 'Caveat', cursive; font-weight: 700; font-size: 56px; line-height: 1; color: #7a4a72;">{{brand}} — {{whenLabel}}</span>
     <div style="display: flex; flex-direction: column; margin-top: 18px;">
       <sc-for list="{{apps}}" as="a" hint-placeholder-count="6">
-        <button onClick="{{a.pick}}" style="{{a.style}}">{{a.mark}} {{a.name}}</button>
+        <button sc-camel-on-click="{{a.pick}}" style="{{a.style}}">{{a.mark}} {{a.name}}</button>
       </sc-for>
     </div>
   </div>
@@ -90,19 +186,33 @@ a{color:#f2a65a}a:hover{color:#f6e7d0}
   <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.45) 100%); pointer-events: none;"></div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;momento&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Auto&quot;,&quot;options&quot;:[&quot;Auto&quot;,&quot;Día&quot;,&quot;Noche&quot;],&quot;section&quot;:&quot;Tema&quot;},&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;JP-TV&quot;},&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
 class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = { sel: 0 };
   }
+  componentDidMount() { this._tick = setInterval(() => this.forceUpdate(), 60000); }
+  componentWillUnmount() { clearInterval(this._tick); }
+  phase() {
+    const m = this.props.momento ?? 'Auto';
+    const now = new Date();
+    const h = now.getHours();
+    const night = m === 'Noche' || (m === 'Auto' && (h >= 18 || h < 6));
+    const clock = m === 'Auto' ? String(h).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') : (m === 'Noche' ? '21:40' : '10:30');
+    const days = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+    const months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+    const date = m === 'Auto' ? days[now.getDay()] + ' ' + String(now.getDate()).padStart(2, '0') + ' ' + months[now.getMonth()] : 'SÁB 08 NOV';
+    return { night, clock, date };
+  }
   renderVals() {
+    const { night, clock, date } = this.phase();
     let seed = 3;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
     const rain = Array.from({ length: 34 }, () =>
-      'position: absolute; left: ' + (rnd() * 760).toFixed(0) + 'px; top: 0; width: 2px; height: ' + (30 + rnd() * 40).toFixed(0) + 'px; border-radius: 2px; background: rgba(220,215,255,0.45); animation: lo-rain ' + (0.7 + rnd() * 0.6).toFixed(2) + 's ' + (rnd() * 1.2).toFixed(2) + 's linear infinite;');
+      'position: absolute; left: ' + (rnd() * 760).toFixed(0) + 'px; top: 0; width: 2px; height: ' + (30 + rnd() * 40).toFixed(0) + 'px; border-radius: 2px; background: rgba(220,215,255,0.45); opacity: ' + (night ? 1 : 0) + '; transition: opacity 2s ease; animation: lo-rain ' + (0.7 + rnd() * 0.6).toFixed(2) + 's ' + (rnd() * 1.2).toFixed(2) + 's linear infinite;');
     const lights = Array.from({ length: 14 }, () =>
-      'position: absolute; left: ' + (20 + rnd() * 720).toFixed(0) + 'px; top: ' + (330 + rnd() * 160).toFixed(0) + 'px; width: 8px; height: 10px; background: ' + (rnd() > 0.5 ? '#f2a65a' : '#f6e7d0') + '; opacity: 0.8;');
+      'position: absolute; left: ' + (20 + rnd() * 720).toFixed(0) + 'px; top: ' + (330 + rnd() * 160).toFixed(0) + 'px; width: 8px; height: 10px; background: ' + (rnd() > 0.5 ? '#f2a65a' : '#f6e7d0') + '; opacity: ' + (night ? 0.8 : 0) + '; transition: opacity 2s ease;');
     const names = ['YouTube', 'Netflix', 'Spotify', 'Xuper Hydra', 'Prime Video', 'Disney+'];
     const apps = names.map((name, i) => {
       const on = i === this.state.sel;
@@ -115,9 +225,24 @@ class Component extends DCLogic {
           (on ? 'background: rgba(242,166,90,0.45); color: #2a2350; font-weight: 700; border-radius: 10px; transform: translateX(10px);' : 'background: transparent; color: #4a3d6e; font-weight: 500;'),
       };
     });
-    return { rain, lights, apps, brand: this.props.brand ?? 'JP-TV' };
+    const clouds = [[60, 60, 200, 0.95, 34], [300, 150, 150, 0.8, 46], [560, 220, 180, 0.85, 40]].map(([x, y, w, a, dur]) =>
+      'position: absolute; left: ' + x + 'px; top: ' + y + 'px; width: ' + w + 'px; height: ' + Math.round(w * 0.3) + 'px; border-radius: ' + w + 'px; background: rgba(255,255,255,' + a + '); box-shadow: ' + Math.round(w * 0.22) + 'px -' + Math.round(w * 0.12) + 'px 0 ' + Math.round(w * 0.02) + 'px rgba(255,255,255,' + a + '); opacity: ' + (night ? 0 : 1) + '; transition: opacity 2s ease; animation: lo-cloud ' + dur + 's ease-in-out infinite alternate;');
+    return {
+      rain, lights, apps, clouds, clock, date,
+      brand: this.props.brand ?? 'JP-TV',
+      whenLabel: night ? 'esta noche' : 'hoy',
+      rootStyle: "width: 1920px; height: 1080px; position: relative; overflow: hidden; color: #f6e7d0; font-family: 'DM Mono', monospace; background: " + (night ? 'linear-gradient(180deg, #2a2350 0%, #1e1b3a 60%, #17142c 100%)' : 'linear-gradient(180deg, #6a69a6 0%, #55548c 60%, #45446f 100%)') + ';',
+      windowStyle: 'position: absolute; left: 120px; top: 120px; width: 760px; height: 520px; border-radius: 24px; overflow: hidden; box-shadow: 0 0 0 18px #3a2d4a, 0 30px 80px rgba(0,0,0,0.5); background: ' + (night ? 'linear-gradient(180deg, #3b2d5c 0%, #7a4a72 55%, #f2a65a 100%)' : 'linear-gradient(180deg, #5fb0ea 0%, #a8d8f5 55%, #fde6b8 100%)') + ';',
+      orbStyle: 'position: absolute; left: 520px; top: 70px; width: 90px; height: 90px; border-radius: 50%; ' + (night ? 'background: #f6e7d0; box-shadow: 0 0 60px rgba(246,231,208,0.6);' : 'background: #fff3c4; box-shadow: 0 0 90px 20px rgba(255,236,170,0.9);'),
+      bA: night ? '#231c3d' : '#7c8cbc',
+      bB: night ? '#2a2148' : '#93a2cc',
+      deskStyle: 'position: absolute; left: 0; right: 0; top: 760px; bottom: 0; background: ' + (night ? 'linear-gradient(180deg, #4a3047 0%, #331f33 100%)' : 'linear-gradient(180deg, #7a5266 0%, #593a4c 100%)') + ';',
+      sunbeamStyle: 'position: absolute; left: 140px; top: 640px; width: 900px; height: 340px; pointer-events: none; clip-path: polygon(0 0, 80% 0, 100% 100%, 22% 100%); background: linear-gradient(180deg, rgba(255,236,190,0.32) 0%, rgba(255,236,190,0) 100%); opacity: ' + (night ? 0 : 1) + '; transition: opacity 2s ease;',
+      lampWrapStyle: 'position: absolute; left: 820px; top: 520px; width: 640px; height: 520px; opacity: ' + (night ? 1 : 0) + '; transition: opacity 2s ease;',
+    };
   }
 }
 </script>
-</body>
-</html>
+
+
+</body></html>

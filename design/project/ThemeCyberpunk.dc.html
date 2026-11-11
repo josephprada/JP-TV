@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
+
+
+<meta charset="utf-8">
+<title>JP-TV — Tema Cyberpunk</title>
+<script src="263f636d-54ac-441a-b576-3676ad83008a"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>/* thai */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWi6pgeL4.woff2) format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWkKpgeL4.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWkapgeL4.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWn6pg.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* thai */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1U5_F7AY.woff2) format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1SJ_F7AY.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1SZ_F7AY.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("ee226da8-b97e-4c86-aeac-4ed3d3d0f209") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* thai */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51U5_F7AY.woff2) format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51SJ_F7AY.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51SZ_F7AY.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("ebf7dbb4-9a19-473d-9705-b725416b095c") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* thai */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("58d22bcf-16ed-4fac-a6c4-9182072bc7ff") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("2e327397-c19f-4c27-b46e-0dd61ebf5ad9") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("6baf442c-1aba-48d9-842b-b1b57d8a1ba7") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Chakra Petch';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("2ad6b770-81d9-4719-910a-4d278ed070c8") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'Share Tech Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFcLowEF.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+body{margin:0;background:#05020c}
+a{color:#e8fdff}a:hover{color:#ffffff}
+button:focus-visible,a:focus-visible{outline:2px solid #19f0ff;outline-offset:6px;border-radius:14px}
+@keyframes cy-rain{0%{transform:translateY(-120px)}100%{transform:translateY(1500px)}}
+@keyframes cy-blink{0%,100%{opacity:1}50%{opacity:0.1}}
+@keyframes cy-fly{0%{transform:translateX(-260px)}100%{transform:translateX(2200px)}}
+@keyframes cy-steam{0%{transform:translateY(0) scale(0.6);opacity:0}20%{opacity:0.4}100%{transform:translateY(-280px) scale(1.7);opacity:0}}
+@keyframes cy-splash{0%{transform:scale(0.2);opacity:0.8}100%{transform:scale(1.5);opacity:0}}
+@keyframes cy-flicker{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:0.4}}
+@keyframes cy-holo{0%,100%{opacity:0.6}47%{opacity:0.6}48%{opacity:0.25}50%{opacity:0.7}52%{opacity:0.3}54%{opacity:0.6}}
+@keyframes cy-on{0%{opacity:0.25}8%{opacity:1}12%{opacity:0.35}20%{opacity:1}27%{opacity:0.5}33%{opacity:1}100%{opacity:1}}
+@keyframes cy-twinkle{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes cy-in{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="{{rootStyle}}">
+
+  <!-- Smog glow at the horizon -->
+  <div aria-hidden="true" style="{{sunStyle}}"></div>
+  <div aria-hidden="true" style="{{smogA}}"></div>
+  <div aria-hidden="true" style="{{smogB}}"></div>
+
+  <!-- Flying vehicles -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{vehicles}}" as="v" hint-placeholder-count="6">
+      <span style="{{v}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Far megatowers + holo billboards (parallax) -->
+  <div aria-hidden="true" style="{{farStyle}}">
+    <sc-for list="{{far}}" as="b" hint-placeholder-count="40">
+      <span style="{{b}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Mid blocks (parallax) -->
+  <div aria-hidden="true" style="{{midStyle}}">
+    <sc-for list="{{mid}}" as="b" hint-placeholder-count="80">
+      <span style="{{b}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Overhead cables -->
+  <svg aria-hidden="true" width="1920" height="1080" sc-camel-view-box="0 0 1920 1080" style="position: absolute; left: 0; top: 0;">
+    <g fill="none" stroke="#05020c" stroke-width="2.5">
+      <path d="M-20 110 C 500 210, 1100 190, 1940 90"></path>
+      <path d="M-20 170 C 420 250, 900 260, 1940 160"></path>
+      <path d="M-20 60 C 700 150, 1400 140, 1940 210"></path>
+      <path d="M-20 230 C 600 300, 1300 290, 1940 250" stroke-width="1.6"></path>
+    </g>
+  </svg>
+
+  <!-- Wet street -->
+  <div aria-hidden="true" style="{{streetStyle}}"></div>
+  <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 779px; height: 2px; background: linear-gradient(90deg, rgba(255,42,109,0) 0%, rgba(255,42,109,0.7) 30%, rgba(25,240,255,0.7) 70%, rgba(25,240,255,0) 100%);"></div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{streaks}}" as="s" hint-placeholder-count="24">
+      <span style="{{s}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Steam -->
+  <span aria-hidden="true" style="position: absolute; left: 300px; top: 660px; width: 260px; height: 200px; border-radius: 50%; background: radial-gradient(ellipse, rgba(220,210,255,0.24) 0%, rgba(220,210,255,0) 70%); filter: blur(18px); animation: cy-steam 9s ease-out infinite;"></span>
+  <span aria-hidden="true" style="position: absolute; left: 1130px; top: 680px; width: 240px; height: 190px; border-radius: 50%; background: radial-gradient(ellipse, rgba(220,210,255,0.2) 0%, rgba(220,210,255,0) 70%); filter: blur(18px); animation: cy-steam 11s 3s ease-out infinite;"></span>
+  <span aria-hidden="true" style="position: absolute; left: 1620px; top: 670px; width: 260px; height: 200px; border-radius: 50%; background: radial-gradient(ellipse, rgba(220,210,255,0.22) 0%, rgba(220,210,255,0) 70%); filter: blur(18px); animation: cy-steam 10s 6s ease-out infinite;"></span>
+
+  <!-- Neon signs: one per app -->
+  <nav aria-label="Apps" style="position: absolute; inset: 0; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);">
+    <div style="{{trackStyle}}">
+      <sc-for list="{{signs}}" as="s" hint-placeholder-count="10">
+        <div style="position: relative; flex-shrink: 0; width: 260px; height: 1080px;">
+          <span aria-hidden="true" style="{{s.spillStyle}}"></span>
+          <span aria-hidden="true" style="{{s.reflectStyle}}"></span>
+          <span aria-hidden="true" style="position: absolute; left: 126px; top: 686px; width: 8px; height: 94px; background: linear-gradient(90deg, #07040d 0%, #2a2238 50%, #07040d 100%);"></span>
+          <span aria-hidden="true" style="position: absolute; left: 106px; top: 774px; width: 48px; height: 8px; border-radius: 2px; background: #0b0614;"></span>
+          <button sc-camel-on-click="{{s.pick}}" aria-current="{{s.current}}" aria-label="{{s.name}}" style="{{s.btnStyle}}">
+            <span aria-hidden="true" style="{{s.bloomStyle}}"></span>
+            <span style="{{s.bodyStyle}}">
+              <span aria-hidden="true" style="{{s.tubeStyle}}"></span>
+              <span aria-hidden="true" style="position: absolute; left: 12px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: #3a3148;"></span>
+              <span aria-hidden="true" style="position: absolute; right: 12px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: #3a3148;"></span>
+              <span style="{{s.badgeStyle}}">{{s.initial}}</span>
+              <span style="{{s.nameStyle}}">{{s.label}}</span>
+            </span>
+          </button>
+        </div>
+      </sc-for>
+    </div>
+  </nav>
+
+  <!-- Splashes + rain -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;">
+    <sc-for list="{{splashes}}" as="p" hint-placeholder-count="26">
+      <span style="{{p}}"></span>
+    </sc-for>
+  </div>
+  <div aria-hidden="true" style="position: absolute; left: -200px; top: -200px; width: 2320px; height: 1500px; transform: rotate(9deg); pointer-events: none;">
+    <sc-for list="{{rain}}" as="r" hint-placeholder-count="60">
+      <span style="{{r}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Scanlines + vignette -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1px, rgba(0,0,0,0) 1px, rgba(0,0,0,0) 4px);"></div>
+  <div aria-hidden="true" style="{{vignetteStyle}}"></div>
+  <div aria-hidden="true" style="{{topShadeStyle}}"></div>
+
+  <!-- Brand -->
+  <span style="position: absolute; left: 96px; top: 52px; font-weight: 700; font-size: 40px; letter-spacing: 0.06em; color: #ffe0ec; text-shadow: 0 0 6px #ff2a6d, 0 0 20px #ff2a6d, 0 0 48px rgba(255,42,109,0.7); animation: cy-flicker 8s linear infinite;">JP-TV</span>
+
+  <!-- Top-right -->
+  <div style="position: absolute; right: 96px; top: 46px; display: flex; align-items: center; gap: 16px; animation: cy-in 0.8s cubic-bezier(0.16,1,0.3,1) both;">
+    <a href="Network.dc.html" aria-label="Ver detalles de red" style="height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-radius: 26px; background: rgba(7,3,20,0.55); border: 1px solid rgba(25,240,255,0.45); text-decoration: none; font-weight: 500; font-size: 18px; letter-spacing: 0.04em; color: #e8fdff;">
+      <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#19f0ff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      [RED WI-FI]
+    </a>
+    <a href="Settings.dc.html" aria-label="Ajustes" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(7,3,20,0.55); border: 1px solid rgba(25,240,255,0.45); color: #19f0ff;">
+      <svg width="24" height="24" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+    </a>
+    <a href="Themes.dc.html" aria-label="Temas" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(7,3,20,0.55); border: 1px solid rgba(255,42,109,0.55); color: #ff6b9a;">
+      <svg width="24" height="24" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+    </a>
+    <span style="font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: 0.02em; margin-left: 10px; color: #e8fdff; text-shadow: 0 0 18px rgba(25,240,255,0.6);">{{clock}}</span>
+  </div>
+
+  <!-- Selected app, bottom-left -->
+  <div style="position: absolute; left: 96px; bottom: 96px; display: flex; flex-direction: column; gap: 6px;">
+    <span style="{{indexStyle}}">{{position}}</span>
+    <span style="{{nameStyle}}">{{selName}}</span>
+  </div>
+
+  <!-- Scrubber -->
+  <div style="position: absolute; right: 96px; width: 620px; bottom: 96px; height: 48px;">
+    <span aria-hidden="true" style="position: absolute; left: -30px; right: -30px; top: 50%; height: 1px; background: linear-gradient(90deg, rgba(25,240,255,0) 0%, rgba(25,240,255,0.45) 15%, rgba(255,42,109,0.45) 85%, rgba(255,42,109,0) 100%);"></span>
+    <sc-for list="{{ticks}}" as="t" hint-placeholder-count="10">
+      <button sc-camel-on-click="{{t.pick}}" aria-label="{{t.name}}" style="{{t.btnStyle}}"><span style="{{t.markStyle}}"></span></button>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;momento&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Auto&quot;,&quot;options&quot;:[&quot;Auto&quot;,&quot;Día&quot;,&quot;Noche&quot;],&quot;section&quot;:&quot;Tema&quot;},&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { focus: 1 };
+  }
+  componentDidMount() { this._tick = setInterval(() => this.forceUpdate(), 60000); }
+  componentWillUnmount() { clearInterval(this._tick); }
+  phase() {
+    const m = this.props.momento ?? 'Auto';
+    const now = new Date();
+    const h = now.getHours();
+    const night = m === 'Noche' || (m === 'Auto' && (h >= 18 || h < 6));
+    const clock = m === 'Auto' ? String(h).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') : (m === 'Noche' ? '21:40' : '10:30');
+    const days = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+    const months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+    const date = m === 'Auto' ? days[now.getDay()] + ' ' + String(now.getDate()).padStart(2, '0') + ' ' + months[now.getMonth()] : 'SÁB 08 NOV';
+    return { night, clock, date };
+  }
+  rgba(hex, a) {
+    const n = parseInt(hex.replace('#', ''), 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  renderVals() {
+    const list = [
+      ['Xuper Hydra', '#b06cff'],
+      ['YouTube', '#ff2a6d'],
+      ['Netflix', '#ff3b5c'],
+      ['Spotify', '#9dff4f'],
+      ['Prime Video', '#19f0ff'],
+      ['Disney+', '#4d8dff'],
+      ['Crunchyroll', '#ffa62e'],
+      ['Plex', '#ffe14d'],
+      ['Ajustes', '#7ffcff'],
+      ['Todas las apps', '#ff5fd2'],
+    ];
+    const { night, clock } = this.phase();
+    const P = night
+      ? { far1: '#1d1040', far2: '#100726', mid1: '#130a2a', mid2: '#0a0518', dotOp: 0.7, winOp: 0.75, streak: 0.35, rain: 0.32, bloom: 1 }
+      : { far1: '#7c89ae', far2: '#606b90', mid1: '#4c5476', mid2: '#333a58', dotOp: 0.25, winOp: 0.3, streak: 0.16, rain: 0.2, bloom: 0.7 };
+    const n = list.length;
+    const focus = this.state.focus;
+    const STEP = 260;
+    const ease = 'cubic-bezier(0.32,0.72,0,1)';
+    const T = '0.6s ' + ease;
+    const go = (i) => this.setState({ focus: Math.max(0, Math.min(n - 1, i)) });
+    const signs = list.map(([name, tint], i) => {
+      const on = i === focus;
+      const d = Math.abs(i - focus);
+      const fs = 28;
+      const label = name.length > 10 ? name.slice(0, 8).trimEnd() + '...' : name;
+      return {
+        name,
+        label,
+        initial: name.charAt(0),
+        current: on ? 'true' : 'false',
+        pick: () => go(i),
+        btnStyle: 'position: absolute; left: 60px; top: 246px; width: 140px; height: 440px; padding: 0; border: 0; background: none; cursor: pointer; font-family: inherit; ' +
+          'transform: ' + (on ? 'translateY(-8px) scale(1.08)' : 'scale(0.96)') + '; opacity: ' + (on ? 1 : d === 1 ? 0.9 : 0.75) + '; transition: transform ' + T + ', opacity ' + T + ';',
+        bloomStyle: 'position: absolute; left: 50%; top: 50%; width: 460px; height: 760px; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; ' +
+          'background: radial-gradient(ellipse, ' + this.rgba(tint, 0.38) + ' 0%, ' + this.rgba(tint, 0.1) + ' 40%, ' + this.rgba(tint, 0) + ' 68%); opacity: ' + (on ? P.bloom : 0) + '; transition: opacity ' + T + ';',
+        bodyStyle: 'position: absolute; inset: 0; display: block; overflow: hidden; border-radius: 20px; background: linear-gradient(180deg, #170b2a 0%, #0b0517 100%); ' +
+          'border: 2px solid ' + (on ? tint : this.rgba(tint, 0.28)) + '; ' +
+          'box-shadow: ' + (on ? '0 0 14px ' + tint + ', 0 0 44px ' + this.rgba(tint, 0.55) + ', inset 0 0 26px ' + this.rgba(tint, 0.35) : '0 16px 30px rgba(0,0,0,0.5)') + '; ' +
+          'transition: border-color ' + T + ', box-shadow ' + T + '; ' + (on ? 'animation: cy-on 1.3s linear both;' : ''),
+        tubeStyle: 'position: absolute; inset: 9px; border-radius: 13px; border: 1px solid ' + this.rgba(tint, on ? 0.6 : 0.14) + '; transition: border-color ' + T + ';',
+        badgeStyle: 'position: absolute; left: 50%; top: 26px; width: 78px; height: 78px; margin-left: -39px; border-radius: 50%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; ' +
+          'border: 2px solid ' + (on ? tint : this.rgba(tint, 0.3)) + '; font-weight: 700; font-size: 36px; ' +
+          'color: ' + (on ? '#ffffff' : this.rgba(tint, 0.55)) + '; text-shadow: ' + (on ? '0 0 6px ' + tint + ', 0 0 18px ' + tint : 'none') + '; ' +
+          'box-shadow: ' + (on ? '0 0 16px ' + this.rgba(tint, 0.7) + ', inset 0 0 12px ' + this.rgba(tint, 0.5) : 'none') + '; transition: color ' + T + ', border-color ' + T + ', box-shadow ' + T + ';',
+        nameStyle: 'position: absolute; left: 0; right: 0; top: 122px; bottom: 18px; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; text-orientation: upright; ' +
+          'font-weight: 600; font-size: ' + fs + 'px; letter-spacing: -0.12em; text-transform: uppercase; white-space: nowrap; ' +
+          'color: ' + (on ? '#ffffff' : this.rgba(tint, 0.5)) + '; text-shadow: ' + (on ? '0 0 4px ' + tint + ', 0 0 14px ' + tint + ', 0 0 30px ' + this.rgba(tint, 0.7) : 'none') + '; transition: color ' + T + ';',
+        reflectStyle: 'position: absolute; left: 50px; top: 794px; width: 160px; height: 280px; pointer-events: none; ' +
+          'background: linear-gradient(180deg, ' + this.rgba(tint, on ? 0.6 : 0.14) + ' 0%, ' + this.rgba(tint, 0) + ' 100%); filter: blur(9px); ' +
+          '-webkit-mask-image: repeating-linear-gradient(0deg, #000 0px, #000 6px, rgba(0,0,0,0.35) 6px, rgba(0,0,0,0.35) 9px); mask-image: repeating-linear-gradient(0deg, #000 0px, #000 6px, rgba(0,0,0,0.35) 6px, rgba(0,0,0,0.35) 9px); transition: background ' + T + ';',
+        spillStyle: 'position: absolute; left: -60px; top: 748px; width: 380px; height: 70px; border-radius: 50%; pointer-events: none; ' +
+          'background: radial-gradient(ellipse, ' + this.rgba(tint, 0.5) + ' 0%, ' + this.rgba(tint, 0) + ' 70%); opacity: ' + (on ? 1 : 0) + '; transition: opacity ' + T + ';',
+      };
+    });
+    let seed = 23;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1));
+    const neon = ['#19f0ff', '#ff2a6d', '#b06cff', '#ffe14d'];
+    // Far megatowers
+    const far = [];
+    let x = -40;
+    while (x < 2000) {
+      const w = ri(60, 150);
+      const h = ri(380, 760);
+      far.push('position: absolute; left: ' + x + 'px; bottom: 300px; width: ' + w + 'px; height: ' + h + 'px; background: linear-gradient(180deg, ' + P.far1 + ' 0%, ' + P.far2 + ' 100%); box-shadow: inset 1px 0 0 rgba(176,108,255,0.18);');
+      for (let k = 0; k < ri(4, 12); k++) {
+        const c = neon[ri(0, 3)];
+        far.push('position: absolute; left: ' + (x + ri(4, w - 8)) + 'px; bottom: ' + (300 + ri(20, h - 30)) + 'px; width: 3px; height: 4px; background: ' + c + '; opacity: ' + P.dotOp + '; animation: cy-twinkle ' + (2 + rnd() * 5).toFixed(1) + 's ' + (rnd() * 4).toFixed(1) + 's ease-in-out infinite;');
+      }
+      if (rnd() > 0.6) {
+        const c = neon[ri(0, 1)];
+        far.push('position: absolute; left: ' + (x + w - 4) + 'px; bottom: ' + (300 + ri(60, h - 200)) + 'px; width: 3px; height: ' + ri(80, 180) + 'px; background: ' + c + '; box-shadow: 0 0 10px ' + c + ', 0 0 26px ' + c + '; opacity: 0.8; animation: cy-flicker ' + (5 + rnd() * 6).toFixed(1) + 's ' + (rnd() * 3).toFixed(1) + 's linear infinite;');
+      }
+      if (h > 600) {
+        far.push('position: absolute; left: ' + (x + Math.floor(w / 2) - 3) + 'px; bottom: ' + (300 + h) + 'px; width: 6px; height: 6px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px 3px rgba(255,59,48,0.8); animation: cy-blink 2.2s ' + (rnd() * 2).toFixed(1) + 's steps(1) infinite;');
+      }
+      x += w;
+    }
+    [[150, 300, 120, 180, '#ff2a6d'], [720, 240, 96, 150, '#19f0ff'], [1230, 280, 150, 96, '#b06cff'], [1600, 220, 104, 170, '#ffe14d'], [460, 380, 84, 120, '#19f0ff']].forEach(([bx, by, bw, bh, c]) => {
+      far.push('position: absolute; left: ' + (bx - 30) + 'px; top: ' + (by - 30) + 'px; width: ' + (bw + 60) + 'px; height: ' + (bh + 60) + 'px; background: ' + this.rgba(c, 0.25) + '; filter: blur(26px);');
+      far.push('position: absolute; left: ' + bx + 'px; top: ' + by + 'px; width: ' + bw + 'px; height: ' + bh + 'px; border-radius: 4px; ' +
+        'background: repeating-linear-gradient(0deg, ' + this.rgba(c, 0.85) + ' 0px, ' + this.rgba(c, 0.85) + ' 2px, ' + this.rgba(c, 0.35) + ' 2px, ' + this.rgba(c, 0.35) + ' 4px), linear-gradient(135deg, ' + this.rgba(c, 0.9) + ', ' + this.rgba(c, 0.2) + '); ' +
+        'box-shadow: 0 0 30px ' + this.rgba(c, 0.6) + '; animation: cy-holo ' + (6 + rnd() * 5).toFixed(1) + 's ' + (rnd() * 4).toFixed(1) + 's linear infinite;');
+    });
+    // Mid blocks with lit window grids
+    const mid = [];
+    x = -30;
+    while (x < 2000) {
+      const w = ri(110, 200);
+      const h = ri(240, 440);
+      mid.push('position: absolute; left: ' + x + 'px; bottom: 300px; width: ' + w + 'px; height: ' + h + 'px; background: repeating-linear-gradient(0deg, transparent 0px, transparent 10px, rgba(255,255,255,0.025) 10px, rgba(255,255,255,0.025) 18px), linear-gradient(180deg, ' + P.mid1 + ' 0%, ' + P.mid2 + ' 100%); box-shadow: inset 1px 0 0 rgba(25,240,255,0.14);');
+      const cols = Math.floor((w - 10) / 14);
+      const rows = Math.floor((h - 20) / 18);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (rnd() < 0.1) {
+            const col = ['#19f0ff', '#ff6b9a', '#ffb45e', '#c9a2ff'][ri(0, 3)];
+            mid.push('position: absolute; left: ' + (x + 8 + c * 14) + 'px; bottom: ' + (310 + r * 18) + 'px; width: 7px; height: 9px; background: ' + col + '; opacity: ' + P.winOp + ';');
+          }
+        }
+      }
+      if (rnd() > 0.55) {
+        const c = neon[ri(0, 2)];
+        mid.push('position: absolute; left: ' + x + 'px; bottom: ' + (300 + h - 6) + 'px; width: ' + w + 'px; height: 3px; background: ' + c + '; box-shadow: 0 0 12px ' + c + ', 0 0 28px ' + c + '; opacity: 0.85;');
+      }
+      x += w;
+    }
+    const streaks = Array.from({ length: 26 }, () => {
+      const c = ['#ff2a6d', '#19f0ff', '#b06cff', '#ffb45e'][ri(0, 3)];
+      return 'position: absolute; left: ' + ri(0, 1900) + 'px; top: 790px; width: ' + ri(6, 16) + 'px; height: ' + ri(110, 240) + 'px; background: linear-gradient(180deg, ' + this.rgba(c, P.streak) + ', ' + this.rgba(c, 0) + '); filter: blur(6px);';
+    });
+    const vehicles = [[120, 32, 0, '#19f0ff'], [190, 44, 9, '#ff2a6d'], [90, 38, 16, '#ffe14d'], [240, 52, 4, '#b06cff'], [150, 28, 22, '#19f0ff'], [210, 46, 30, '#ff2a6d']].map(([y, dur, delay, c], k) =>
+      'position: absolute; left: 0; top: ' + y + 'px; width: 80px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, ' + this.rgba(c, 0) + ' 0%, ' + this.rgba(c, 0.6) + ' 70%, #ffffff 100%); box-shadow: 0 0 10px ' + c + '; ' +
+      'animation: cy-fly ' + dur + 's ' + delay + 's linear infinite' + (k % 2 ? ' reverse' : '') + ';');
+    const splashes = Array.from({ length: 26 }, () =>
+      'position: absolute; left: ' + ri(0, 1900) + 'px; top: ' + ri(800, 1060) + 'px; width: 16px; height: 5px; border-radius: 50%; border: 1px solid rgba(180,220,255,0.55); animation: cy-splash ' + (1 + rnd()).toFixed(2) + 's ' + (rnd() * 2).toFixed(2) + 's ease-out infinite;');
+    const rain = Array.from({ length: 110 }, () =>
+      'position: absolute; left: ' + ri(0, 2320) + 'px; top: 0; width: 1px; height: ' + ri(40, 100) + 'px; background: linear-gradient(180deg, rgba(170,220,255,0), rgba(170,220,255,' + P.rain + ')); animation: cy-rain ' + (0.55 + rnd() * 0.6).toFixed(2) + 's ' + (rnd() * 1.5).toFixed(2) + 's linear infinite;');
+    const ticks = list.map(([name, tint], i) => {
+      const on = i === focus;
+      return {
+        name,
+        pick: () => go(i),
+        btnStyle: 'position: absolute; left: ' + (i * (620 / (n - 1)) - 22).toFixed(1) + 'px; top: 2px; width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 12px;',
+        markStyle: 'position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 2px; width: ' + (on ? 4 : 2) + 'px; height: ' + (on ? 30 : 10) + 'px; ' +
+          'background: ' + (on ? tint : 'rgba(232,253,255,0.5)') + '; box-shadow: ' + (on ? '0 0 14px ' + tint + ', 0 0 4px #ffffff' : 'none') + '; transition: height ' + T + ', width ' + T + ', background ' + T + ';',
+      };
+    });
+    const sel = list[focus];
+    const base = "width: 1920px; height: 1080px; position: relative; overflow: hidden; color: #e8fdff; font-family: 'Chakra Petch', system-ui, sans-serif; ";
+    return {
+      clock,
+      rootStyle: base + 'background: ' + (night ? 'linear-gradient(180deg, #07031a 0%, #150834 45%, #2a0c3e 72%, #120624 100%)' : 'linear-gradient(180deg, #4d6a96 0%, #8f9cbd 40%, #dcb9a6 70%, #8d7f95 100%)') + ';',
+      sunStyle: night
+        ? 'position: absolute; left: 1420px; top: 120px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, #e6deff 0%, rgba(230,222,255,0.5) 45%, rgba(230,222,255,0) 70%); filter: blur(3px); opacity: 0.6;'
+        : 'position: absolute; left: 1300px; top: 60px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, #fff8e2 0%, rgba(255,226,170,0.7) 28%, rgba(255,214,150,0) 68%); filter: blur(6px);',
+      smogA: 'position: absolute; left: -200px; top: 470px; width: 1300px; height: 420px; border-radius: 50%; filter: blur(20px); background: radial-gradient(ellipse, ' + (night ? 'rgba(255,42,109,0.32) 0%, rgba(255,42,109,0) 68%' : 'rgba(255,170,120,0.4) 0%, rgba(255,170,120,0) 68%') + ');',
+      smogB: 'position: absolute; left: 900px; top: 440px; width: 1300px; height: 440px; border-radius: 50%; filter: blur(20px); background: radial-gradient(ellipse, ' + (night ? 'rgba(25,240,255,0.22) 0%, rgba(25,240,255,0) 68%' : 'rgba(255,224,176,0.38) 0%, rgba(255,224,176,0) 68%') + ');',
+      streetStyle: 'position: absolute; left: 0; right: 0; top: 780px; bottom: 0; background: ' + (night ? 'linear-gradient(180deg, #170b2b 0%, #08040f 42%, #040209 100%)' : 'linear-gradient(180deg, #4c4f6b 0%, #2a2b3c 42%, #17171f 100%)') + ';',
+      vignetteStyle: 'position: absolute; inset: 0; pointer-events: none; background: radial-gradient(75% 70% at 50% 50%, rgba(5,2,12,0) 55%, rgba(5,2,12,' + (night ? 0.82 : 0.5) + ') 100%);',
+      topShadeStyle: 'position: absolute; left: 0; right: 0; top: 0; height: 240px; pointer-events: none; background: linear-gradient(180deg, rgba(8,6,24,0.5) 0%, rgba(8,6,24,0) 100%); opacity: ' + (night ? 0 : 1) + ';',
+      signs,
+      far,
+      mid,
+      streaks,
+      vehicles,
+      splashes,
+      rain,
+      ticks,
+      farStyle: 'position: absolute; left: -40px; top: 0; width: 2040px; height: 1080px; transform: translateX(' + (-focus * 6) + 'px); transition: transform 1.1s ' + ease + ';',
+      midStyle: 'position: absolute; left: -40px; top: 0; width: 2040px; height: 1080px; transform: translateX(' + (-focus * 16) + 'px); transition: transform 1.1s ' + ease + ';',
+      trackStyle: 'position: absolute; left: 0; top: 0; display: flex; transform: translateX(' + (960 - (focus * STEP + 130)) + 'px); transition: transform 0.6s ' + ease + ';',
+      selName: sel[0].toUpperCase(),
+      nameStyle: 'font-weight: 600; font-size: 72px; line-height: 1; letter-spacing: 0.03em; color: #ffffff; white-space: nowrap; text-shadow: 0 0 6px ' + sel[1] + ', 0 0 24px ' + this.rgba(sel[1], 0.8) + ', 0 0 60px ' + this.rgba(sel[1], 0.5) + ';',
+      indexStyle: 'font-family: "Share Tech Mono", monospace; font-size: 16px; letter-spacing: 0.24em; color: ' + sel[1] + '; text-shadow: 0 0 10px ' + this.rgba(sel[1], 0.6) + ';',
+      position: String(focus + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0'),
+    };
+  }
+}
+</script>
+
+
+</body></html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
+
+
+<meta charset="utf-8">
+<title>JP-TV — Tema Gotham</title>
+<script src="f768169d-20b3-4b67-98bd-bc843bd696aa"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>/* latin-ext */
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/bebasneue/v16/JTUSjIg69CK48gW7PXoo9Wdhyzbi.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("527623bf-ea2f-4b55-92b8-da742242615f") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/specialelite/v20/XLYgIZbkc4JPUL5CVArUVL0ntn4OSEFt.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f3039524-f32d-4d43-b9cf-b3b7d8599105") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+body{margin:0;background:#05070b}
+a{color:#e8edf2}a:hover{color:#ffffff}
+button:focus-visible,a:focus-visible{outline:2px solid #ffffff;outline-offset:4px;border-radius:10px}
+@keyframes ng-rain{0%{transform:translateY(-120px)}100%{transform:translateY(1500px)}}
+@keyframes ng-sway{0%{transform:rotate(-9deg)}100%{transform:rotate(7deg)}}
+@keyframes ng-fog{0%{transform:translateX(-220px)}100%{transform:translateX(220px)}}
+@keyframes ng-twinkle{0%,100%{opacity:0.25}50%{opacity:0.95}}
+@keyframes ng-in{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes ng-blink{0%,100%{opacity:1}50%{opacity:0.1}}
+@keyframes ng-mote{0%,100%{transform:translate(0,0);opacity:0.2}50%{transform:translate(8px,-14px);opacity:0.9}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(180deg, #05070b 0%, #0f1620 55%, #1a2330 100%); color: #e8edf2; font-family: 'Special Elite', 'Courier New', monospace;">
+
+  <!-- Cloud banks -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{clouds}}" as="c" hint-placeholder-count="5">
+      <span style="{{c}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Far skyline (hazy) -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{farLayer}}" as="b" hint-placeholder-count="20">
+      <span style="{{b}}"></span>
+    </sc-for>
+  </div>
+  <div aria-hidden="true" style="position: absolute; left: -200px; top: 640px; width: 1500px; height: 280px; border-radius: 50%; background: radial-gradient(ellipse, rgba(150,175,200,0.16) 0%, rgba(150,175,200,0) 70%); animation: ng-fog 38s ease-in-out infinite alternate;"></div>
+
+  <!-- Mid skyline -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{midLayer}}" as="b" hint-placeholder-count="60">
+      <span style="{{b}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Searchlight rig: housing, beam, motes and projected monogram -->
+  <div aria-hidden="true" style="position: absolute; left: 245px; top: -8px; width: 560px; height: 780px; transform-origin: 50% 100%; animation: ng-sway 9s ease-in-out infinite alternate;">
+    <div style="position: absolute; left: 0; top: 0; width: 560px; height: 700px; filter: blur(3px);">
+      <div style="position: absolute; inset: 0; clip-path: polygon(45% 100%, 55% 100%, 100% 0, 0 0); background: linear-gradient(0deg, rgba(255,246,210,0.55) 0%, rgba(255,246,210,0.07) 100%);"></div>
+    </div>
+    <div style="position: absolute; left: 140px; top: 60px; width: 280px; height: 640px; clip-path: polygon(40% 100%, 60% 100%, 100% 0, 0 0); background: linear-gradient(0deg, rgba(255,250,225,0.5) 0%, rgba(255,250,225,0) 100%);"></div>
+    <sc-for list="{{motes}}" as="m" hint-placeholder-count="20">
+      <span style="{{m}}"></span>
+    </sc-for>
+    <!-- Monogram projected on the clouds -->
+    <span style="position: absolute; left: 50%; top: 4px; width: 350px; height: 240px; margin-left: -175px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,246,210,0.55) 0%, rgba(255,246,210,0) 70%); filter: blur(10px);"></span>
+    <span style="position: absolute; left: 50%; top: 26px; width: 250px; height: 170px; margin-left: -125px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,248,222,0.95) 0%, rgba(255,246,210,0.6) 72%, rgba(255,246,210,0.12) 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 112px; line-height: 1; letter-spacing: 0.04em; color: #0a0e14;">JP</span>
+    <!-- Lens flare -->
+    <span style="position: absolute; left: 50%; top: 586px; width: 230px; height: 230px; margin-left: -115px; border-radius: 50%; background: radial-gradient(circle, rgba(255,250,225,0.95) 0%, rgba(255,240,180,0.35) 35%, rgba(255,240,180,0) 68%);"></span>
+    <span style="position: absolute; left: 50%; top: 698px; width: 300px; height: 3px; margin-left: -150px; background: linear-gradient(90deg, rgba(255,250,225,0), rgba(255,250,225,0.9), rgba(255,250,225,0));"></span>
+    <!-- Housing -->
+    <span style="position: absolute; left: 50%; bottom: 0; width: 88px; height: 82px; margin-left: -44px;">
+      <span style="position: absolute; left: 10px; right: 10px; bottom: 0; height: 22px; background: linear-gradient(180deg, #2a323d 0%, #12171d 100%); border-radius: 3px;"></span>
+      <span style="position: absolute; left: 0; width: 7px; top: 14px; bottom: 14px; background: #1b222b; border-radius: 3px;"></span>
+      <span style="position: absolute; right: 0; width: 7px; top: 14px; bottom: 14px; background: #1b222b; border-radius: 3px;"></span>
+      <span style="position: absolute; left: 8px; right: 8px; top: 0; bottom: 18px; border-radius: 8px 8px 4px 4px; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.35) 0px, rgba(0,0,0,0.35) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 9px), linear-gradient(90deg, #12161c 0%, #3a4452 45%, #10141a 100%); box-shadow: inset 0 -8px 12px rgba(0,0,0,0.5);"></span>
+      <span style="position: absolute; left: 4px; right: 4px; top: -4px; height: 14px; border-radius: 50%; background: #20262e; border: 2px solid #4a5666;"></span>
+      <span style="position: absolute; left: 10px; right: 10px; top: -2px; height: 10px; border-radius: 50%; background: radial-gradient(ellipse, #fffbe8 0%, #ffe9a0 60%, #b78a2a 100%); box-shadow: 0 0 26px 10px rgba(255,240,180,0.85);"></span>
+    </span>
+  </div>
+
+  <!-- Near skyline -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{nearLayer}}" as="b" hint-placeholder-count="40">
+      <span style="{{b}}"></span>
+    </sc-for>
+  </div>
+  <div aria-hidden="true" style="position: absolute; left: 700px; top: 800px; width: 1500px; height: 260px; border-radius: 50%; background: radial-gradient(ellipse, rgba(150,175,200,0.14) 0%, rgba(150,175,200,0) 70%); animation: ng-fog 44s ease-in-out infinite alternate-reverse;"></div>
+
+  <!-- Case files -->
+  <nav aria-label="Apps" style="position: absolute; left: 0; top: 250px; width: 1920px; height: 600px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);">
+    <div style="{{trackStyle}}">
+      <sc-for list="{{cards}}" as="c" hint-placeholder-count="10">
+        <button sc-camel-on-click="{{c.pick}}" aria-current="{{c.current}}" aria-label="{{c.name}}" style="{{c.btnStyle}}">
+          <span style="{{c.liftStyle}}">
+            <span style="position: absolute; left: 50%; top: -9px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff7b7b 0%, #c0272d 55%, #6e0f14 100%); box-shadow: 0 4px 6px rgba(0,0,0,0.5); z-index: 2;"></span>
+            <span style="position: absolute; inset: 0; display: flex; flex-direction: column; gap: 14px; padding: 28px 24px 24px; box-sizing: border-box; border-radius: 4px; background: linear-gradient(170deg, #e0d3ae 0%, #cdbd90 100%); color: #2b2314;">
+              <span style="display: flex; justify-content: space-between; font-size: 15px; letter-spacing: 0.12em;"><span>CASO Nº {{c.num}}</span><span>ARCHIVO</span></span>
+              <span aria-hidden="true" style="position: relative; display: block; height: 118px; border: 3px solid #2b2314; background: linear-gradient(180deg, #4b525d 0%, #262b33 100%); overflow: hidden;">
+                <span style="position: absolute; left: 50%; top: 22px; width: 46px; height: 46px; margin-left: -23px; border-radius: 50%; background: #11151b;"></span>
+                <span style="position: absolute; left: 50%; top: 74px; width: 112px; height: 90px; margin-left: -56px; border-radius: 56px 56px 0 0; background: #11151b;"></span>
+              </span>
+              <span style="display: flex; align-items: center; justify-content: center; flex-grow: 1;">
+                <span style="{{c.nameStyle}}">{{c.name}}</span>
+              </span>
+              <span aria-hidden="true" style="display: flex; flex-direction: column; gap: 7px;">
+                <span style="height: 9px; width: 92%; background: #1a140a;"></span>
+                <span style="height: 9px; width: 64%; background: #1a140a;"></span>
+              </span>
+            </span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </nav>
+
+  <!-- Arrows -->
+  <button aria-label="App anterior" sc-camel-on-click="{{prev}}" style="position: absolute; left: 64px; top: 520px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(8,11,16,0.7); border: 2px solid rgba(232,237,242,0.5); color: #e8edf2; cursor: pointer;">
+    <svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+  </button>
+  <button aria-label="App siguiente" sc-camel-on-click="{{next}}" style="position: absolute; right: 64px; top: 520px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(8,11,16,0.7); border: 2px solid rgba(232,237,242,0.5); color: #e8edf2; cursor: pointer;">
+    <svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+  </button>
+
+  <!-- Rain -->
+  <div aria-hidden="true" style="position: absolute; left: -200px; top: -200px; width: 2320px; height: 1500px; transform: rotate(10deg); pointer-events: none;">
+    <sc-for list="{{rain}}" as="r" hint-placeholder-count="60">
+      <span style="{{r}}"></span>
+    </sc-for>
+  </div>
+
+  <!-- Brand -->
+  <span style="position: absolute; left: 80px; top: 52px; font-family: 'Bebas Neue', sans-serif; font-size: 68px; line-height: 1; letter-spacing: 0.14em; color: #e8edf2; animation: ng-in 0.8s cubic-bezier(0.16,1,0.3,1) both;">JP·TV</span>
+
+  <!-- Top-right -->
+  <div style="position: absolute; right: 80px; top: 48px; display: flex; align-items: center; gap: 32px; animation: ng-in 0.8s 0.12s cubic-bezier(0.16,1,0.3,1) both;">
+    <a href="Network.dc.html" aria-label="Ver detalles de red" style="min-height: 48px; display: flex; align-items: center; gap: 12px; color: rgba(232,237,242,0.85); text-decoration: none; font-size: 18px; letter-spacing: 0.08em;">
+      <svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      [RED WI-FI]
+    </a>
+    <a href="Settings.dc.html" aria-label="Ajustes" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: rgba(232,237,242,0.85);">
+      <svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+    </a>
+    <a href="Themes.dc.html" aria-label="Temas" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: rgba(232,237,242,0.85);">
+      <svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+    </a>
+    <span style="font-family: 'Bebas Neue', sans-serif; font-size: 56px; line-height: 1; letter-spacing: 0.06em;">21:40</span>
+  </div>
+
+  <span style="position: absolute; left: 80px; bottom: 44px; font-size: 18px; letter-spacing: 0.2em; color: rgba(232,237,242,0.7);">{{position}}</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { focus: 1 };
+  }
+  renderVals() {
+    const list = ['Xuper Hydra', 'YouTube', 'Netflix', 'Spotify', 'Prime Video', 'Disney+', 'Crunchyroll', 'Plex', 'Ajustes', 'Todas las apps'];
+    const n = list.length;
+    const focus = this.state.focus;
+    const STEP = 300;
+    const ease = 'cubic-bezier(0.32,0.72,0,1)';
+    const go = (i) => this.setState({ focus: Math.max(0, Math.min(n - 1, i)) });
+    const cards = list.map((name, i) => {
+      const on = i === focus;
+      const d = Math.abs(i - focus);
+      const rot = ((i * 37) % 7 - 3) * 1.1;
+      const dy = ((i * 53) % 5 - 2) * 8;
+      const op = on ? 1 : d === 1 ? 0.85 : 0.7;
+      return {
+        name,
+        num: String(i + 1).padStart(2, '0'),
+        current: on ? 'true' : 'false',
+        pick: () => go(i),
+        btnStyle: 'flex-shrink: 0; position: relative; width: 260px; height: 360px; padding: 0; border: 0; background: none; cursor: pointer; font-family: inherit; text-align: left;',
+        liftStyle: 'position: absolute; inset: 0; display: block; opacity: ' + op + '; filter: ' + (on ? 'drop-shadow(0 30px 28px rgba(0,0,0,0.6))' : 'drop-shadow(0 14px 14px rgba(0,0,0,0.5)) brightness(0.62)') + '; ' +
+          'transform: ' + (on ? 'translateY(-26px) scale(1.2) rotate(0deg)' : 'translateY(' + dy + 'px) scale(0.94) rotate(' + rot + 'deg)') + '; ' +
+          'transition: transform 0.6s ' + ease + ', filter 0.6s ' + ease + ', opacity 0.6s ' + ease + ';',
+        nameStyle: 'display: inline-block; padding: 6px 20px; font-size: ' + (name.length > 9 ? 27 : 34) + 'px; line-height: 1.1; text-align: center; border: 3px solid ' + (on ? '#c0272d' : 'transparent') + '; border-radius: 50%; transform: rotate(-3deg); transition: border-color 0.5s ' + ease + ';',
+      };
+    });
+    let seed = 11;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1));
+    const clouds = [[-260, -90, 1000, 240, 0.55, 70], [700, -120, 1100, 260, 0.45, 90], [1300, 40, 900, 200, 0.4, 80], [100, 150, 800, 170, 0.3, 100], [900, 200, 900, 180, 0.28, 110]].map(([x, y, w, h, a, dur]) =>
+      'position: absolute; left: ' + x + 'px; top: ' + y + 'px; width: ' + w + 'px; height: ' + h + 'px; border-radius: 50%; background: radial-gradient(ellipse, rgba(74,92,116,' + a + ') 0%, rgba(74,92,116,0) 70%); filter: blur(16px); animation: ng-fog ' + dur + 's ease-in-out infinite alternate;');
+    const warm = ['#ffd66b', '#ffcf5a', '#ffe19a'];
+    const cool = ['#aee0ff', '#8fd0ff'];
+    const build = (out, x, w, h, o) => {
+      const grid = o.grid ? 'repeating-linear-gradient(90deg, transparent 0px, transparent 9px, rgba(255,255,255,0.03) 9px, rgba(255,255,255,0.03) 16px), repeating-linear-gradient(0deg, transparent 0px, transparent 11px, rgba(255,255,255,0.03) 11px, rgba(255,255,255,0.03) 22px), ' : '';
+      const body = 'linear-gradient(180deg, ' + o.c1 + ' 0%, ' + o.c2 + ' 100%)';
+      const edge = 'box-shadow: inset 1px 0 0 rgba(170,195,220,' + o.edge + ');';
+      out.push('position: absolute; left: ' + x + 'px; bottom: 0; width: ' + w + 'px; height: ' + h + 'px; background: ' + grid + body + '; ' + edge);
+      let cx = x, cw = w, ch = h;
+      if (o.details) {
+        const steps = ri(0, 2);
+        for (let k = 0; k < steps; k++) {
+          const nw = Math.floor(cw * (0.62 + rnd() * 0.2));
+          const nx = cx + Math.floor((cw - nw) / 2);
+          const nh = ri(24, 54);
+          out.push('position: absolute; left: ' + nx + 'px; bottom: ' + ch + 'px; width: ' + nw + 'px; height: ' + nh + 'px; background: ' + body + '; ' + edge);
+          cx = nx; cw = nw; ch += nh;
+        }
+        const roll = rnd();
+        const mid = cx + Math.floor(cw / 2);
+        if (roll < 0.3 && cw > 40) {
+          out.push('position: absolute; left: ' + (mid - 9) + 'px; bottom: ' + ch + 'px; width: 18px; height: ' + ri(50, 90) + 'px; background: ' + o.c1 + '; clip-path: polygon(50% 0, 100% 100%, 0 100%);');
+        } else if (roll < 0.62) {
+          const ah = ri(40, 90);
+          out.push('position: absolute; left: ' + mid + 'px; bottom: ' + ch + 'px; width: 2px; height: ' + ah + 'px; background: ' + o.c1 + ';');
+          out.push('position: absolute; left: ' + (mid - 2) + 'px; bottom: ' + (ch + ah) + 'px; width: 6px; height: 6px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px 3px rgba(255,59,48,0.8); animation: ng-blink 2.4s ' + (rnd() * 2).toFixed(1) + 's steps(1) infinite;');
+        } else if (roll < 0.85 && cw > 56) {
+          const tx = cx + ri(8, cw - 34);
+          out.push('position: absolute; left: ' + tx + 'px; bottom: ' + ch + 'px; width: 2px; height: 14px; background: ' + o.c2 + ';');
+          out.push('position: absolute; left: ' + (tx + 20) + 'px; bottom: ' + ch + 'px; width: 2px; height: 14px; background: ' + o.c2 + ';');
+          out.push('position: absolute; left: ' + (tx - 2) + 'px; bottom: ' + (ch + 14) + 'px; width: 26px; height: 24px; border-radius: 3px; background: ' + o.c1 + ';');
+          out.push('position: absolute; left: ' + (tx - 4) + 'px; bottom: ' + (ch + 38) + 'px; width: 30px; height: 10px; background: ' + o.c2 + '; clip-path: polygon(50% 0, 100% 100%, 0 100%);');
+        }
+        if (cw > 30) {
+          out.push('position: absolute; left: ' + (cx + ri(4, cw - 22)) + 'px; bottom: ' + ch + 'px; width: 16px; height: 9px; background: ' + o.c2 + ';');
+        }
+      }
+      const cols = Math.floor((w - 9) / 16);
+      const rows = Math.floor((h - 24) / 22);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (rnd() < o.lit) {
+            const col = rnd() < 0.72 ? warm[ri(0, 2)] : cool[ri(0, 1)];
+            out.push('position: absolute; left: ' + (x + 9 + c * 16) + 'px; bottom: ' + (11 + r * 22) + 'px; width: 7px; height: 11px; background: ' + col + '; opacity: 0.8; ' + (o.glow ? 'box-shadow: 0 0 6px rgba(255,214,107,0.45);' : ''));
+          }
+        }
+      }
+    };
+    const farLayer = [];
+    const midLayer = [];
+    const nearLayer = [];
+    let bx = -30;
+    while (bx < 1940) {
+      const w = ri(60, 120);
+      build(farLayer, bx, w, ri(220, 440), { c1: '#16212e', c2: '#0f1823', edge: 0.1, grid: true, details: false, lit: 0.05, glow: false });
+      bx += w;
+    }
+    bx = -20;
+    while (bx < 1940) {
+      if (bx >= 440 && bx < 650) { bx = 650; continue; }
+      let w = ri(70, 130);
+      if (bx < 440 && bx + w > 440) w = 440 - bx;
+      if (w < 30) { bx += w; continue; }
+      build(midLayer, bx, w, ri(170, 380), { c1: '#0d141c', c2: '#080c12', edge: 0.16, grid: true, details: true, lit: 0.18, glow: false });
+      bx += w;
+    }
+    // Rooftop that carries the searchlight
+    build(midLayer, 440, 170, 300, { c1: '#0e151d', c2: '#080c12', edge: 0.2, grid: true, details: false, lit: 0.2, glow: false });
+    midLayer.push('position: absolute; left: 436px; bottom: 300px; width: 178px; height: 8px; background: #0a0f15; box-shadow: inset 0 1px 0 rgba(170,195,220,0.25);');
+    midLayer.push('position: absolute; left: 440px; bottom: 308px; width: 170px; height: 16px; background: repeating-linear-gradient(90deg, #27303b 0px, #27303b 2px, transparent 2px, transparent 14px);');
+    midLayer.push('position: absolute; left: 440px; bottom: 322px; width: 170px; height: 2px; background: #27303b;');
+    midLayer.push('position: absolute; left: 560px; bottom: 308px; width: 38px; height: 26px; background: #121820; box-shadow: inset 1px 0 0 rgba(170,195,220,0.2);');
+    midLayer.push('position: absolute; left: 452px; bottom: 308px; width: 22px; height: 12px; background: #151b23;');
+    bx = -10;
+    while (bx < 1940) {
+      const w = ri(90, 170);
+      build(nearLayer, bx, w, ri(100, 250), { c1: '#06090d', c2: '#030508', edge: 0.12, grid: false, details: true, lit: 0.1, glow: true });
+      bx += w;
+    }
+    const motes = Array.from({ length: 22 }, () => {
+      const y = ri(80, 640);
+      const half = 28 + ((700 - y) / 700) * 250;
+      const mx = 280 + (rnd() * 2 - 1) * half * 0.85;
+      const sz = ri(1, 3);
+      return 'position: absolute; left: ' + mx.toFixed(0) + 'px; top: ' + y + 'px; width: ' + sz + 'px; height: ' + sz + 'px; border-radius: 50%; background: rgba(255,248,220,0.9); animation: ng-mote ' + (5 + rnd() * 6).toFixed(1) + 's ' + (rnd() * 5).toFixed(1) + 's ease-in-out infinite;';
+    });
+    const rain = Array.from({ length: 110 }, () => {
+      const h = 40 + Math.floor(rnd() * 60);
+      return 'position: absolute; left: ' + Math.floor(rnd() * 2320) + 'px; top: 0; width: 1px; height: ' + h + 'px; background: linear-gradient(180deg, rgba(190,215,255,0), rgba(190,215,255,0.35)); ' +
+        'animation: ng-rain ' + (0.7 + rnd() * 0.6).toFixed(2) + 's ' + (rnd() * 1.5).toFixed(2) + 's linear infinite;';
+    });
+    return {
+      cards,
+      clouds,
+      farLayer,
+      midLayer,
+      nearLayer,
+      motes,
+      rain,
+      trackStyle: 'position: absolute; left: 0; top: 110px; display: flex; gap: 40px; transform: translateX(' + (960 - (focus * STEP + 130)) + 'px); transition: transform 0.6s ' + ease + ';',
+      prev: () => go(focus - 1),
+      next: () => go(focus + 1),
+      position: String(focus + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0'),
+    };
+  }
+}
+</script>
+
+
+</body></html>

@@ -1,77 +1,260 @@
-<!doctype html>
-<html lang="es">
-<head>
+<!DOCTYPE html>
+<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
+
+
 <meta charset="utf-8">
 <title>JP-TV — Tema Pixel</title>
-<script src="./support.js"></script>
+<script src="c850c9c9-bf20-4286-bda7-61c79f581a1a"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<style>/* hebrew */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/fredoka/v17/X7n64b87HvSqjb_WIi2yDCRwoQ_k7367_DWs89XyHw.woff2) format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/fredoka/v17/X7n64b87HvSqjb_WIi2yDCRwoQ_k7367_DWg89XyHw.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("d55bf057-f58e-4f8c-9f11-5468e53e6b26") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* hebrew */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/fredoka/v17/X7n64b87HvSqjb_WIi2yDCRwoQ_k7367_DWs89XyHw.woff2) format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/fredoka/v17/X7n64b87HvSqjb_WIi2yDCRwoQ_k7367_DWg89XyHw.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("d55bf057-f58e-4f8c-9f11-5468e53e6b26") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* hebrew */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/fredoka/v17/X7n64b87HvSqjb_WIi2yDCRwoQ_k7367_DWs89XyHw.woff2) format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/fredoka/v17/X7n64b87HvSqjb_WIi2yDCRwoQ_k7367_DWg89XyHw.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("d55bf057-f58e-4f8c-9f11-5468e53e6b26") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
 <style>
-body{margin:0;background:#1a1c2c}
-a{color:#ffcd75}a:hover{color:#f4f4f4}
+body{margin:0;background:#0c0d2a}
+a{color:#ffffff}a:hover{color:#fdc220}
+button:focus-visible,a:focus-visible{outline:3px solid #fdc220;outline-offset:4px;border-radius:14px}
+@keyframes pk-grid{0%{background-position:0 0}100%{background-position:0 96px}}
+@keyframes pk-spin{0%{transform:perspective(700px) rotateY(0deg) rotateZ(0deg)}100%{transform:perspective(700px) rotateY(360deg) rotateZ(0deg)}}
+@keyframes pk-float{0%,100%{margin-top:0}50%{margin-top:-18px}}
+@keyframes pk-wobble{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+@keyframes pk-in{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
-<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1a1c2c; color: #f4f4f4; font-family: 'Press Start 2P', monospace;">
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(180deg, #1a1650 0%, #2b1f78 52%, #0c0d2a 100%); color: #ffffff; font-family: 'Fredoka', system-ui, sans-serif;">
 
-  <!-- Pixel-art video loop placeholder -->
-  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 360px; background: #29366f; border-top: 8px solid #3b5dc9;"></div>
-  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: #257179; border-top: 8px solid #38b764;"></div>
-  <span style="position: absolute; right: 64px; bottom: 190px; font-size: 14px; color: #94b0c2;">VIDEO PIXEL-ART EN BUCLE</span>
+  <!-- Boot-screen glow -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(60% 50% at 50% 38%, rgba(120,110,255,0.35) 0%, rgba(120,110,255,0) 70%);"></div>
 
-  <!-- HUD -->
-  <div style="position: absolute; left: 64px; right: 64px; top: 56px; display: flex; justify-content: space-between; align-items: center;">
-    <span style="font-size: 28px; color: #ffcd75;">P1 ★ JP-TV</span>
-    <div style="display: flex; align-items: center; gap: 40px;">
-      <a href="Network.dc.html" style="display: flex; align-items: center; gap: 16px; font-size: 18px; color: #a7f070; text-decoration: none;">WIFI
-        <span style="display: flex; gap: 4px; align-items: flex-end;"><span style="width: 10px; height: 10px; background: #a7f070;"></span><span style="width: 10px; height: 18px; background: #a7f070;"></span><span style="width: 10px; height: 26px; background: #a7f070;"></span><span style="width: 10px; height: 34px; background: #333c57;"></span></span>
-        12MS</a>
-      <span style="font-size: 36px; color: #73eff7;">21:40</span>
-      <a href="Settings.dc.html" aria-label="Ajustes" style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: #333c57; box-shadow: 6px 6px 0 #000; color: #f4f4f4; text-decoration: none; font-size: 22px;">⚙</a>
-    </div>
+  <!-- Floating 3D shapes -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden;">
+    <sc-for list="{{shapes}}" as="sh" hint-placeholder-count="7">
+      <span style="{{sh.wrap}}"><span style="{{sh.body}}"></span></span>
+    </sc-for>
   </div>
 
-  <!-- Cartridge carousel -->
-  <div style="position: absolute; left: 64px; right: 64px; top: 230px; display: flex; gap: 40px; align-items: flex-end;">
-    <div style="width: 300px; height: 360px; background: #b13e53; box-shadow: 12px 12px 0 #000; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; box-sizing: border-box; transform: translateY(-40px); outline: 8px solid #ffcd75; outline-offset: 8px;">
-      <span style="height: 150px; background: #5d275d;"></span>
-      <span style="font-size: 26px; line-height: 1.4;">YOU<br>TUBE</span>
-    </div>
-    <div style="width: 240px; height: 300px; background: #3b5dc9; box-shadow: 12px 12px 0 #000; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box;">
-      <span style="height: 110px; background: #29366f;"></span>
-      <span style="font-size: 18px; line-height: 1.4;">NETFLIX</span>
-    </div>
-    <div style="width: 240px; height: 300px; background: #38b764; box-shadow: 12px 12px 0 #000; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; color: #1a1c2c;">
-      <span style="height: 110px; background: #257179;"></span>
-      <span style="font-size: 18px; line-height: 1.4;">SPOTIFY</span>
-    </div>
-    <div style="width: 240px; height: 300px; background: #ef7d57; box-shadow: 12px 12px 0 #000; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; color: #1a1c2c;">
-      <span style="height: 110px; background: #b13e53;"></span>
-      <span style="font-size: 18px; line-height: 1.4;">XUPER<br>HYDRA</span>
-    </div>
-    <div style="width: 240px; height: 300px; background: #566c86; box-shadow: 12px 12px 0 #000; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box;">
-      <span style="height: 110px; background: #333c57;"></span>
-      <span style="font-size: 18px; line-height: 1.4;">PRIME<br>VIDEO</span>
-    </div>
+  <!-- Grid floor -->
+  <div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 450px; overflow: hidden; perspective: 640px; perspective-origin: 50% 0;">
+    <div style="position: absolute; left: -60%; right: -60%; top: 0; height: 1000px; transform-origin: 50% 0; transform: rotateX(62deg); background-image: linear-gradient(rgba(140,130,255,0.6) 2px, transparent 2px), linear-gradient(90deg, rgba(140,130,255,0.6) 2px, transparent 2px); background-size: 96px 96px; animation: pk-grid 3s linear infinite;"></div>
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, #1f1a63 0%, rgba(31,26,99,0) 38%, rgba(12,13,42,0) 62%, rgba(12,13,42,0.75) 100%);"></div>
   </div>
 
-  <!-- Prompt -->
-  <div style="position: absolute; left: 64px; bottom: 64px; display: flex; flex-direction: column; gap: 20px;">
-    <span style="font-size: 44px; color: #ffcd75;">▶ YOUTUBE</span>
-    <span style="font-size: 18px; color: #f4f4f4;">PULSA OK PARA JUGAR</span>
+  <!-- Brand -->
+  <span style="position: absolute; left: 80px; top: 48px; font-weight: 700; font-size: 60px; line-height: 1; letter-spacing: 0.02em; text-shadow: 0 5px 0 rgba(0,0,0,0.4); animation: pk-in 0.7s cubic-bezier(0.16,1,0.3,1) both;"><span style="color: #ff4b4b;">J</span><span style="color: #3fd35f;">P</span><span style="color: #ffffff;">-</span><span style="color: #fdc220;">6</span><span style="color: #4d85ff;">4</span></span>
+
+  <!-- Top-right -->
+  <div style="position: absolute; right: 80px; top: 44px; display: flex; align-items: center; gap: 20px; animation: pk-in 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) both;">
+    <a href="Network.dc.html" aria-label="Ver detalles de red" style="height: 64px; display: flex; align-items: center; gap: 12px; padding: 0 24px; border-radius: 32px; background: rgba(12,13,42,0.55); border: 2px solid rgba(255,255,255,0.2); color: #ffffff; text-decoration: none; font-weight: 600; font-size: 20px;">
+      <svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="none" stroke="#3fd35f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      [RED WI-FI] · 12 MS
+    </a>
+    <a href="Settings.dc.html" aria-label="Ajustes" style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(12,13,42,0.55); border: 2px solid rgba(255,255,255,0.2); color: #ffffff;">
+      <svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+    </a>
+    <a href="Themes.dc.html" aria-label="Temas" style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(12,13,42,0.55); border: 2px solid rgba(255,255,255,0.2); color: #ffffff;">
+      <svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+    </a>
+    <span style="font-weight: 600; font-size: 44px; line-height: 1; margin-left: 12px; text-shadow: 0 4px 0 rgba(0,0,0,0.35);">21:40</span>
   </div>
 
-  <!-- CRT scanlines -->
-  <div style="position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 6px); pointer-events: none;"></div>
+  <!-- Cartridge shelf -->
+  <nav aria-label="Apps" style="position: absolute; left: 0; top: 190px; width: 1920px; height: 600px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);">
+    <div style="{{trackStyle}}">
+      <sc-for list="{{apps}}" as="app" hint-placeholder-count="10">
+        <button sc-camel-on-click="{{app.pick}}" aria-current="{{app.current}}" aria-label="{{app.name}}" style="{{app.btnStyle}}">
+          <span style="{{app.liftStyle}}">
+            <span style="{{app.wobbleStyle}}">
+              <!-- Cartridge body -->
+              <span style="position: absolute; inset: 0; display: block; background: linear-gradient(180deg, #a3a6ad 0%, #82858c 100%); clip-path: polygon(0 4%, 3% 0, 97% 0, 100% 4%, 100% 90%, 93% 100%, 7% 100%, 0 90%);">
+                <span style="position: absolute; left: 26px; right: 26px; top: 14px; height: 30px; background: repeating-linear-gradient(180deg, rgba(0,0,0,0.3) 0px, rgba(0,0,0,0.3) 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px);"></span>
+                <span style="{{app.labelBox}}"><span style="{{app.labelText}}">{{app.name}}</span></span>
+                <span style="position: absolute; left: 76px; right: 76px; bottom: 0; height: 20px; background: #4b4d53;"></span>
+                <span style="position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(105deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 28%);"></span>
+              </span>
+            </span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </nav>
+
+  <!-- Arrows -->
+  <button aria-label="App anterior" sc-camel-on-click="{{prev}}" style="position: absolute; left: 64px; top: 440px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 0; background: #fdc220; color: #1a1650; box-shadow: 0 6px 0 #b8870a; cursor: pointer;">
+    <svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+  </button>
+  <button aria-label="App siguiente" sc-camel-on-click="{{next}}" style="position: absolute; right: 64px; top: 440px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 0; background: #fdc220; color: #1a1650; box-shadow: 0 6px 0 #b8870a; cursor: pointer;">
+    <svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+  </button>
+
+  <!-- Selected name -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 96px; display: flex; flex-direction: column; align-items: center; gap: 14px;">
+    <span style="{{nameStyle}}">{{selName}}</span>
+    <span style="font-weight: 600; font-size: 24px; letter-spacing: 0.16em; color: rgba(255,255,255,0.85); text-shadow: 0 3px 0 rgba(0,0,0,0.4);">{{position}}</span>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  constructor(props) {
+    super(props);
+    this.state = { focus: 1 };
+  }
+  renderVals() {
+    const list = [
+      ['Xuper Hydra', '#8b5cf6', '#5b21b6', '#ffffff'],
+      ['YouTube', '#dc2626', '#991b1b', '#ffffff'],
+      ['Netflix', '#c81e1e', '#7f1d1d', '#ffffff'],
+      ['Spotify', '#4ade80', '#16a34a', '#052e16'],
+      ['Prime Video', '#3b82f6', '#1e3a8a', '#ffffff'],
+      ['Disney+', '#2a5bd7', '#1b2a6b', '#ffffff'],
+      ['Crunchyroll', '#fdba74', '#f97316', '#2b1000'],
+      ['Plex', '#fde047', '#eab308', '#2a1f00'],
+      ['Ajustes', '#4b5563', '#1f2937', '#ffffff'],
+      ['Todas las apps', '#0d9488', '#115e59', '#ffffff'],
+    ];
+    const n = list.length;
+    const focus = this.state.focus;
+    const STEP = 280;
+    const ease = 'cubic-bezier(0.32,0.72,0,1)';
+    const go = (i) => this.setState({ focus: Math.max(0, Math.min(n - 1, i)) });
+    const apps = list.map(([name, c1, c2, fg], i) => {
+      const on = i === focus;
+      const d = Math.abs(i - focus);
+      const op = on ? 1 : d === 1 ? 0.92 : d === 2 ? 0.8 : 0.7;
+      return {
+        name,
+        current: on ? 'true' : 'false',
+        pick: () => go(i),
+        btnStyle: 'flex-shrink: 0; position: relative; width: 240px; height: 270px; padding: 0; border: 0; background: none; cursor: pointer; font-family: inherit;',
+        liftStyle: 'position: absolute; inset: 0; display: block; opacity: ' + op + '; transform: ' + (on ? 'translateY(-34px) scale(1.2)' : 'scale(0.9)') + '; ' +
+          'filter: ' + (on ? 'drop-shadow(0 26px 22px rgba(0,0,0,0.55)) drop-shadow(0 0 30px ' + c1 + '99)' : 'drop-shadow(0 14px 12px rgba(0,0,0,0.45)) brightness(0.8)') + '; ' +
+          'transition: transform 0.55s ' + ease + ', filter 0.55s ' + ease + ', opacity 0.55s ' + ease + ';',
+        wobbleStyle: 'position: absolute; inset: 0; display: block; ' + (on ? 'animation: pk-wobble 3.2s ease-in-out infinite;' : ''),
+        labelBox: 'position: absolute; left: 20px; right: 20px; top: 56px; height: 168px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 10px; ' +
+          'background: linear-gradient(160deg, ' + c1 + ' 0%, ' + c2 + ' 100%); box-shadow: inset 0 0 0 4px rgba(255,255,255,0.9), inset 0 -14px 0 rgba(0,0,0,0.12);',
+        labelText: 'display: block; text-align: center; text-transform: uppercase; font-weight: 700; line-height: 1.05; letter-spacing: 0.01em; color: ' + fg + '; ' +
+          'font-size: ' + (name.length > 9 ? 27 : 34) + 'px; word-break: break-word;',
+      };
+    });
+    const shapeSpec = [
+      [220, 170, 84, '#ff4b4b', '#a31d1d', 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)', 9, 0],
+      [560, 120, 64, '#4d85ff', '#1b2f9a', 'polygon(50% 0, 100% 100%, 0 100%)', 11, 1.5],
+      [1230, 150, 72, '#3fd35f', '#13803a', 'polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%)', 10, 0.8],
+      [1580, 190, 90, '#fdc220', '#b8870a', 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)', 12, 2.2],
+      [140, 760, 70, '#3fd35f', '#13803a', 'polygon(50% 0, 100% 100%, 0 100%)', 13, 1],
+      [1700, 740, 80, '#ff4b4b', '#a31d1d', 'polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%)', 11, 0.3],
+      [420, 840, 56, '#fdc220', '#b8870a', 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)', 10, 2],
+    ];
+    const shapes = shapeSpec.map(([x, y, s, a, b, clip, dur, delay]) => ({
+      wrap: 'position: absolute; left: ' + x + 'px; top: ' + y + 'px; width: ' + s + 'px; height: ' + s + 'px; opacity: 0.7; animation: pk-float ' + (dur / 2).toFixed(1) + 's ' + delay + 's ease-in-out infinite;',
+      body: 'display: block; width: 100%; height: 100%; background: linear-gradient(135deg, ' + a + ' 0%, ' + b + ' 100%); clip-path: ' + clip + '; animation: pk-spin ' + dur + 's linear infinite;',
+    }));
+    const sel = list[focus];
+    return {
+      apps,
+      shapes,
+      trackStyle: 'position: absolute; left: 0; top: 150px; display: flex; gap: 40px; transform: translateX(' + (960 - (focus * STEP + 120)) + 'px); transition: transform 0.55s ' + ease + ';',
+      prev: () => go(focus - 1),
+      next: () => go(focus + 1),
+      selName: sel[0],
+      nameStyle: 'font-weight: 700; font-size: 76px; line-height: 1; letter-spacing: 0.01em; color: #ffffff; text-shadow: 0 6px 0 rgba(0,0,0,0.45), 0 0 44px ' + sel[1] + '99;',
+      position: String(focus + 1).padStart(2, '0') + ' / ' + String(n).padStart(2, '0'),
+    };
+  }
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
