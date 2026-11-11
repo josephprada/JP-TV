@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Lo-fi home (design/project/ThemeLofi.dc.html). -->
+    <string name="theme_lofi_play">PLAY</string>
+    <!-- Time · date, e.g. "21:40 · SÁB 08 NOV". -->
+    <string name="theme_lofi_clock_line">%1$s · %2$s</string>
+    <!-- Notebook heading: brand — part of the day. -->
+    <string name="theme_lofi_title">%1$s — %2$s</string>
+    <string name="theme_lofi_tonight">esta noche</string>
+    <string name="theme_lofi_today">hoy</string>
+    <!-- Network name, latency: "lo-fi beats para mirar · [RED WI-FI] 12 ms". -->
+    <string name="theme_lofi_status_line">lo-fi beats para mirar · [%1$s] %2$s</string>
+    <!-- Starts on Sunday. -->
+    <string-array name="theme_lofi_days">
+        <item>DOM</item>
+        <item>LUN</item>
+        <item>MAR</item>
+        <item>MIÉ</item>
+        <item>JUE</item>
+        <item>VIE</item>
+        <item>SÁB</item>
+    </string-array>
+    <string-array name="theme_lofi_months">
+        <item>ENE</item>
+        <item>FEB</item>
+        <item>MAR</item>
+        <item>ABR</item>
+        <item>MAY</item>
+        <item>JUN</item>
+        <item>JUL</item>
+        <item>AGO</item>
+        <item>SEP</item>
+        <item>OCT</item>
+        <item>NOV</item>
+        <item>DIC</item>
+    </string-array>
+</resources>
