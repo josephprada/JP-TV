@@ -7,6 +7,7 @@ import co.jp.tv.themes.hud.HudTheme
 import co.jp.tv.themes.jptv.JpTvTheme
 import co.jp.tv.themes.lofi.LofiTheme
 import co.jp.tv.themes.multiverso.MultiversoTheme
+import co.jp.tv.themes.oceano.OceanoTheme
 import co.jp.tv.themes.pixel.PixelTheme
 import co.jp.tv.themes.terminal.TerminalTheme
 import co.jp.tv.themes.vinilo.ViniloTheme
@@ -28,6 +29,7 @@ object ThemeRegistry {
         GothamTheme,
         MultiversoTheme,
         CyberpunkTheme,
+        OceanoTheme,
     )
 
     fun byId(id: String): LauncherTheme = all.firstOrNull { it.id == id } ?: default
