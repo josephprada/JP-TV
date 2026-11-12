@@ -1,5 +1,8 @@
 package co.jp.tv.themes.gotham
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +27,7 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.themes.LauncherTheme
+import co.jp.tv.themes.shared.DayPhase
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeNavAxis
@@ -31,15 +35,29 @@ import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeKeyNavigation
 
-private val Sky = Brush.verticalGradient(
-    0f to GothamPalette.SkyTop,
-    0.55f to GothamPalette.SkyMid,
-    1f to GothamPalette.SkyBottom,
+private fun skyBrush(look: GothamLook) = Brush.verticalGradient(
+    0f to look.skyTop,
+    0.55f to look.skyMid,
+    1f to look.skyBottom,
 )
+
+private val NightSky = skyBrush(GothamLook.Night)
+private val DaySky = skyBrush(GothamLook.Day)
+
+/** Both phases' cities, each generated the first time its phase is shown (geometry is shared, colours differ). */
+private class GothamCities {
+    private val night by lazy(LazyThreadSafetyMode.NONE) { GothamCity(GothamLook.Night) }
+    private val day by lazy(LazyThreadSafetyMode.NONE) { GothamCity(GothamLook.Day) }
+
+    fun of(phase: DayPhase): GothamCity = if (phase.isNight) night else day
+}
 
 /**
  * "Gotham": a rainy night skyline with a rooftop searchlight projecting the JP monogram on the
  * clouds; apps are pinned case files on a horizontal strip. Matches design/project/ThemeGotham.dc.html.
+ * Follows [DayPhase]: by day the same city sits under an overcast grey-blue sky with the searchlight off
+ * and dark windows, dissolving from one to the other when the hour crosses 06:00 or 18:00. The weather
+ * drives the rain, clouds, fog veil and lightning ([GothamSky]).
  */
 object GothamTheme : LauncherTheme {
     override val id = "gotham"
@@ -50,13 +68,16 @@ object GothamTheme : LauncherTheme {
     override fun Home(state: HomeState, actions: HomeActions) {
         val focus = rememberThemeControlFocus()
         LaunchedEffect(Unit) { focus.list.requestFocus() }
-        val city = remember { GothamCity() }
+        val cities = remember { GothamCities() }
+        val phase = DayPhase.of(state.now)
+        // The sky follows the reading's condition only, so temperature and clock ticks never rebuild it.
+        val sky = remember(state.weather?.condition) { GothamSky.of(state.weather?.condition) }
         val apps = state.apps
         val focused = state.focusedIndex
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Sky)
+                .background(NightSky)
                 .focusRequester(focus.list)
                 .themeControlRouting(
                     focus,
@@ -67,7 +88,16 @@ object GothamTheme : LauncherTheme {
                 )
                 .themeKeyNavigation(apps, focused, actions, ThemeNavAxis.Horizontal),
         ) {
-            GothamTimeline { time -> GothamScene(city, time) }
+            Crossfade(
+                targetState = phase,
+                animationSpec = tween(GothamMotion.PhaseFadeMs, easing = LinearEasing),
+                label = "gothamPhase",
+            ) { shown ->
+                val look = GothamLook.of(shown)
+                Box(Modifier.fillMaxSize().background(if (shown.isNight) NightSky else DaySky)) {
+                    GothamTimeline { time -> GothamScene(cities.of(shown), look, sky, time) }
+                }
+            }
             GothamCaseFiles(apps, focused, Modifier.align(Alignment.TopStart))
             if (apps.isNotEmpty()) {
                 GothamArrowButton(
@@ -88,7 +118,8 @@ object GothamTheme : LauncherTheme {
                         .offset(y = 260.dp),
                 )
             }
-            GothamTimeline { time -> GothamRain(city.rain, time) }
+            val look = GothamLook.of(phase)
+            GothamTimeline { time -> GothamRain(cities.of(phase).rain, time, amount = sky.rain(phase.isNight), color = look.rain) }
             BasicText(
                 state.brand,
                 modifier = Modifier
@@ -106,6 +137,7 @@ object GothamTheme : LauncherTheme {
             )
             GothamTopBar(
                 network = state.network,
+                weather = state.weather,
                 clock = ClockFormat.time(state.now, state.config.hourFormat),
                 actions = actions,
                 focus = focus,

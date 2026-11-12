@@ -40,10 +40,11 @@ class ThemeHomeScreens : ScreenshotTest() {
     @Test fun cyberpunk() = home("cyberpunk")
     @Test fun oceano() = home("oceano")
 
-    // Themes that follow DayPhase; the rest ignore the hour.
+    // Themes that follow DayPhase (lofi, cyberpunk, oceano, gotham); the rest ignore the hour.
     @Test fun lofiDay() = homeDay("lofi")
     @Test fun cyberpunkDay() = homeDay("cyberpunk")
     @Test fun oceanoDay() = homeDay("oceano")
+    @Test fun gothamDay() = homeDay("gotham")
 
     // Weather: the badge in each header, and the scenes that react to it.
     @Test fun jptvCloudy() = home("jptv", "-weather", weather = ScreenFixtures.weather(WeatherCondition.PartlyCloudy, temperatureC = 24))
@@ -64,6 +65,12 @@ class ThemeHomeScreens : ScreenshotTest() {
     @Test fun oceanoStorm() = home("oceano", "-storm", weather = w(WeatherCondition.Storm))
     @Test fun oceanoRainDay() = home("oceano", "-rain-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Rain, night = false))
     @Test fun oceanoPartlyCloudyDay() = home("oceano", "-partly-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.PartlyCloudy, night = false))
+
+    @Test fun gothamRain() = home("gotham", "-rain", weather = w(WeatherCondition.Rain))
+    @Test fun gothamStorm() = home("gotham", "-storm", weather = w(WeatherCondition.Storm))
+    @Test fun gothamClearNight() = home("gotham", "-clear", weather = w(WeatherCondition.Clear))
+    @Test fun gothamFogDay() = home("gotham", "-fog-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Fog, night = false))
+    @Test fun gothamRainDay() = home("gotham", "-rain-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Rain, night = false))
 
     @Test fun registryMatchesTests() {
         // Keeps this file honest when a theme is added to the registry.

@@ -65,11 +65,12 @@ internal class RainDrop(
 )
 
 /**
- * The procedural night city of the artboard, generated once. It replays the artboard's
+ * The procedural city of the artboard, generated once per [look]. It replays the artboard's
  * Park-Miller generator (seed 11) in the same call order so every building, window,
- * antenna, mote and raindrop lands where the design puts it.
+ * antenna, mote and raindrop lands where the design puts it. The look only picks colours and
+ * whether windows are lit: the generator is advanced identically, so night and day share one geometry.
  */
-internal class GothamCity {
+internal class GothamCity(private val look: GothamLook = GothamLook.Night) {
     val far = ArrayList<CityShape>()
     val mid = ArrayList<CityShape>()
     val near = ArrayList<CityShape>()
@@ -80,11 +81,16 @@ internal class GothamCity {
 
     private val random = DesignRandom(11L)
 
+    private val farStyle = LayerStyle(look.farTop, look.farFoot, 0.1f, grid = true, details = false, lit = 0.05, glow = false)
+    private val midStyle = LayerStyle(look.midTop, look.midFoot, 0.16f, grid = true, details = true, lit = 0.18, glow = false)
+    private val roofStyle = LayerStyle(look.roofTop, look.midFoot, 0.2f, grid = true, details = false, lit = 0.2, glow = false)
+    private val nearStyle = LayerStyle(look.nearTop, look.nearFoot, 0.12f, grid = false, details = true, lit = 0.1, glow = true)
+
     init {
         var bx = -30
         while (bx < 1940) {
             val w = random.int(60, 120)
-            build(far, null, bx, w, random.int(220, 440), FarStyle)
+            build(far, null, bx, w, random.int(220, 440), farStyle)
             bx += w
         }
         bx = -20
@@ -99,20 +105,20 @@ internal class GothamCity {
                 bx += w
                 continue
             }
-            build(mid, midBeacons, bx, w, random.int(170, 380), MidStyle)
+            build(mid, midBeacons, bx, w, random.int(170, 380), midStyle)
             bx += w
         }
         // Rooftop that carries the searchlight.
-        build(mid, midBeacons, 440, 170, 300, RoofStyle)
-        mid += fill(436, 300, 178, 8, GothamPalette.Ledge, topEdgeAlpha = 0.25f)
-        for (x in 440 until 610 step 14) mid += fill(x, 308, 2, 16, GothamPalette.Railing)
-        mid += fill(440, 322, 170, 2, GothamPalette.Railing)
-        mid += fill(560, 308, 38, 26, GothamPalette.RoofHut, edgeAlpha = 0.2f)
-        mid += fill(452, 308, 22, 12, GothamPalette.RoofVent)
+        build(mid, midBeacons, 440, 170, 300, roofStyle)
+        mid += fill(436, 300, 178, 8, look.ledge, topEdgeAlpha = 0.25f)
+        for (x in 440 until 610 step 14) mid += fill(x, 308, 2, 16, look.railing)
+        mid += fill(440, 322, 170, 2, look.railing)
+        mid += fill(560, 308, 38, 26, look.roofHut, edgeAlpha = 0.2f)
+        mid += fill(452, 308, 22, 12, look.roofVent)
         bx = -10
         while (bx < 1940) {
             val w = random.int(90, 170)
-            build(near, nearBeacons, bx, w, random.int(100, 250), NearStyle)
+            build(near, nearBeacons, bx, w, random.int(100, 250), nearStyle)
             bx += w
         }
         motes = List(22) {
@@ -133,7 +139,7 @@ internal class GothamCity {
                 left = left.toFloat(),
                 size = Size(1f, h.toFloat()),
                 brush = Brush.verticalGradient(
-                    listOf(GothamPalette.Rain.copy(alpha = 0f), GothamPalette.Rain.copy(alpha = 0.35f)),
+                    listOf(look.rain.copy(alpha = 0f), look.rain.copy(alpha = RAIN_ALPHA)),
                     startY = 0f,
                     endY = h.toFloat(),
                 ),
@@ -195,18 +201,21 @@ internal class GothamCity {
         for (r in 0 until rows) {
             for (c in 0 until cols) {
                 if (random.next() < style.lit) {
+                    // The rolls are always made so the generator stays in step with the artboard; by day the window stays dark.
                     val color = if (random.next() < 0.72) {
                         GothamPalette.WarmWindows[random.int(0, 2)]
                     } else {
                         GothamPalette.CoolWindows[random.int(0, 1)]
                     }
                     val bottom = 11 + r * 22
-                    out += CityShape.Window(
-                        left = (x + 9 + c * 16).toFloat(),
-                        top = ArtboardHeight - bottom - 11f,
-                        color = color,
-                        glow = style.glow,
-                    )
+                    if (look.litWindows) {
+                        out += CityShape.Window(
+                            left = (x + 9 + c * 16).toFloat(),
+                            top = ArtboardHeight - bottom - 11f,
+                            color = color,
+                            glow = style.glow,
+                        )
+                    }
                 }
             }
         }
@@ -267,10 +276,7 @@ internal class GothamCity {
     )
 
     private companion object {
-        val FarStyle = LayerStyle(GothamPalette.FarTop, GothamPalette.FarFoot, 0.1f, grid = true, details = false, lit = 0.05, glow = false)
-        val MidStyle = LayerStyle(GothamPalette.MidTop, GothamPalette.MidFoot, 0.16f, grid = true, details = true, lit = 0.18, glow = false)
-        val RoofStyle = LayerStyle(GothamPalette.RoofTop, GothamPalette.MidFoot, 0.2f, grid = true, details = false, lit = 0.2, glow = false)
-        val NearStyle = LayerStyle(GothamPalette.NearTop, GothamPalette.NearFoot, 0.12f, grid = false, details = true, lit = 0.1, glow = true)
+        const val RAIN_ALPHA = 0.35f
 
         /** JS `Math.floor(a / b)`, also for negative numerators. */
         fun floorDiv(a: Int, b: Int): Int = Math.floorDiv(a, b)

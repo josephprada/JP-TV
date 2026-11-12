@@ -58,6 +58,30 @@ object GothamPalette {
     val LensMid = Color(0xFFFFE9A0)
     val LensEdge = Color(0xFFB78A2A)
 
+    // Day: the same city under an overcast grey-blue sky. The top of the sky is kept dark enough for the light
+    // brand and clock text; the skyline is muted, far to near from hazy to dark.
+    val DaySkyTop = Color(0xFF566A80)
+    val DaySkyMid = Color(0xFF7B8EA3)
+    val DaySkyBottom = Color(0xFFA3B2C1)
+    val DayCloud = Color(0xFFDCE4EC)
+    val DayFog = Color(0xFFE2EAF2)
+    val DayRain = Color(0xFF5A6F8C)
+    val DayFarTop = Color(0xFF7E90A4)
+    val DayFarFoot = Color(0xFF93A3B4)
+    val DayMidTop = Color(0xFF52647A)
+    val DayMidFoot = Color(0xFF65788D)
+    val DayRoofTop = Color(0xFF566A80)
+    val DayNearTop = Color(0xFF2F3D4E)
+    val DayNearFoot = Color(0xFF3B4A5C)
+    val DayLedge = Color(0xFF3A4859)
+    val DayRailing = Color(0xFF4B5B6E)
+    val DayRoofHut = Color(0xFF445468)
+    val DayRoofVent = Color(0xFF4D5D70)
+
+    // Lightning lighting the clouds, by night and by day.
+    val Flash = Color(0xFFBFD4FF)
+    val DayFlash = Color(0xFFF2F6FF)
+
     // Case-file cards.
     val PinLight = Color(0xFFFF7B7B)
     val PinRed = Color(0xFFC0272D)

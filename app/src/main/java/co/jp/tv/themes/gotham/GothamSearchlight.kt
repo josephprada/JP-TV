@@ -37,7 +37,7 @@ import co.jp.tv.core.design.JpFonts
  * the lens flare and the lamp housing.
  */
 @Composable
-internal fun GothamSearchlight(motes: List<BeamMote>, time: () -> Long, modifier: Modifier = Modifier) {
+internal fun GothamSearchlight(motes: List<BeamMote>, time: () -> Long, modifier: Modifier = Modifier, beam: Float = 1f) {
     val paint = remember { SearchlightPaint() }
     Box(
         modifier
@@ -49,16 +49,26 @@ internal fun GothamSearchlight(motes: List<BeamMote>, time: () -> Long, modifier
                 transformOrigin = TransformOrigin(0.5f, 1f)
             },
     ) {
-        // Beam, glows and housing never change: baked once, rotated with the rig.
-        Spacer(Modifier.fillMaxSize().bakedLayer { scale(0.5.dp.toPx(), pivot = Offset.Zero) { paint.drawStatic(this) } })
-        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
-            val t = time()
-            scale(0.5.dp.toPx(), pivot = Offset.Zero) { drawMotes(motes, t) }
+        // The housing never changes: baked once, rotated with the rig. The beam, glows and lens are baked
+        // apart so that daylight can switch them off ([beam] = 0) without redrawing anything.
+        Spacer(Modifier.fillMaxSize().bakedLayer { scale(0.5.dp.toPx(), pivot = Offset.Zero) { paint.drawHousing(this) } })
+        if (beam > 0f) {
+            Spacer(
+                Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { alpha = beam }
+                    .bakedLayer { scale(0.5.dp.toPx(), pivot = Offset.Zero) { paint.drawBeam(this) } },
+            )
+            Canvas(Modifier.fillMaxSize().graphicsLayer { alpha = beam }) {
+                val t = time()
+                scale(0.5.dp.toPx(), pivot = Offset.Zero) { drawMotes(motes, t) }
+            }
         }
-        Box(
+        if (beam > 0f) Box(
             Modifier
                 .offset(x = 77.5.dp, y = 13.dp)
-                .size(width = 125.dp, height = 85.dp),
+                .size(width = 125.dp, height = 85.dp)
+                .graphicsLayer { alpha = beam },
             contentAlignment = Alignment.Center,
         ) {
             BasicText(
@@ -202,14 +212,20 @@ private class SearchlightPaint {
         1f to GothamPalette.LensEdge,
     )
 
-    fun drawStatic(scope: DrawScope) = with(scope) {
+    /** Beam, projected monogram, flare and the lit lens: everything the lamp emits. */
+    fun drawBeam(scope: DrawScope) = with(scope) {
         drawPath(outerBeam, outerBeamBrush)
         drawPath(innerBeam, innerBeamBrush)
         monogramGlow.draw(this)
         monogramDisc.draw(this)
         flare.draw(this)
         drawRect(flareLine, topLeft = Offset(130f, 698f), size = Size(300f, 3f))
+        lensGlow.draw(this)
+        lens.draw(this)
+    }
 
+    /** The lamp housing: base, brackets, drum and rim. */
+    fun drawHousing(scope: DrawScope) = with(scope) {
         drawRoundRect(baseBrush, topLeft = Offset(246f, 758f), size = Size(68f, 22f), cornerRadius = CornerRadius(3f))
         drawRoundRect(GothamPalette.Bracket, topLeft = Offset(236f, 712f), size = Size(7f, 54f), cornerRadius = CornerRadius(3f))
         drawRoundRect(GothamPalette.Bracket, topLeft = Offset(317f, 712f), size = Size(7f, 54f), cornerRadius = CornerRadius(3f))
@@ -225,7 +241,5 @@ private class SearchlightPaint {
         }
         drawOval(GothamPalette.Rim, topLeft = Offset(240f, 694f), size = Size(80f, 18f))
         drawOval(GothamPalette.RimEdge, topLeft = Offset(241f, 695f), size = Size(78f, 16f), style = rimStroke)
-        lensGlow.draw(this)
-        lens.draw(this)
     }
 }

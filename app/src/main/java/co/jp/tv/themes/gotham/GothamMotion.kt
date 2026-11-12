@@ -17,6 +17,9 @@ internal object GothamMotion {
     const val EntranceMs = 800
     const val TopBarDelayMs = 120
 
+    /** Night and day dissolve into each other over this long when the hour crosses 06:00 or 18:00. */
+    const val PhaseFadeMs = 1_500
+
     /** `ng-in` rises 16 design px, i.e. 8 dp. */
     const val EntranceRiseDp = 8f
 

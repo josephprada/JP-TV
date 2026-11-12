@@ -33,6 +33,8 @@ import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themesControlTarget
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 
 private const val ChromeAlpha = 0.85f
 
@@ -43,6 +45,7 @@ private const val ChromeAlpha = 0.85f
 @Composable
 internal fun GothamTopBar(
     network: NetworkStatus,
+    weather: Weather?,
     clock: String,
     actions: HomeActions,
     focus: ThemeControlFocus,
@@ -102,6 +105,13 @@ internal fun GothamTopBar(
         ) {
             GothamIcon(GothamGlyph.Palette, size = 14.dp, color = chrome)
         }
+        WeatherBadge(
+            weather = weather,
+            color = chrome,
+            textStyle = TextStyle(fontSize = 11.sp, fontFamily = JpFonts.SpecialElite, letterSpacing = 0.08.em),
+            iconSize = 15.dp,
+            gap = 5.dp,
+        )
         BasicText(
             clock,
             style = TextStyle(
