@@ -260,6 +260,8 @@ class HomeViewModel(
                 wallpaperId = config.wallpaperId,
                 hourFormat = config.hourFormat,
                 weatherPlace = config.weatherPlace,
+                videoPlaylist = config.videoPlaylist,
+                imagePlaylist = config.imagePlaylist,
                 soundsEnabled = config.soundsEnabled,
                 soundVolume = config.soundVolume,
             )

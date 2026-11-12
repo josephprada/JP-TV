@@ -32,10 +32,16 @@ import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.playlist.domain.MediaKind
+import co.jp.tv.playlist.domain.MediaLibraryState
+import co.jp.tv.playlist.domain.PlaylistResolver
+import co.jp.tv.playlist.ui.labelRes
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.wallpaper.WallpaperRegistry
 import co.jp.tv.wallpaper.embers.EmbersWallpaper
 import co.jp.tv.wallpaper.galaxy.GalaxyWallpaper
+import co.jp.tv.wallpaper.image.StaticImageWallpaper
+import co.jp.tv.wallpaper.video.VideoWallpaper
 
 /** Slots of the wallpaper column the editor's key handler walks: one per wallpaper chip, then dim, then pause. */
 internal object WallSlot {
@@ -56,6 +62,7 @@ internal fun EditWallpaperColumn(
     config: LauncherConfig,
     accent: Color,
     focusSlot: Int?,
+    media: MediaLibraryState = MediaLibraryState.Empty,
     modifier: Modifier = Modifier,
 ) {
     val wallpapers = WallpaperRegistry.all
@@ -95,6 +102,20 @@ internal fun EditWallpaperColumn(
             wallpapers.forEachIndexed { i, wall ->
                 WallChip(wall.displayName, selected = wall.id == config.wallpaperId, focused = focusSlot == i, accent = accent)
             }
+        }
+        val playlistKind = when (current.id) {
+            VideoWallpaper.ID -> MediaKind.VIDEO
+            StaticImageWallpaper.ID -> MediaKind.IMAGE
+            else -> null
+        }
+        if (playlistKind != null) {
+            // Mirrors what Customize edits; the files and the rotation are chosen there.
+            val settings = config.playlist(playlistKind)
+            val count = PlaylistResolver.resolve(media.of(playlistKind), settings).size
+            BasicText(
+                stringResource(R.string.edit_wall_list_summary, count, stringResource(settings.interval.labelRes())),
+                style = TextStyle(JpColors.Muted, 8.sp, fontFamily = JpFonts.Body),
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             WallCell(

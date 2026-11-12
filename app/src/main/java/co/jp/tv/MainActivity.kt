@@ -50,6 +50,11 @@ import co.jp.tv.home.Screen
 import co.jp.tv.homeoverride.domain.HomeOverrideStatus
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.network.ui.NetworkPanel
+import co.jp.tv.playlist.domain.PlaylistSelection
+import co.jp.tv.playlist.ui.LocalMediaThumbnails
+import co.jp.tv.playlist.ui.LocalPlaylistStateStore
+import co.jp.tv.playlist.ui.LocalWallpaperMedia
+import co.jp.tv.playlist.ui.WallpaperMedia
 import co.jp.tv.preferences.ui.CustomizeScreen
 import co.jp.tv.settings.domain.SettingsShortcut
 import co.jp.tv.settings.domain.SettingsShortcuts
@@ -80,6 +85,7 @@ class MainActivity : ComponentActivity() {
             val paused = rememberPausedByLifecycle()
             LaunchedEffect(paused) { viewModel.setActive(!paused) }
 
+            val library by container.mediaCatalog.library.collectAsStateWithLifecycle()
             val ready by viewModel.ready.collectAsStateWithLifecycle()
             if (!ready) {
                 // Same colour as the window background: nothing is composed until the saved theme is known.
@@ -110,6 +116,15 @@ class MainActivity : ComponentActivity() {
             // Heartbeat for the home override's safety guards: the home is on screen (also when resuming).
             LaunchedEffect(paused, state.apps.isNotEmpty()) {
                 if (!paused && state.apps.isNotEmpty()) container.redirectPolicy.onHomeDrawn()
+            }
+            // Look for wallpaper media whenever the home comes to the front (a USB drive may have been plugged in).
+            LaunchedEffect(paused) { if (!paused) container.mediaCatalog.refresh() }
+            val wallpaperMedia = remember(library, state.config.videoPlaylist, state.config.imagePlaylist) {
+                WallpaperMedia(
+                    video = PlaylistSelection.of(library.videos, state.config.videoPlaylist),
+                    image = PlaylistSelection.of(library.images, state.config.imagePlaylist),
+                    loaded = library.loaded,
+                )
             }
             val locationRequest = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
                 viewModel.refreshNetworkAccess()
@@ -162,6 +177,9 @@ class MainActivity : ComponentActivity() {
                 LocalAppIcons provides container.appIconLoader,
                 LocalPaused provides paused,
                 LocalUiSounds provides sounds,
+                LocalWallpaperMedia provides wallpaperMedia,
+                LocalPlaylistStateStore provides container.playlistStateStore,
+                LocalMediaThumbnails provides container.mediaThumbnails,
             ) {
                 Box(
                     Modifier
@@ -250,6 +268,7 @@ class MainActivity : ComponentActivity() {
                             onWallpaper = viewModel::setWallpaper,
                             onDim = viewModel::setWallpaperDim,
                             onPauseInApps = viewModel::setPauseWallpaperInApps,
+                            media = library,
                             onMove = viewModel::moveApp,
                             onSetHidden = viewModel::setAppHidden,
                             onReset = viewModel::resetApps,
@@ -268,6 +287,8 @@ class MainActivity : ComponentActivity() {
                             initial = state.config,
                             onApply = viewModel::applyCustomize,
                             searchPlaces = viewModel::searchPlaces,
+                            media = library,
+                            onRescan = { scope.launch { container.mediaCatalog.refresh() } },
                         )
                     }
                     if (networkOpen) {

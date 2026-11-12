@@ -64,6 +64,7 @@ import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.playlist.domain.MediaLibraryState
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.ui.rememberMediaPermissionRequester
 import co.jp.tv.wallpaper.WallpaperRegistry
@@ -92,6 +93,7 @@ fun EditAppsScreen(
     onSetHidden: (packageName: String, hidden: Boolean) -> Unit,
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
+    media: MediaLibraryState = MediaLibraryState.Empty,
 ) {
     val rootFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) { rootFocus.requestFocus() }
@@ -219,7 +221,7 @@ fun EditAppsScreen(
                 riseDelayMs = 180,
                 modifier = Modifier.weight(1f),
             )
-            EditWallpaperColumn(config, accent, wallSlot, Modifier.weight(1f))
+            EditWallpaperColumn(config, accent, wallSlot, media, Modifier.weight(1f))
         }
     }
 }

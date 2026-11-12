@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -54,12 +55,20 @@ import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.sound.SoundVolume
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.playlist.domain.MediaKind
+import co.jp.tv.playlist.domain.MediaLibraryState
+import co.jp.tv.playlist.domain.PlaylistSelection
+import co.jp.tv.playlist.ui.LocalPlaylistStateStore
+import co.jp.tv.playlist.ui.LocalWallpaperMedia
+import co.jp.tv.playlist.ui.WallpaperMedia
 import co.jp.tv.preferences.domain.AccentPreset
 import co.jp.tv.preferences.domain.AccentPresets
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.domain.TitleFont
 import co.jp.tv.preferences.domain.TitleFonts
 import co.jp.tv.wallpaper.WallpaperRegistry
+import co.jp.tv.wallpaper.image.StaticImageWallpaper
+import co.jp.tv.wallpaper.video.VideoWallpaper
 import co.jp.tv.weather.domain.WeatherPlace
 import java.time.LocalDateTime
 
@@ -89,10 +98,24 @@ fun CustomizeScreen(
     onApply: (LauncherConfig) -> Unit,
     modifier: Modifier = Modifier,
     searchPlaces: suspend (String) -> List<WeatherPlace> = { emptyList() },
+    media: MediaLibraryState = MediaLibraryState.Empty,
+    onRescan: () -> Unit = {},
 ) {
     var draft by remember(initial) { mutableStateOf(initial) }
     var permissionRevision by remember { mutableIntStateOf(0) }
-    val requestMedia = rememberMediaPermissionRequester { permissionRevision++ }
+    val requestMedia = rememberMediaPermissionRequester {
+        permissionRevision++
+        onRescan()
+    }
+    // The folders may have changed since the last look: scan again every time Customize opens.
+    LaunchedEffect(Unit) { onRescan() }
+    val wallpaperMedia = remember(media, draft.videoPlaylist, draft.imagePlaylist) {
+        WallpaperMedia(
+            video = PlaylistSelection.of(media.videos, draft.videoPlaylist),
+            image = PlaylistSelection.of(media.images, draft.imagePlaylist),
+            loaded = media.loaded,
+        )
+    }
     val accent = Color(draft.accent)
     val titleFont = rememberTitleFont(draft.titleFontId)
     val firstFocus = remember { FocusRequester() }
@@ -177,6 +200,21 @@ fun CustomizeScreen(
                             )
                         }
                     }
+                    val playlistKind = when (draft.wallpaperId) {
+                        VideoWallpaper.ID -> MediaKind.VIDEO
+                        StaticImageWallpaper.ID -> MediaKind.IMAGE
+                        else -> null
+                    }
+                    if (playlistKind != null) {
+                        PlaylistSection(
+                            kind = playlistKind,
+                            found = media.of(playlistKind),
+                            loaded = media.loaded,
+                            settings = draft.playlist(playlistKind),
+                            accent = accent,
+                            onChange = { draft = draft.withPlaylist(playlistKind, it) },
+                        )
+                    }
                 }
                 OptionsCard(stringResource(R.string.customize_hour_format), delayMs = 160) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -238,8 +276,11 @@ fun CustomizeScreen(
                     .clip(RoundedCornerShape(20.dp)),
             ) {
                 key(permissionRevision) {
-                    WallpaperRegistry.byId(draft.wallpaperId)
-                        .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
+                    // The preview rotates by its own clock and never writes the home wallpaper's saved slot.
+                    CompositionLocalProvider(LocalWallpaperMedia provides wallpaperMedia, LocalPlaylistStateStore provides null) {
+                        WallpaperRegistry.byId(draft.wallpaperId)
+                            .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
+                    }
                 }
                 PreviewRail(brand = LauncherConfig.sanitizeBrand(draft.brand), accent = accent, titleFont = titleFont)
                 PreviewClock(accent = accent, titleFont = titleFont, hourFormat = draft.hourFormat)
