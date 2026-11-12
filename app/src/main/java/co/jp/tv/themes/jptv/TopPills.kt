@@ -41,6 +41,8 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.returnStagger
+import co.jp.tv.core.sound.LocalUiSounds
+import co.jp.tv.core.sound.UiSound
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.network.domain.NetworkRules
 import co.jp.tv.network.domain.NetworkStatus
@@ -73,6 +75,7 @@ private fun GlassPill(
     content: @Composable () -> Unit,
 ) {
     var focused by remember { mutableStateOf(false) }
+    val sounds = LocalUiSounds.current
     val p by animateFloatAsState(if (focused) 1f else 0f, tween(JpMotion.FocusMs, easing = JpMotion.Entrance), label = "pill")
     Box(
         modifier = modifier
@@ -80,7 +83,10 @@ private fun GlassPill(
             .glass(JpDimens.PillShape)
             .border(JpDimens.Hairline, accent.copy(alpha = 0.7f * p), JpDimens.PillShape)
             .semantics { contentDescription = description }
-            .onFocusChanged { focused = it.isFocused }
+            .onFocusChanged {
+                if (it.isFocused && !focused) sounds.play(UiSound.ControlFocus)
+                focused = it.isFocused
+            }
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) { content() }

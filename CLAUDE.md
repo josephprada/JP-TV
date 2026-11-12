@@ -8,6 +8,7 @@ Read [PLAN.md](PLAN.md) for the why. This file is the how: map, commands, conven
 - Inside a feature: `domain/` (pure Kotlin, no Android imports), `data/` (Android adapters), `ui/` (Compose).
 - `AppContainer.kt` — the only file that creates adapters. New dependency? Add it here.
 - `themes/ThemeRegistry.kt` — the only list of themes.
+- `tools/sounds/synth.py` — generates every UI sound clip in `res/raw`.
 - `design/` — the approved design (`.dc.html` artboards). Treat it as the spec for layout, sizes, colors and motion.
 
 ## Commands
@@ -47,6 +48,12 @@ The TV address comes from `local.properties` (`tv.host=…`). If the TV is unrea
 
 **Add a quick-settings tile**
 1. Add an entry to `settings/domain/SettingsShortcuts.kt` with the intent action and a fallback.
+
+**Add or tune UI sounds**
+1. Each theme has four clips (`move`, `select`, `back`, `control`) in `app/src/main/res/raw/snd_<theme>_<sound>.wav`: mono, 16-bit, 22050 Hz, at most 150 ms.
+2. They are original and procedural. Edit that theme's function in `tools/sounds/synth.py` (pure Python, no dependencies), then run `python3 tools/sounds/synth.py` (all themes) or `python3 tools/sounds/synth.py zen hud` and commit the WAVs. The output is deterministic.
+3. A theme plays the set named by `LauncherTheme.soundSet` (defaults to its `id`). `SoundAssetsTest` checks that every registered theme has its four clips.
+4. Playback goes through the `UiSounds` port (`core/sound`) with the SoundPool adapter in `core/sound/data`, created in `AppContainer`. Home moves, launches and back are played centrally by `HomeViewModel` and `MainActivity`; themes only provide the set. Header controls play the control sound through `ThemeControlFocus`.
 
 ## Off-device loop (no TV)
 

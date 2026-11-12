@@ -10,6 +10,8 @@ import co.jp.tv.apps.data.LaunchAnchor
 import co.jp.tv.apps.data.PackageManagerAppCatalog
 import co.jp.tv.apps.domain.CachedAppCatalog
 import co.jp.tv.apps.domain.AppCatalog
+import co.jp.tv.core.sound.UiSounds
+import co.jp.tv.core.sound.data.SoundPoolUiSounds
 import co.jp.tv.core.util.ClockTicker
 import co.jp.tv.home.HomeViewModel
 import co.jp.tv.network.data.ConnectivityNetworkMonitor
@@ -41,6 +43,7 @@ class AppContainer(context: Context) {
     val appIconLoader = AppIconLoader(appContext)
     val locationAccess = LocationAccess(appContext)
     val networkMonitor: NetworkMonitor = ConnectivityNetworkMonitor(appContext, locationAccess)
+    val uiSounds: UiSounds = SoundPoolUiSounds(appContext)
     val settingsLauncher = SettingsLauncher(appContext)
     val deviceInfo = DeviceInfo(appContext)
 
@@ -62,6 +65,7 @@ class AppContainer(context: Context) {
                 configStore = configStore,
                 weatherRepository = weatherRepository,
                 placeSearch = placeSearch,
+                sounds = uiSounds,
             ) as T
     }
 }

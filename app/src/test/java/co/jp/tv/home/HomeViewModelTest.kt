@@ -4,6 +4,9 @@ import app.cash.turbine.test
 import co.jp.tv.apps.domain.AppCatalog
 import co.jp.tv.apps.domain.LaunchOrigin
 import co.jp.tv.apps.domain.TvApp
+import co.jp.tv.core.sound.SoundVolume
+import co.jp.tv.core.sound.UiSound
+import co.jp.tv.core.sound.UiSounds
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
@@ -69,6 +72,14 @@ class HomeViewModelTest {
         }
     }
 
+    private class FakeSounds : UiSounds {
+        val played = mutableListOf<UiSound>()
+        override fun play(sound: UiSound) { played += sound }
+        override fun useSet(setId: String) = Unit
+        override fun configure(enabled: Boolean, volume: SoundVolume) = Unit
+        override fun setActive(active: Boolean) = Unit
+    }
+
     private val own = "co.jp.tv"
     private val apps = listOf(
         TvApp("a.yt", "YouTube", true),
@@ -87,9 +98,10 @@ class HomeViewModelTest {
         store: FakeConfigStore = FakeConfigStore(),
         weather: WeatherRepository = WeatherRepository.None,
         places: PlaceSearch = PlaceSearch.None,
+        sounds: UiSounds = UiSounds.None,
     ) = HomeViewModel(
         catalog, ticks, ownPackage = own, monitor = monitor, initialNow = t0, configStore = store,
-        weatherRepository = weather, placeSearch = places,
+        weatherRepository = weather, placeSearch = places, sounds = sounds,
     )
 
     @Test
@@ -557,5 +569,82 @@ class HomeViewModelTest {
         val vm = vm(FakeCatalog(apps), places = places)
         assertEquals(found, vm.searchPlaces("gir"))
         assertEquals(emptyList<WeatherPlace>(), vm.searchPlaces("zz"))
+    }
+
+    @Test
+    fun `customize persists the sound settings`() = runTest {
+        val store = FakeConfigStore()
+        val vm = vm(FakeCatalog(apps), store = store)
+        vm.applyCustomize(LauncherConfig(soundsEnabled = false, soundVolume = SoundVolume.HIGH))
+        advanceUntilIdle()
+        assertEquals(false, store.source.value?.soundsEnabled)
+        assertEquals(SoundVolume.HIGH, store.source.value?.soundVolume)
+    }
+
+    @Test
+    fun `moving the focus to another app plays the move sound`() = runTest {
+        val sounds = FakeSounds()
+        val vm = vm(FakeCatalog(apps), sounds = sounds)
+        vm.state.test {
+            awaitItem()
+            vm.focus(1)
+            expectMostRecentItem()
+            assertEquals(listOf(UiSound.Move), sounds.played)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `focus requests that do not move the selection are silent`() = runTest {
+        val sounds = FakeSounds()
+        val vm = vm(FakeCatalog(apps), sounds = sounds)
+        vm.state.test {
+            awaitItem()
+            vm.focus(0) // already there
+            vm.focus(-1) // before the first app
+            vm.focus(3) // past the last visible app
+            cancelAndIgnoreRemainingEvents()
+        }
+        assertEquals(emptyList<UiSound>(), sounds.played)
+    }
+
+    @Test
+    fun `opening a screen from home plays select and closing it plays back`() = runTest {
+        val sounds = FakeSounds()
+        val vm = vm(FakeCatalog(apps), sounds = sounds)
+        vm.openNetwork()
+        vm.back()
+        assertEquals(listOf(UiSound.Select, UiSound.Back), sounds.played)
+    }
+
+    @Test
+    fun `back at home is silent`() = runTest {
+        val sounds = FakeSounds()
+        vm(FakeCatalog(apps), sounds = sounds).back()
+        assertEquals(emptyList<UiSound>(), sounds.played)
+    }
+
+    @Test
+    fun `a screen opened over another one does not replay select`() = runTest {
+        val sounds = FakeSounds()
+        val vm = vm(FakeCatalog(apps), sounds = sounds)
+        vm.openSettings()
+        vm.openThemes()
+        assertEquals(listOf(UiSound.Select), sounds.played)
+    }
+
+    @Test
+    fun `nothing plays while the launcher is stopped`() = runTest {
+        val sounds = FakeSounds()
+        val vm = vm(FakeCatalog(apps), sounds = sounds)
+        vm.state.test {
+            awaitItem()
+            vm.setActive(false)
+            vm.focus(1)
+            vm.openNetwork()
+            vm.back()
+            cancelAndIgnoreRemainingEvents()
+        }
+        assertEquals(emptyList<UiSound>(), sounds.played)
     }
 }

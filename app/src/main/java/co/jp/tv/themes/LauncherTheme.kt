@@ -10,6 +10,9 @@ interface LauncherTheme {
     val displayName: String
     val supportsAccent: Boolean
 
+    /** Which `snd_<set>_*` sound palette this theme plays; each theme has its own voice. */
+    val soundSet: String get() = id
+
     @Composable
     fun Home(state: HomeState, actions: HomeActions)
 }

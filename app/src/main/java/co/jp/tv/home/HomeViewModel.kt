@@ -7,6 +7,8 @@ import co.jp.tv.apps.domain.AppLayout
 import co.jp.tv.apps.domain.AppOrdering
 import co.jp.tv.apps.domain.LaunchOrigin
 import co.jp.tv.apps.domain.TvApp
+import co.jp.tv.core.sound.UiSound
+import co.jp.tv.core.sound.UiSounds
 import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.preferences.domain.ConfigStore
@@ -52,6 +54,7 @@ class HomeViewModel(
     private val configStore: ConfigStore,
     private val weatherRepository: WeatherRepository = WeatherRepository.None,
     private val placeSearch: PlaceSearch = PlaceSearch.None,
+    private val sounds: UiSounds = UiSounds.None,
 ) : ViewModel(), HomeActions {
 
     /** Visible and hidden apps resolved against the saved arrangement, plus the saved config. */
@@ -150,10 +153,13 @@ class HomeViewModel(
         network,
         weather,
     ) { layout, now, focus, net, reading ->
+        val shown = focus.coerceIn(0, (layout.apps.visible.size - 1).coerceAtLeast(0))
+        shownFocus = shown
+        shownCount = layout.apps.visible.size
         HomeState(
             brand = layout.config.brand,
             apps = layout.apps.visible,
-            focusedIndex = focus.coerceIn(0, (layout.apps.visible.size - 1).coerceAtLeast(0)),
+            focusedIndex = shown,
             network = net,
             now = now,
             config = layout.config,
@@ -185,8 +191,18 @@ class HomeViewModel(
     /** Launch with the bounds of the focused tile so the window animation can grow out of it. */
     fun launch(app: TvApp, origin: LaunchOrigin?) = catalog.launch(app, origin)
 
+    // What the screen shows right now; lets focus requests that change nothing stay silent.
+    @Volatile private var shownFocus = 0
+    @Volatile private var shownCount = 0
+
     override fun focus(index: Int) {
+        if (index in 0 until shownCount && index != shownFocus) play(UiSound.Move)
         requestedFocus.value = index
+    }
+
+    /** Sounds play only while the launcher is in front. */
+    private fun play(sound: UiSound) {
+        if (active.value) sounds.play(sound)
     }
 
     /** False while the activity is stopped: stops the network probes. */
@@ -244,6 +260,8 @@ class HomeViewModel(
                 wallpaperId = config.wallpaperId,
                 hourFormat = config.hourFormat,
                 weatherPlace = config.weatherPlace,
+                soundsEnabled = config.soundsEnabled,
+                soundVolume = config.soundVolume,
             )
         }
         back()
@@ -265,6 +283,7 @@ class HomeViewModel(
     /** Closes the top screen. Returns false when already at home. */
     fun back(): Boolean {
         if (backStack.value.isEmpty()) return false
+        play(UiSound.Back)
         backStack.update { it.dropLast(1) }
         return true
     }
@@ -272,11 +291,14 @@ class HomeViewModel(
     /** Home key: drops every open screen at once. Returns false when already at home. */
     fun closeAll(): Boolean {
         if (backStack.value.isEmpty()) return false
+        play(UiSound.Back)
         backStack.value = emptyList()
         return true
     }
 
     private fun push(target: Screen) {
+        // Only the step out of the theme's home sounds like a "select": panels opened from panels do it themselves.
+        if (backStack.value.isEmpty()) play(UiSound.Select)
         backStack.update { if (it.lastOrNull() == target) it else it + target }
     }
 

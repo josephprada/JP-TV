@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class JpTvApp : Application() {
     lateinit var container: AppContainer
@@ -27,6 +28,8 @@ class JpTvApp : Application() {
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             val config = container.configStore.config.first()
             StartupTrace.mark("warmUp: config read")
+            // Decode the active theme's clips now (SoundPool loads on its own thread) so the first key press is heard.
+            withContext(Dispatchers.Main) { container.uiSounds.useSet(config?.themeId ?: LauncherConfig.DEFAULT_THEME_ID) }
             FontPreloader.preload(this@JpTvApp, config?.titleFontId ?: LauncherConfig.Default.titleFontId)
             StartupTrace.mark("warmUp: fonts decoded")
         }

@@ -26,6 +26,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.jp.tv.apps.ui.EditAppsScreen
@@ -34,6 +39,8 @@ import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.HomeTransition
 import co.jp.tv.core.design.HomeTransitionHost
 import co.jp.tv.core.design.JpColors
+import co.jp.tv.core.sound.LocalUiSounds
+import co.jp.tv.core.sound.UiSound
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.core.util.StartupTrace
 import co.jp.tv.core.util.rememberLowEnd
@@ -78,6 +85,14 @@ class MainActivity : ComponentActivity() {
                 return@setContent
             }
             val accent = Color(state.config.accent)
+            val sounds = container.uiSounds
+            val theme = ThemeRegistry.byId(state.config.themeId)
+            // Only the active theme's clips stay loaded; nothing sounds while the launcher is stopped.
+            LaunchedEffect(theme.soundSet) { sounds.useSet(theme.soundSet) }
+            LaunchedEffect(state.config.soundsEnabled, state.config.soundVolume) {
+                sounds.configure(state.config.soundsEnabled, state.config.soundVolume)
+            }
+            LaunchedEffect(paused) { sounds.setActive(!paused) }
             val top = screens.lastOrNull()
             val settingsOpen = Screen.Settings in screens
             val networkOpen = top == Screen.Network
@@ -116,9 +131,10 @@ class MainActivity : ComponentActivity() {
             val scope = rememberCoroutineScope()
             val view = LocalView.current
             val pausedNow by rememberUpdatedState(paused)
-            val homeActions = remember(transition) {
+            val homeActions = remember(transition, sounds) {
                 object : HomeActions by viewModel {
                     override fun launch(app: TvApp) {
+                        sounds.play(UiSound.Select)
                         if (pausedNow) {
                             viewModel.launch(app, null)
                         } else {
@@ -139,8 +155,28 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalAppIcons provides container.appIconLoader,
                 LocalPaused provides paused,
+                LocalUiSounds provides sounds,
             ) {
-                Box(Modifier.fillMaxSize().background(JpColors.Ink)) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(JpColors.Ink)
+                        // Screens drawn over the home (settings, themes, customize...) share the home's voice:
+                        // a tick for every D-pad press and a click for OK. The home itself sounds from the view
+                        // model (selection changes) so it stays silent at the ends of a list.
+                        .onPreviewKeyEvent { event ->
+                            if (overlayOpen && event.type == KeyEventType.KeyDown) {
+                                when (event.key) {
+                                    Key.DirectionUp, Key.DirectionDown, Key.DirectionLeft, Key.DirectionRight ->
+                                        sounds.play(UiSound.Move)
+                                    Key.DirectionCenter, Key.Enter, Key.NumPadEnter ->
+                                        if (event.nativeKeyEvent.repeatCount == 0) sounds.play(UiSound.Select)
+                                    else -> Unit
+                                }
+                            }
+                            false
+                        },
+                ) {
                     if (!customizeOpen) {
                         WallpaperRegistry.byId(state.config.wallpaperId)
                             .Render(accent, (paused && state.config.pauseWallpaperInApps) || overlayOpen, Modifier.fillMaxSize())
@@ -151,7 +187,7 @@ class MainActivity : ComponentActivity() {
                     if (!hideHome) {
                         HomeTransitionHost(transition, accent, lowEnd) {
                             Box(Modifier.fillMaxSize().focusRequester(homeFocus).focusRestorer()) {
-                                ThemeRegistry.byId(state.config.themeId).Home(state, homeActions)
+                                theme.Home(state, homeActions)
                             }
                         }
                     }

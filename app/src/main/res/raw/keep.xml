@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The UI sounds are looked up by name at runtime (snd_<theme>_<sound>), so the resource shrinker must keep them. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@raw/snd_*" />
