@@ -47,6 +47,8 @@ import co.jp.tv.core.util.rememberLowEnd
 import co.jp.tv.core.util.rememberPausedByLifecycle
 import co.jp.tv.home.HomeViewModel
 import co.jp.tv.home.Screen
+import co.jp.tv.homeoverride.domain.HomeOverrideStatus
+import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.network.ui.NetworkPanel
 import co.jp.tv.preferences.ui.CustomizeScreen
 import co.jp.tv.settings.domain.SettingsShortcut
@@ -196,6 +198,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     if (settingsOpen && !editOpen && !themesOpen && !customizeOpen) {
+                        // Read-only check, refreshed whenever the user comes back from the Accessibility screen.
+                        var serviceEnabled by remember { mutableStateOf(false) }
+                        LaunchedEffect(paused) { if (!paused) serviceEnabled = container.accessibilityStatus.isServiceEnabled() }
+                        val homeOverrideOn = state.config.homeOverrideEnabled
                         QuickSettingsScreen(
                             info = QuickSettingsInfo(
                                 launcherName = state.brand,
@@ -215,6 +221,17 @@ class MainActivity : ComponentActivity() {
                             accent = accent,
                             onShortcut = { openShortcut(it) },
                             onEditApps = { viewModel.openEditApps(null) },
+                            homeOverride = HomeOverrideUi(
+                                status = HomeOverrideStatus.of(homeOverrideOn, serviceEnabled),
+                                onToggle = { viewModel.setHomeOverride(!homeOverrideOn) },
+                                onGrantPermission = {
+                                    container.settingsLauncher.open(
+                                        android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS,
+                                        android.provider.Settings.ACTION_SETTINGS,
+                                    )
+                                },
+                                onOpenStockLauncher = { container.stockLauncherOpener.open() },
+                            ),
                             onAllSettings = {
                                 container.settingsLauncher.open(
                                     SettingsShortcuts.ALL_SETTINGS_ACTION,

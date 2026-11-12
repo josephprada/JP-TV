@@ -60,6 +60,8 @@ import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
+import co.jp.tv.homeoverride.ui.HomeOverrideRow
+import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.network.ui.SignalBars
 import co.jp.tv.settings.data.DeviceInfo
@@ -131,6 +133,7 @@ fun QuickSettingsScreen(
     onShortcut: (SettingsShortcut) -> Unit,
     onAllSettings: () -> Unit,
     onEditApps: () -> Unit,
+    homeOverride: HomeOverrideUi,
     modifier: Modifier = Modifier,
 ) {
     val tiles = SettingsShortcuts.tiles
@@ -168,6 +171,7 @@ fun QuickSettingsScreen(
                 }
             }
         }
+        HomeOverrideRow(homeOverride, accent, Modifier.riseIn(delayMs = 500, durationMs = JpMotion.RiseMs, distanceDp = 8f))
         Spacer(Modifier.weight(1f))
         Footer(accent, onAllSettings)
     }

@@ -19,6 +19,8 @@ import co.jp.tv.network.ui.NetworkPanel
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.ui.CustomizeScreen
 import co.jp.tv.core.util.ClockFormat
+import co.jp.tv.homeoverride.domain.HomeOverrideStatus
+import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.settings.data.DeviceInfo
 import co.jp.tv.settings.ui.QuickSettingsInfo
 import co.jp.tv.settings.ui.QuickSettingsScreen
@@ -92,6 +94,7 @@ class PanelScreens : ScreenshotTest() {
             onShortcut = {},
             onAllSettings = {},
             onEditApps = {},
+            homeOverride = HomeOverrideUi(HomeOverrideStatus.NEEDS_PERMISSION, {}, {}, {}),
         )
     }
 
