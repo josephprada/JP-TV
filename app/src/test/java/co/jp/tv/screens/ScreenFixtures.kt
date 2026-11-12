@@ -54,12 +54,19 @@ object ScreenFixtures {
         themeId: String = LauncherConfig.DEFAULT_THEME_ID,
     ) = LauncherConfig(wallpaperId = wallpaperId, themeId = themeId)
 
-    fun homeState(themeId: String = LauncherConfig.DEFAULT_THEME_ID, focusedIndex: Int = 1) = HomeState(
+    /** Same Saturday at 10:30, like the design's Día moment: the day side of the themes that follow [co.jp.tv.themes.shared.DayPhase]. */
+    val dayNow: LocalDateTime = now.withHour(10).withMinute(30)
+
+    fun homeState(
+        themeId: String = LauncherConfig.DEFAULT_THEME_ID,
+        focusedIndex: Int = 1,
+        at: LocalDateTime = now,
+    ) = HomeState(
         brand = LauncherConfig.DEFAULT_BRAND,
         apps = apps,
         focusedIndex = focusedIndex,
         network = network,
-        now = now,
+        now = at,
         config = config(themeId = themeId),
     )
 

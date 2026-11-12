@@ -7,6 +7,10 @@ PAIRS = {
     "home-jptv": "Main", "home-pixel": "ThemePixel", "home-terminal": "ThemeTerminal",
     "home-cartelera": "ThemeCartelera", "home-zen": "ThemeZen", "home-hud": "ThemeHUD",
     "home-vinilo": "ThemeVinilo", "home-lofi": "ThemeLofi", "themes": "Themes",
+    "home-gotham": "ThemeGotham", "home-multiverso": "ThemeMultiverso",
+    "home-cyberpunk": "ThemeCyberpunk", "home-oceano": "ThemeOceano",
+    "home-lofi-day": "ThemeLofi-day", "home-cyberpunk-day": "ThemeCyberpunk-day",
+    "home-oceano-day": "ThemeOceano-day",
     "customize-embers": "Customize", "settings": "Settings", "network": "Network", "edit": "Edit",
 }
 root = Path(__file__).resolve().parents[2] / "screens"

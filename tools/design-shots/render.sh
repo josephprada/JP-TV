@@ -22,11 +22,13 @@ find_chrome() {
 CHROME_BIN=$(find_chrome) || { echo "No headless Chromium found (set CHROME=/path/to/chrome)"; exit 1; }
 FONT_DIR="file://$PWD/app/src/main/res/font"
 
-for f in design/project/*.dc.html; do
-  name=$(basename "$f" .dc.html)
-  page="$TMP/$name.html"
+# Day/night themes read the wall clock ("Auto"); pin them to the fixture moments instead:
+# Noche = 21:40 (the default render) and Día = 10:30 (<name>-day).
+render() { # <source> <out name> <momento>
+  local f=$1 name=$2 momento=$3 page="$TMP/$2.html"
   # The artboards load ./support.js; swap in the shim and point it at the bundled fonts.
-  sed "s#<script src=\"./support.js\"></script>#<script>window.__FONT_DIR__='$FONT_DIR'</script><script src=\"../../../tools/design-shots/dc-shim.js\"></script>#" "$f" > "$page"
+  sed -e "s#<script src=\"./support.js\"></script>#<script>window.__FONT_DIR__='$FONT_DIR'</script><script src=\"../../../tools/design-shots/dc-shim.js\"></script>#" \
+      -e "s#props.momento ?? 'Auto'#props.momento ?? '$momento'#" "$f" > "$page"
   for scale in 1:"$name@1920" 0.66667:"$name"; do
     dsf=${scale%%:*}; out=${scale#*:}
     "$CHROME_BIN" --headless --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files \
@@ -34,5 +36,11 @@ for f in design/project/*.dc.html; do
       --screenshot="$PWD/$OUT/$out.png" "file://$PWD/$page" >/dev/null 2>&1
   done
   echo "design/$name"
+}
+
+for f in design/project/*.dc.html; do
+  name=$(basename "$f" .dc.html)
+  render "$f" "$name" Noche
+  case "$name" in ThemeLofi|ThemeCyberpunk|ThemeOceano) render "$f" "$name-day" Día ;; esac
 done
 rm -rf "$TMP"

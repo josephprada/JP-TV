@@ -1,18 +1,28 @@
 package co.jp.tv.screens
 
-import co.jp.tv.preferences.domain.LauncherConfig
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import co.jp.tv.themes.ThemeRegistry
 import co.jp.tv.wallpaper.WallpaperRegistry
+import java.time.LocalDateTime
 import org.junit.Test
 
 /** One Home render per theme, over the default wallpaper, like MainActivity composes it. */
 class ThemeHomeScreens : ScreenshotTest() {
-    private fun home(themeId: String) = shoot("home-$themeId") {
-        val state = ScreenFixtures.homeState(themeId)
+    private fun home(
+        themeId: String,
+        suffix: String = "",
+        at: LocalDateTime = ScreenFixtures.now,
+        keys: List<Key> = emptyList(),
+    ) = shoot("home-$themeId$suffix", keys) {
+        val state = ScreenFixtures.homeState(themeId, at = at)
         WallpaperRegistry.byId(state.config.wallpaperId)
-            .Render(androidx.compose.ui.graphics.Color(state.config.accent), paused = true, modifier = androidx.compose.ui.Modifier)
+            .Render(Color(state.config.accent), paused = true, modifier = Modifier)
         ThemeRegistry.byId(themeId).Home(state, ScreenFixtures.actions)
     }
+
+    private fun homeDay(themeId: String) = home(themeId, "-day", ScreenFixtures.dayNow)
 
     @Test fun jptv() = home("jptv")
     @Test fun pixel() = home("pixel")
@@ -22,11 +32,22 @@ class ThemeHomeScreens : ScreenshotTest() {
     @Test fun hud() = home("hud")
     @Test fun vinilo() = home("vinilo")
     @Test fun lofi() = home("lofi")
+    @Test fun gotham() = home("gotham")
+    @Test fun multiverso() = home("multiverso")
+    @Test fun cyberpunk() = home("cyberpunk")
+    @Test fun oceano() = home("oceano")
+
+    // Themes that follow DayPhase; the rest ignore the hour.
+    @Test fun lofiDay() = homeDay("lofi")
+    @Test fun cyberpunkDay() = homeDay("cyberpunk")
+    @Test fun oceanoDay() = homeDay("oceano")
 
     @Test fun registryMatchesTests() {
         // Keeps this file honest when a theme is added to the registry.
-        val covered = setOf("jptv", "pixel", "terminal", "cartelera", "zen", "hud", "vinilo", "lofi")
+        val covered = setOf(
+            "jptv", "pixel", "terminal", "cartelera", "zen", "hud", "vinilo", "lofi",
+            "gotham", "multiverso", "cyberpunk", "oceano",
+        )
         check(ThemeRegistry.all.map { it.id }.toSet() == covered) { "Add the new theme to ThemeHomeScreens" }
-        check(LauncherConfig.WALLPAPER_IDS.isNotEmpty())
     }
 }

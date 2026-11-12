@@ -19,6 +19,10 @@
     ['Geist Mono', 'geist_mono.ttf', '100 900'], ['Limelight', 'limelight.ttf', '400'],
     ['Orbitron', 'orbitron.ttf', '400 900'], ['Press Start 2P', 'press_start_2p.ttf', '400'],
     ['Righteous', 'righteous.ttf', '400'], ['Caveat', 'caveat.ttf', '400 700'], ['VT323', 'vt323.ttf', '400'],
+    ['Special Elite', 'special_elite.ttf', '400'], ['Fredoka', 'fredoka.ttf', '300 700'],
+    ['Share Tech Mono', 'share_tech_mono.ttf', '400'], ['DM Mono', 'dm_mono.ttf', '400'], ['DM Mono', 'dm_mono_medium.ttf', '500'],
+    ['Chakra Petch', 'chakra_petch_medium.ttf', '500'], ['Chakra Petch', 'chakra_petch_semibold.ttf', '600'],
+    ['Chakra Petch', 'chakra_petch_bold.ttf', '700'],
   ];
   const BUNDLED = FONTS.map((f) => f[0]);
 
