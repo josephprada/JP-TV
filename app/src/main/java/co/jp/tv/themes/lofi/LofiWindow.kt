@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.remember
 import co.jp.tv.core.design.bakedLayer
+import co.jp.tv.themes.shared.Lightning
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
@@ -147,7 +148,7 @@ internal fun LofiWindow(
                         val nightDrops = LofiSky.dropCount(sky.rainNight, LofiScatter.RAIN_COUNT, lowEnd)
                         if (nightDrops > 0 && nightAmount > 0f) drawRain(scatter, nightDrops, ms, LofiPalette.RainDrop, nightAmount)
                         if (sky.lightning) {
-                            val flash = LofiSky.flash(ms)
+                            val flash = Lightning.flash(ms)
                             if (flash > 0f) drawRect(LofiPalette.Flash, size = Size(WINDOW_W, WINDOW_H), alpha = FLASH_ALPHA * flash)
                         }
                         drawRect(

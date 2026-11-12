@@ -25,7 +25,8 @@ import co.jp.tv.themes.shared.themeKeyNavigation
 /**
  * Rainy neon city (design: ThemeCyberpunk.dc.html). Apps are neon signs along a wet street,
  * Left/Right moves along them; Up reaches the settings control, Down returns. The scene follows
- * [DayPhase]: dusk-blue day palette from 06:00, neon night from 18:00.
+ * [DayPhase]: dusk-blue day palette from 06:00, neon night from 18:00. The weather thins the rain
+ * out, brings fog, a darker sky and, in storms, lightning ([CyberpunkSky]).
  */
 object CyberpunkTheme : LauncherTheme {
     override val id = "cyberpunk"
@@ -38,6 +39,8 @@ object CyberpunkTheme : LauncherTheme {
         LaunchedEffect(Unit) { focus.list.requestFocus() }
         val city = remember { CyberpunkCity.generate() }
         val phase = if (DayPhase.of(state.now).isNight) CyberpunkPalette.Night else CyberpunkPalette.Day
+        // The sky follows the reading's condition only, so temperature and clock ticks never rebuild it.
+        val sky = remember(state.weather?.condition) { CyberpunkSky.of(state.weather?.condition) }
         val count = state.apps.size
         val focused = if (count == 0) 0 else state.focusedIndex.coerceIn(0, count - 1)
         val time = rememberSceneTime()
@@ -72,8 +75,9 @@ object CyberpunkTheme : LauncherTheme {
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
             CyberpunkSkyline(city, phase, time, farShift, midShift)
+            CyberpunkHaze(phase, sky)
             CyberpunkSigns(state.apps, focused, phase)
-            CyberpunkWeather(city, phase, time)
+            CyberpunkWeather(city, phase, time, sky)
             CyberpunkAtmosphere(phase)
             CyberpunkBrand(state.brand, time, Modifier.offset(96.dpx, 52.dpx))
             CyberpunkTopBar(

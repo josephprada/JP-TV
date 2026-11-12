@@ -48,6 +48,7 @@ import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themesControlTarget
+import co.jp.tv.weather.ui.WeatherBadge
 
 /**
  * Top-right cluster: network pill, settings (the theme's D-pad control), themes, clock.
@@ -88,6 +89,18 @@ internal fun CyberpunkTopBar(
             focused = focus.onThemes,
             onClick = actions::openThemes,
             modifier = Modifier.themesControlTarget(focus),
+        )
+        WeatherBadge(
+            weather = state.weather,
+            color = CyberpunkPalette.Cyan,
+            textStyle = TextStyle(
+                fontSize = 22.spx,
+                fontWeight = FontWeight.Medium,
+                fontFamily = CyberpunkFonts.Display,
+                letterSpacing = 0.04.em,
+            ),
+            iconSize = 28.dpx,
+            gap = 8.dpx,
         )
         CyberpunkGlowText(
             ClockFormat.time(state.now, state.config.hourFormat),

@@ -55,20 +55,6 @@ class LofiSkyTest {
     }
 
     @Test
-    fun `lightning is rare, brief and never above full strength`() {
-        var lit = 0
-        for (ms in 0 until LofiSky.LIGHTNING_PERIOD_MS step 10) {
-            val f = LofiSky.flash(ms.toLong())
-            assertTrue(f in 0f..1f, "$ms -> $f")
-            if (f > 0f) lit++
-        }
-        val share = lit * 10f / LofiSky.LIGHTNING_PERIOD_MS
-        assertTrue(share < 0.05f, "lit $share of the cycle")
-        assertTrue(LofiSky.flash(0) > 0.5f, "the cycle opens with a flash")
-        assertEquals(0f, LofiSky.flash(LofiSky.LIGHTNING_PERIOD_MS / 2L))
-    }
-
-    @Test
     fun `rain drop counts scale with the knob and drop on low end boxes`() {
         assertEquals(0, LofiSky.dropCount(0f, total = 34, lowEnd = false))
         assertEquals(34, LofiSky.dropCount(1f, total = 34, lowEnd = false))

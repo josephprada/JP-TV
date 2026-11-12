@@ -36,23 +36,6 @@ internal data class LofiSky(
             WeatherCondition.Storm -> LofiSky(1f, 1f, clouds = 1f, overcast = 0.45f, fog = 0f, lightning = true, sunbeam = 0f)
         }
 
-        const val LIGHTNING_PERIOD_MS = 13_000
-
-        /**
-         * Lightning strength at [ms] on the frame clock: a double flash at the start of every 13 s cycle that
-         * dies away in under half a second, and dark the rest of the time (about 3 % of it lit).
-         */
-        fun flash(ms: Long): Float {
-            val t = (ms % LIGHTNING_PERIOD_MS).toInt()
-            return when {
-                t < 60 -> 1f
-                t < 120 -> 0.15f
-                t < 180 -> 0.8f
-                t < 400 -> 0.8f * (1f - (t - 180) / 220f)
-                else -> 0f
-            }
-        }
-
         /** Drops to draw out of [total] for a rain [amount]; the slow boxes draw 60 % of them. */
         fun dropCount(amount: Float, total: Int, lowEnd: Boolean): Int =
             (total * amount * (if (lowEnd) LOW_END_SHARE else 1f)).toInt().coerceIn(0, total)

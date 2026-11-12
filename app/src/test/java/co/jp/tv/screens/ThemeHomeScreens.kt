@@ -56,6 +56,15 @@ class ThemeHomeScreens : ScreenshotTest() {
     @Test fun lofiFogDay() = home("lofi", "-fog-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Fog, night = false))
     @Test fun lofiClearNight() = home("lofi", "-clear", weather = w(WeatherCondition.Clear))
 
+    @Test fun cyberpunkRain() = home("cyberpunk", "-rain", weather = w(WeatherCondition.Rain))
+    @Test fun cyberpunkStorm() = home("cyberpunk", "-storm", weather = w(WeatherCondition.Storm))
+    @Test fun cyberpunkFog() = home("cyberpunk", "-fog", weather = w(WeatherCondition.Fog))
+    @Test fun cyberpunkClearDay() = home("cyberpunk", "-clear-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Clear, night = false))
+
+    @Test fun oceanoStorm() = home("oceano", "-storm", weather = w(WeatherCondition.Storm))
+    @Test fun oceanoRainDay() = home("oceano", "-rain-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Rain, night = false))
+    @Test fun oceanoPartlyCloudyDay() = home("oceano", "-partly-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.PartlyCloudy, night = false))
+
     @Test fun registryMatchesTests() {
         // Keeps this file honest when a theme is added to the registry.
         val covered = setOf(

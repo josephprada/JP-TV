@@ -101,6 +101,12 @@ object CyberpunkPalette {
     val Splash = Color(0x8CB4DCFF)
     val Rain = Color(0xFFAADCFF)
     val Scanline = Color(0x24000000)
+
+    // Weather: haze over the towers by phase, the storm's lightning wash and the veil under a gloomy sky.
+    val FogNight = Color(0xFF7A55B0)
+    val FogDay = Color(0xFFCBD0DE)
+    val Flash = Color(0xFFD8E4FF)
+    val Murk = Color(0xFF05020C)
     val TopShade = Color(0x80080618)
 
     val SignBodyTop = Color(0xFF170B2A)
