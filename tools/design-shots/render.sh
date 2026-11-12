@@ -26,9 +26,9 @@ FONT_DIR="file://$PWD/app/src/main/res/font"
 # Noche = 21:40 (the default render) and Día = 10:30 (<name>-day).
 render() { # <source> <out name> <momento>
   local f=$1 name=$2 momento=$3 page="$TMP/$2.html"
-  # The artboards load ./support.js; swap in the shim and point it at the bundled fonts.
-  sed -e "s#<script src=\"./support.js\"></script>#<script>window.__FONT_DIR__='$FONT_DIR'</script><script src=\"../../../tools/design-shots/dc-shim.js\"></script>#" \
-      -e "s#props.momento ?? 'Auto'#props.momento ?? '$momento'#" "$f" > "$page"
+  # The artboards load ./support.js (or a uuid-named copy of it); swap in the shim and point it at the bundled fonts.
+  sed -E -e "s#<script src=\"(\./support\.js|[0-9a-f-]{36})\"></script>#<script>window.__FONT_DIR__='$FONT_DIR'</script><script src=\"../../../tools/design-shots/dc-shim.js\"></script>#" \
+      -e "s#&quot;default&quot;:&quot;Auto&quot;#\&quot;default\&quot;:\&quot;$momento\&quot;#" "$f" > "$page"
   for scale in 1:"$name@1920" 0.66667:"$name"; do
     dsf=${scale%%:*}; out=${scale#*:}
     "$CHROME_BIN" --headless --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files \
