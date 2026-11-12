@@ -17,7 +17,9 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import co.jp.tv.R
 import co.jp.tv.core.util.ClockFormat
+import co.jp.tv.core.util.DeviceProfile
 import co.jp.tv.core.util.LocalPaused
+import androidx.compose.ui.platform.LocalContext
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.DayPhase
 import co.jp.tv.themes.shared.HomeActions
@@ -51,7 +53,9 @@ object LofiTheme : LauncherTheme {
         )
         // One frame clock for every loop (rain, clouds, steam, tail, lamp, blink, grain);
         // it is never started while paused, so all loops stop together.
-        val millis = rememberFrameMillis(paused = LocalPaused.current, maxFps = 0)
+        val context = LocalContext.current
+        val lowEnd = remember { DeviceProfile.isLowEnd(context) }
+        val millis = rememberFrameMillis(paused = LocalPaused.current, maxFps = DeviceProfile.wallpaperMaxFps(context))
         val scatter = remember { LofiScatter.create() }
         val room = remember(night) { roomBrush(night) }
 
@@ -84,7 +88,7 @@ object LofiTheme : LauncherTheme {
             LofiClockLine(clockLine, millis)
             LofiNotebook(state.brand, night, state.apps, state.focusedIndex, Modifier.align(Alignment.TopEnd))
             LofiBottomBar(state.network, actions, focus, Modifier.align(Alignment.BottomCenter))
-            LofiFilmGrain(millis)
+            LofiFilmGrain(millis, showGrain = !lowEnd)
         }
     }
 

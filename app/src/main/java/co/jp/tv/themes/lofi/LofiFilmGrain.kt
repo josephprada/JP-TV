@@ -31,11 +31,12 @@ private val GrainDy = floatArrayOf(0f, 6f, -4f, -8f)
 private const val GRAIN_INSET = 40f
 
 /**
- * Film grain (1 px white dots at 6 % every 4 px, jittering) and the vignette
+ * Film grain (1 px white dots at 6 % every 4 px, jittering; skipped when [showGrain] is false, as on low-end
+ * boxes where it costs a full-screen textured pass) and the vignette
  * `radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%)`.
  */
 @Composable
-internal fun LofiFilmGrain(millis: LongState) {
+internal fun LofiFilmGrain(millis: LongState, showGrain: Boolean = true) {
     // Redraw only when the step changes, not on every frame.
     val step by remember(millis) {
         derivedStateOf { (millis.longValue.mod(GRAIN_PERIOD_MS) / GRAIN_STEP_MS).toInt() }
@@ -62,7 +63,7 @@ internal fun LofiFilmGrain(millis: LongState) {
                 val stretch = 1.2f * size.width / size.height
                 val inset = GRAIN_INSET * k
                 onDrawBehind {
-                    translate(left = GrainDx[step] * k, top = GrainDy[step] * k) {
+                    if (showGrain) translate(left = GrainDx[step] * k, top = GrainDy[step] * k) {
                         drawRect(
                             grain,
                             topLeft = Offset(-inset, -inset),

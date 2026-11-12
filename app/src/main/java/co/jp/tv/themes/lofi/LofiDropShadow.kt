@@ -4,6 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -30,3 +31,16 @@ internal fun Modifier.lofiDropShadow(color: Color, cornerRadius: Dp, offsetY: Dp
             drawIntoCanvas { it.nativeCanvas.drawRoundRect(0f, 0f, size.width, size.height, r, r, paint) }
         }
     }
+
+/** One-off version of [lofiDropShadow] for baked layers: draws the shadow of a box at the origin of this scope. */
+internal fun DrawScope.drawLofiDropShadow(color: Color, width: Float, height: Float, cornerRadius: Float, offsetY: Float, blur: Float) {
+    val sigma = blur / 2f
+    val shadowRadius = ((sigma - 0.5f) / 0.57735f).coerceAtLeast(0f)
+    val argb = color.toArgb()
+    val paint = Paint().asFrameworkPaint().apply {
+        isAntiAlias = true
+        this.color = argb
+        setShadowLayer(shadowRadius, 0f, offsetY, argb)
+    }
+    drawIntoCanvas { it.nativeCanvas.drawRoundRect(0f, 0f, width, height, cornerRadius, cornerRadius, paint) }
+}

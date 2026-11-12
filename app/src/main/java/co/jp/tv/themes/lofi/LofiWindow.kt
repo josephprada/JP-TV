@@ -9,14 +9,18 @@ import androidx.compose.runtime.LongState
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.PathOperation
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.remember
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
@@ -47,105 +51,63 @@ private const val FRAME_BAR = 14f
 
 /**
  * The window: sky, sun or moon, clouds, skyline, lit windows, rain and frame. Sky, orb and
- * buildings switch at once like the artboard; clouds, lights and rain fade with [fade]
- * (0 = day, 1 = night) over the artboard's 2 s transition.
+ * buildings switch at once like the artboard and are baked into a bitmap per phase (with the
+ * frame ring and its shadow); clouds, lights and rain fade with [fade] (0 = day, 1 = night) over
+ * the artboard's 2 s transition and are the only part redrawn on a clock tick.
  */
 @Composable
 internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, scatter: LofiScatter) {
+    val cloudShapes = remember { CloudShapes() }
+    // Static: shadow, frame ring, sky, orb and skyline. The window sits at (60, 60) dp, so everything below
+    // y = 0.8 of the screen is empty and left out of the bitmap.
+    Spacer(
+        Modifier
+            .fillMaxSize()
+            .bakedLayer(bottomFraction = 0.8f) {
+                val k = density / 2f
+                translate(left = 60.dp.toPx(), top = 60.dp.toPx()) {
+                    // box-shadow: 0 0 0 18px frame, 0 30px 80px rgba(0,0,0,0.5); the ring is on top.
+                    drawLofiDropShadow(
+                        LofiPalette.Shadow,
+                        width = 380.dp.toPx(),
+                        height = 260.dp.toPx(),
+                        cornerRadius = 12.dp.toPx(),
+                        offsetY = 15.dp.toPx(),
+                        blur = 40.dp.toPx(),
+                    )
+                    val ring = 9.dp.toPx()
+                    drawRoundRect(
+                        LofiPalette.WindowFrame,
+                        topLeft = Offset(-ring, -ring),
+                        size = Size(380.dp.toPx() + 2 * ring, 260.dp.toPx() + 2 * ring),
+                        cornerRadius = CornerRadius(21.dp.toPx()),
+                    )
+                    clipPath(Path().apply { addRoundRect(RoundRect(0f, 0f, 380.dp.toPx(), 260.dp.toPx(), CornerRadius(12.dp.toPx()))) }) {
+                        scale(scaleX = k, scaleY = k, pivot = Offset.Zero) { drawWindowBackdrop(night) }
+                    }
+                }
+            },
+    )
+    // Dynamic: clouds, lit windows, rain and the frame bars, clipped to the rounded window.
     Spacer(
         Modifier
             .offset(x = 60.dp, y = 60.dp)
             .size(width = 380.dp, height = 260.dp)
-            // box-shadow: 0 0 0 18px frame, 0 30px 80px rgba(0,0,0,0.5); the ring is on top.
-            .lofiDropShadow(LofiPalette.Shadow, cornerRadius = 12.dp, offsetY = 15.dp, blur = 40.dp)
-            .drawBehind {
-                val ring = 9.dp.toPx()
-                drawRoundRect(
-                    LofiPalette.WindowFrame,
-                    topLeft = Offset(-ring, -ring),
-                    size = Size(size.width + 2 * ring, size.height + 2 * ring),
-                    cornerRadius = CornerRadius(21.dp.toPx()),
-                )
-            }
             .clip(RoundedCornerShape(12.dp))
             .drawWithCache {
-                val nightSky = Brush.verticalGradient(
-                    0f to LofiPalette.NightSkyTop,
-                    0.55f to LofiPalette.NightSkyMid,
-                    1f to LofiPalette.NightSkyBottom,
-                    startY = 0f,
-                    endY = WINDOW_H,
-                )
-                val daySky = Brush.verticalGradient(
-                    0f to LofiPalette.DaySkyTop,
-                    0.55f to LofiPalette.DaySkyMid,
-                    1f to LofiPalette.DaySkyBottom,
-                    startY = 0f,
-                    endY = WINDOW_H,
-                )
-                // Night: 0 0 60px glow. Day: 0 0 90px 20px glow.
-                val nightGlow = LofiGlow.brush(OrbCenter, ORB_RADIUS, 60f, LofiPalette.NightOrbGlow)
-                val nightGlowExtent = LofiGlow.extent(ORB_RADIUS, 60f)
-                val dayGlow = LofiGlow.brush(OrbCenter, ORB_RADIUS + 20f, 90f, LofiPalette.DayOrbGlow)
-                val dayGlowExtent = LofiGlow.extent(ORB_RADIUS + 20f, 90f)
-                val cloudPaths = Array(CloudW.size) { i ->
-                    val w = CloudW[i]
-                    val h = Math.round(w * 0.3f).toFloat()
-                    Path().apply { addRoundRect(RoundRect(0f, 0f, w, h, CornerRadius(h / 2f))) }
-                }
                 onDrawBehind {
                     val ms = millis.longValue
                     val nightAmount = fade.value
                     inArtboardPx {
-                        drawRect(if (night) nightSky else daySky, size = Size(WINDOW_W, WINDOW_H))
-                        if (night) {
-                            drawCircle(nightGlow, radius = nightGlowExtent, center = OrbCenter)
-                            drawCircle(LofiPalette.NightOrb, radius = ORB_RADIUS, center = OrbCenter)
-                        } else {
-                            drawCircle(dayGlow, radius = dayGlowExtent, center = OrbCenter)
-                            drawCircle(LofiPalette.DayOrb, radius = ORB_RADIUS, center = OrbCenter)
-                        }
-
                         val cloudAmount = 1f - nightAmount
                         if (cloudAmount > 0f) {
                             for (i in CloudW.indices) {
-                                val w = CloudW[i]
-                                val h = Math.round(w * 0.3f).toFloat()
-                                val dx = Math.round(w * 0.22f).toFloat()
-                                val dy = -Math.round(w * 0.12f).toFloat()
-                                val spread = Math.round(w * 0.02f).toFloat()
-                                val alpha = CloudAlpha[i] * cloudAmount
                                 val drift = CLOUD_DRIFT * JpMotion.InOut.transform(LofiMotion.alternate(ms, CloudPeriodMs[i]))
                                 translate(left = CloudX[i] + drift, top = CloudY[i]) {
-                                    // CSS clips an outer box-shadow to outside the box.
-                                    clipPath(cloudPaths[i], clipOp = ClipOp.Difference) {
-                                        drawRoundRect(
-                                            LofiPalette.Cloud,
-                                            topLeft = Offset(dx - spread, dy - spread),
-                                            size = Size(w + 2 * spread, h + 2 * spread),
-                                            cornerRadius = CornerRadius(h / 2f + spread),
-                                            alpha = alpha,
-                                        )
-                                    }
-                                    drawPath(cloudPaths[i], LofiPalette.Cloud, alpha = alpha)
+                                    drawPath(cloudShapes.paths[i], LofiPalette.Cloud, alpha = CloudAlpha[i] * cloudAmount)
                                 }
                             }
                         }
-
-                        var x = 0f
-                        for (i in BuildingW.indices) {
-                            val w = BuildingW[i] * (1f - BUILDING_SHRINK)
-                            val h = BuildingH[i]
-                            val color = when {
-                                i % 2 == 0 && night -> LofiPalette.NightBuildingA
-                                i % 2 == 0 -> LofiPalette.DayBuildingA
-                                night -> LofiPalette.NightBuildingB
-                                else -> LofiPalette.DayBuildingB
-                            }
-                            drawRect(color, topLeft = Offset(x, WINDOW_H - h), size = Size(w, h))
-                            x += w + BUILDING_GAP
-                        }
-
                         if (nightAmount > 0f) {
                             for (i in 0 until LofiScatter.LIGHT_COUNT) {
                                 drawRect(
@@ -167,7 +129,6 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
                                 )
                             }
                         }
-
                         drawRect(
                             LofiPalette.WindowFrame,
                             topLeft = Offset(WINDOW_W / 2f - FRAME_BAR / 2f, 0f),
@@ -182,4 +143,57 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
                 }
             },
     )
+}
+
+/** Sky, sun or moon with its glow, and the skyline, in window artboard px. */
+private fun DrawScope.drawWindowBackdrop(night: Boolean) {
+    val sky = Brush.verticalGradient(
+        0f to if (night) LofiPalette.NightSkyTop else LofiPalette.DaySkyTop,
+        0.55f to if (night) LofiPalette.NightSkyMid else LofiPalette.DaySkyMid,
+        1f to if (night) LofiPalette.NightSkyBottom else LofiPalette.DaySkyBottom,
+        startY = 0f,
+        endY = WINDOW_H,
+    )
+    drawRect(sky, size = Size(WINDOW_W, WINDOW_H))
+    if (night) {
+        // 0 0 60px glow.
+        drawCircle(LofiGlow.brush(OrbCenter, ORB_RADIUS, 60f, LofiPalette.NightOrbGlow), radius = LofiGlow.extent(ORB_RADIUS, 60f), center = OrbCenter)
+        drawCircle(LofiPalette.NightOrb, radius = ORB_RADIUS, center = OrbCenter)
+    } else {
+        // 0 0 90px 20px glow.
+        drawCircle(LofiGlow.brush(OrbCenter, ORB_RADIUS + 20f, 90f, LofiPalette.DayOrbGlow), radius = LofiGlow.extent(ORB_RADIUS + 20f, 90f), center = OrbCenter)
+        drawCircle(LofiPalette.DayOrb, radius = ORB_RADIUS, center = OrbCenter)
+    }
+    var x = 0f
+    for (i in BuildingW.indices) {
+        val w = BuildingW[i] * (1f - BUILDING_SHRINK)
+        val h = BuildingH[i]
+        val color = when {
+            i % 2 == 0 && night -> LofiPalette.NightBuildingA
+            i % 2 == 0 -> LofiPalette.DayBuildingA
+            night -> LofiPalette.NightBuildingB
+            else -> LofiPalette.DayBuildingB
+        }
+        drawRect(color, topLeft = Offset(x, WINDOW_H - h), size = Size(w, h))
+        x += w + BUILDING_GAP
+    }
+}
+
+/**
+ * Each cloud as one outline: the pill plus its offset, spread copy (the artboard's `box-shadow`),
+ * merged so it draws with a single alpha and needs no difference clip.
+ */
+private class CloudShapes {
+    val paths: Array<Path> = Array(CloudW.size) { i ->
+        val w = CloudW[i]
+        val h = Math.round(w * 0.3f).toFloat()
+        val dx = Math.round(w * 0.22f).toFloat()
+        val dy = -Math.round(w * 0.12f).toFloat()
+        val spread = Math.round(w * 0.02f).toFloat()
+        val pill = Path().apply { addRoundRect(RoundRect(0f, 0f, w, h, CornerRadius(h / 2f))) }
+        val puff = Path().apply {
+            addRoundRect(RoundRect(dx - spread, dy - spread, dx - spread + w + 2 * spread, dy - spread + h + 2 * spread, CornerRadius(h / 2f + spread)))
+        }
+        Path.combine(PathOperation.Union, pill, puff)
+    }
 }

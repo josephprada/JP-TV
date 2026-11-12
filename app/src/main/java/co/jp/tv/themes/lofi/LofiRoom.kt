@@ -6,7 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LongState
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.runtime.remember
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
@@ -38,33 +41,28 @@ private val TailPivot = Offset(340f, 751f)
  */
 @Composable
 internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState) {
+    val shapes = remember { RoomShapes() }
+    // Desk: baked per phase, below the light.
+    Spacer(
+        Modifier
+            .fillMaxSize()
+            .bakedLayer(topFraction = DESK_TOP / 1080f) {
+                inArtboardPx {
+                    val boardH = 1080f
+                    val desk = if (night) {
+                        Brush.verticalGradient(0f to LofiPalette.NightDeskTop, 1f to LofiPalette.NightDeskBottom, startY = DESK_TOP, endY = boardH)
+                    } else {
+                        Brush.verticalGradient(0f to LofiPalette.DayDeskTop, 1f to LofiPalette.DayDeskBottom, startY = DESK_TOP, endY = boardH)
+                    }
+                    drawRect(desk, topLeft = Offset(0f, DESK_TOP), size = Size(size.width / (density / 2f), boardH - DESK_TOP))
+                }
+            },
+    )
+    // Light: the sunbeam by day and the flickering lamp glow at night, the only animated fills.
     Spacer(
         Modifier
             .fillMaxSize()
             .drawWithCache {
-                val k = density / 2f
-                val boardW = size.width / k
-                val boardH = size.height / k
-                val nightDesk = Brush.verticalGradient(
-                    0f to LofiPalette.NightDeskTop,
-                    1f to LofiPalette.NightDeskBottom,
-                    startY = DESK_TOP,
-                    endY = boardH,
-                )
-                val dayDesk = Brush.verticalGradient(
-                    0f to LofiPalette.DayDeskTop,
-                    1f to LofiPalette.DayDeskBottom,
-                    startY = DESK_TOP,
-                    endY = boardH,
-                )
-                // clip-path: polygon(0 0, 80% 0, 100% 100%, 22% 100%) on a 900x340 box at (140, 640).
-                val sunbeam = Path().apply {
-                    moveTo(140f, 640f)
-                    lineTo(140f + 720f, 640f)
-                    lineTo(140f + 900f, 980f)
-                    lineTo(140f + 198f, 980f)
-                    close()
-                }
                 val sunbeamBrush = Brush.verticalGradient(
                     0f to LofiPalette.SunbeamTop,
                     1f to LofiPalette.SunbeamBottom,
@@ -77,102 +75,126 @@ internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState) {
                     center = LampCenter,
                     radius = 0.65f * LAMP_GLOW_RY,
                 )
-                val shade = Path().apply {
-                    addRoundRect(
-                        RoundRect(
-                            1080f, 560f, 1220f, 640f,
-                            topLeftCornerRadius = CornerRadius(70f),
-                            topRightCornerRadius = CornerRadius(70f),
-                            bottomRightCornerRadius = CornerRadius(10f),
-                            bottomLeftCornerRadius = CornerRadius(10f),
-                        ),
-                    )
-                }
-                val mug = Path().apply {
-                    addRoundRect(
-                        RoundRect(
-                            860f, 700f, 950f, 790f,
-                            bottomRightCornerRadius = CornerRadius(22f),
-                            bottomLeftCornerRadius = CornerRadius(22f),
-                        ),
-                    )
-                }
-                // Handle: content-box 36x44 with a 10 px border on top, right and bottom.
-                val handle = Path().apply {
-                    fillType = PathFillType.EvenOdd
-                    addRoundRect(
-                        RoundRect(
-                            938f, 716f, 984f, 780f,
-                            topRightCornerRadius = CornerRadius(22f),
-                            bottomRightCornerRadius = CornerRadius(22f),
-                        ),
-                    )
-                    addRoundRect(
-                        RoundRect(
-                            938f, 726f, 974f, 770f,
-                            topRightCornerRadius = CornerRadius(12f),
-                            bottomRightCornerRadius = CornerRadius(12f),
-                        ),
-                    )
-                }
-                val catBody = Path().apply {
-                    addRoundRect(
-                        RoundRect(
-                            300f, 690f, 530f, 780f,
-                            topLeftCornerRadius = CornerRadius(CAT_TOP_RADIUS),
-                            topRightCornerRadius = CornerRadius(CAT_TOP_RADIUS),
-                            bottomRightCornerRadius = CornerRadius(CAT_BOTTOM_RADIUS),
-                            bottomLeftCornerRadius = CornerRadius(CAT_BOTTOM_RADIUS),
-                        ),
-                    )
-                }
-                val ears = Path().apply {
-                    moveTo(482f, 678f)
-                    lineTo(496f, 652f)
-                    lineTo(510f, 678f)
-                    close()
-                    moveTo(516f, 678f)
-                    lineTo(530f, 652f)
-                    lineTo(544f, 678f)
-                    close()
-                }
                 onDrawBehind {
-                    val ms = millis.longValue
                     val nightAmount = fade.value
                     inArtboardPx {
-                        drawRect(
-                            if (night) nightDesk else dayDesk,
-                            topLeft = Offset(0f, DESK_TOP),
-                            size = Size(boardW, boardH - DESK_TOP),
-                        )
                         if (nightAmount < 1f) {
-                            drawPath(sunbeam, sunbeamBrush, alpha = 1f - nightAmount)
+                            drawPath(shapes.sunbeam, sunbeamBrush, alpha = 1f - nightAmount)
                         }
                         if (nightAmount > 0f) {
-                            val glowAlpha = nightAmount * lampFlicker(ms)
+                            val glowAlpha = nightAmount * lampFlicker(millis.longValue)
                             scale(scaleX = LAMP_GLOW_RX / LAMP_GLOW_RY, scaleY = 1f, pivot = LampCenter) {
                                 drawCircle(lampGlow, radius = 0.65f * LAMP_GLOW_RY, center = LampCenter, alpha = glowAlpha)
                             }
-                        }
-                        drawPath(shade, LofiPalette.LampShade)
-                        drawRect(LofiPalette.LampStem, topLeft = Offset(1144f, 640f), size = Size(12f, 130f))
-                        drawPath(mug, LofiPalette.Paper)
-                        drawPath(handle, LofiPalette.Paper)
-                        drawPath(catBody, LofiPalette.Cat)
-                        drawOval(LofiPalette.Cat, topLeft = Offset(470f, 668f), size = Size(80f, 70f))
-                        drawPath(ears, LofiPalette.Cat)
-                        rotate(degrees = tailAngle(ms), pivot = TailPivot) {
-                            drawRoundRect(
-                                LofiPalette.Cat,
-                                topLeft = Offset(230f, 740f),
-                                size = Size(110f, 22f),
-                                cornerRadius = CornerRadius(11f),
-                            )
                         }
                     }
                 }
             },
     )
+    // Lamp, mug and cat: static, baked into the band they occupy.
+    Spacer(
+        Modifier
+            .fillMaxSize()
+            .bakedLayer(topFraction = 540f / 1080f, bottomFraction = 800f / 1080f) {
+                inArtboardPx {
+                    drawPath(shapes.shade, LofiPalette.LampShade)
+                    drawRect(LofiPalette.LampStem, topLeft = Offset(1144f, 640f), size = Size(12f, 130f))
+                    drawPath(shapes.mug, LofiPalette.Paper)
+                    drawPath(shapes.handle, LofiPalette.Paper)
+                    drawPath(shapes.catBody, LofiPalette.Cat)
+                    drawOval(LofiPalette.Cat, topLeft = Offset(470f, 668f), size = Size(80f, 70f))
+                    drawPath(shapes.ears, LofiPalette.Cat)
+                }
+            },
+    )
+    // Tail: the only moving part of the cat.
+    Spacer(
+        Modifier
+            .fillMaxSize()
+            .drawBehind {
+                inArtboardPx {
+                    rotate(degrees = tailAngle(millis.longValue), pivot = TailPivot) {
+                        drawRoundRect(
+                            LofiPalette.Cat,
+                            topLeft = Offset(230f, 740f),
+                            size = Size(110f, 22f),
+                            cornerRadius = CornerRadius(11f),
+                        )
+                    }
+                }
+            },
+    )
+}
+
+/** Outlines of the room's objects, built once. */
+private class RoomShapes {
+    // clip-path: polygon(0 0, 80% 0, 100% 100%, 22% 100%) on a 900x340 box at (140, 640).
+    val sunbeam = Path().apply {
+        moveTo(140f, 640f)
+        lineTo(140f + 720f, 640f)
+        lineTo(140f + 900f, 980f)
+        lineTo(140f + 198f, 980f)
+        close()
+    }
+    val shade = Path().apply {
+        addRoundRect(
+            RoundRect(
+                1080f, 560f, 1220f, 640f,
+                topLeftCornerRadius = CornerRadius(70f),
+                topRightCornerRadius = CornerRadius(70f),
+                bottomRightCornerRadius = CornerRadius(10f),
+                bottomLeftCornerRadius = CornerRadius(10f),
+            ),
+        )
+    }
+    val mug = Path().apply {
+        addRoundRect(
+            RoundRect(
+                860f, 700f, 950f, 790f,
+                bottomRightCornerRadius = CornerRadius(22f),
+                bottomLeftCornerRadius = CornerRadius(22f),
+            ),
+        )
+    }
+    // Handle: content-box 36x44 with a 10 px border on top, right and bottom.
+    val handle = Path().apply {
+        fillType = PathFillType.EvenOdd
+        addRoundRect(
+            RoundRect(
+                938f, 716f, 984f, 780f,
+                topRightCornerRadius = CornerRadius(22f),
+                bottomRightCornerRadius = CornerRadius(22f),
+            ),
+        )
+        addRoundRect(
+            RoundRect(
+                938f, 726f, 974f, 770f,
+                topRightCornerRadius = CornerRadius(12f),
+                bottomRightCornerRadius = CornerRadius(12f),
+            ),
+        )
+    }
+    val catBody = Path().apply {
+        addRoundRect(
+            RoundRect(
+                300f, 690f, 530f, 780f,
+                topLeftCornerRadius = CornerRadius(CAT_TOP_RADIUS),
+                topRightCornerRadius = CornerRadius(CAT_TOP_RADIUS),
+                bottomRightCornerRadius = CornerRadius(CAT_BOTTOM_RADIUS),
+                bottomLeftCornerRadius = CornerRadius(CAT_BOTTOM_RADIUS),
+            ),
+        )
+    }
+    val ears = Path().apply {
+        moveTo(482f, 678f)
+        lineTo(496f, 652f)
+        lineTo(510f, 678f)
+        close()
+        moveTo(516f, 678f)
+        lineTo(530f, 652f)
+        lineTo(544f, 678f)
+        close()
+    }
 }
 
 /** lo-lamp, 7 s ease-in-out: 0.85 until 48 %, 0.7 at 50 %, 0.88 at 52 %, back to 0.85. */
