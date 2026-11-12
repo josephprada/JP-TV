@@ -118,17 +118,13 @@ fun CustomizeScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 OptionsCard(stringResource(R.string.customize_brand), delayMs = 0) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        LauncherConfig.BRAND_OPTIONS.forEachIndexed { i, brand ->
-                            Chip(
-                                label = brand,
-                                selected = draft.brand == brand,
-                                accent = accent,
-                                onClick = { draft = draft.copy(brand = brand) },
-                                modifier = if (i == 0) Modifier.focusRequester(firstFocus) else Modifier,
-                            )
-                        }
-                    }
+                    BrandField(
+                        value = draft.brand,
+                        onValueChange = { draft = draft.copy(brand = it) },
+                        accent = accent,
+                        titleFont = titleFont,
+                        modifier = Modifier.focusRequester(firstFocus),
+                    )
                 }
                 OptionsCard(stringResource(R.string.customize_accent), delayMs = 40) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -196,7 +192,7 @@ fun CustomizeScreen(
                     WallpaperRegistry.byId(draft.wallpaperId)
                         .Render(accent, paused = LocalPaused.current, modifier = Modifier.fillMaxSize())
                 }
-                PreviewRail(brand = draft.brand, accent = accent, titleFont = titleFont)
+                PreviewRail(brand = LauncherConfig.sanitizeBrand(draft.brand), accent = accent, titleFont = titleFont)
                 PreviewClock(accent = accent, titleFont = titleFont, hourFormat = draft.hourFormat)
                 ApplyButton(
                     accent = accent,
@@ -234,7 +230,7 @@ private fun AccentSwatch(preset: AccentPreset, selected: Boolean, onClick: () ->
     val active = selected || focused
     Box(
         Modifier
-            .size(36.dp)
+            .size(32.dp)
             .graphicsLayer {
                 val s = if (selected) 1.1f else 1f
                 scaleX = s
@@ -255,16 +251,16 @@ private fun FontRow(font: TitleFont, selected: Boolean, accent: Color, onClick: 
     Row(
         Modifier
             .fillMaxWidth()
-            .height(32.dp)
+            .height(26.dp)
             .background(if (active) Color(0xB3050506) else Color.Transparent, RoundedCornerShape(10.dp))
             .then(if (active) Modifier.border(1.dp, accent.copy(alpha = 0.7f), RoundedCornerShape(10.dp)) else Modifier)
             .onFocusChanged { focused = it.isFocused }
             .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }, onClick = onClick)
             .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        BasicText("21:40", style = TextStyle(color = JpColors.Paper, fontSize = 17.sp, fontFamily = family))
+        BasicText("21:40", style = TextStyle(color = JpColors.Paper, fontSize = 17.sp, fontFamily = family), modifier = Modifier.width(60.dp))
         BasicText(font.displayName, style = TextStyle(color = JpColors.Muted, fontSize = 9.sp, fontFamily = JpFonts.Body))
     }
 }
@@ -323,7 +319,7 @@ private fun PreviewRail(brand: String, accent: Color, titleFont: FontFamily) {
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        BasicText(brand, style = TextStyle(color = accent, fontSize = 18.sp, fontFamily = titleFont))
+        BasicText(brand, style = TextStyle(color = accent, fontSize = 23.sp, fontFamily = titleFont), modifier = Modifier.padding(start = 6.dp, bottom = 8.dp), maxLines = 1)
         PreviewAppRow("YouTube", focused = true, accent = accent)
         PreviewAppRow("Netflix", focused = false, accent = accent)
         PreviewAppRow("Spotify", focused = false, accent = accent)
@@ -378,7 +374,7 @@ private fun BoxScope.PreviewClock(accent: Color, titleFont: FontFamily, hourForm
         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             BasicText(
                 "${time.hours}:${time.minutes}",
-                style = TextStyle(color = JpColors.Paper, fontSize = 36.sp, fontFamily = titleFont),
+                style = TextStyle(color = JpColors.Paper, fontSize = 48.sp, fontFamily = titleFont),
             )
             time.meridiem?.let { meridiem ->
                 BasicText(

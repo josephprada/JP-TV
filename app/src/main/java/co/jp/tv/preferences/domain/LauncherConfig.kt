@@ -29,6 +29,11 @@ data class LauncherConfig(
         /** Ids of the available wallpapers; add new ones here and in WallpaperRegistry. */
         val WALLPAPER_IDS = listOf("embers", "galaxy", "video", "image")
 
+        const val MAX_BRAND = 14
+
+        /** What the name field may save: trimmed, at most [MAX_BRAND] characters, never empty. */
+        fun sanitizeBrand(raw: String): String = raw.trim().take(MAX_BRAND).trim().ifEmpty { DEFAULT_BRAND }
+
         const val MAX_DIM = 80
         private const val DIM_STEP = 10
 
@@ -37,8 +42,6 @@ data class LauncherConfig(
             val next = if (direction > 0) (current / DIM_STEP + 1) * DIM_STEP else (current + DIM_STEP - 1) / DIM_STEP * DIM_STEP - DIM_STEP
             return next.coerceIn(0, MAX_DIM)
         }
-
-        val BRAND_OPTIONS = listOf("JP-TV", "JP", "Casa")
 
         val Default = LauncherConfig()
     }

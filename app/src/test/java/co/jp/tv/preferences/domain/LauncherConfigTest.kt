@@ -21,4 +21,16 @@ class LauncherConfigTest {
         assertEquals(40, LauncherConfig.stepDim(35, +1))
         assertEquals(30, LauncherConfig.stepDim(35, -1))
     }
+
+    @Test
+    fun `brand is trimmed and capped`() {
+        assertEquals("Casa", LauncherConfig.sanitizeBrand("  Casa  "))
+        assertEquals("A".repeat(LauncherConfig.MAX_BRAND), LauncherConfig.sanitizeBrand("A".repeat(40)))
+    }
+
+    @Test
+    fun `a blank brand falls back to the default`() {
+        assertEquals(LauncherConfig.DEFAULT_BRAND, LauncherConfig.sanitizeBrand("   "))
+        assertEquals(LauncherConfig.DEFAULT_BRAND, LauncherConfig.sanitizeBrand(""))
+    }
 }

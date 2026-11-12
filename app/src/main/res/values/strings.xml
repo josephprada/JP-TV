@@ -96,7 +96,7 @@
 
     <string name="customize_title">Personalizar tema</string>
     <string name="customize_breadcrumb">AJUSTES / TEMA · JP-TV</string>
-    <string name="customize_brand">NOMBRE</string>
+    <string name="customize_brand">NOMBRE DEL LAUNCHER</string>
     <string name="customize_accent">COLOR DE ACENTO</string>
     <string name="customize_font">FUENTE DE TÍTULOS Y RELOJ</string>
     <string name="wallpaper_image_hint">IMAGEN FIJA · /sdcard/JPTV/fondo.jpg</string>
