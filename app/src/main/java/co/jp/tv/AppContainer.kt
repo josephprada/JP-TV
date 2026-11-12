@@ -16,10 +16,12 @@ import co.jp.tv.core.sound.data.SoundPoolUiSounds
 import co.jp.tv.core.util.ClockTicker
 import co.jp.tv.home.HomeViewModel
 import co.jp.tv.homeoverride.data.AccessibilityStatusReader
+import co.jp.tv.homeoverride.data.ForegroundWatcherController
 import co.jp.tv.homeoverride.data.HomeStarter
 import co.jp.tv.homeoverride.data.SharedPrefsGuardStateStore
 import co.jp.tv.homeoverride.data.StockHomeResolver
 import co.jp.tv.homeoverride.data.StockLauncherOpener
+import co.jp.tv.homeoverride.data.WatcherPermissions
 import co.jp.tv.homeoverride.domain.RedirectPolicy
 import co.jp.tv.network.data.ConnectivityNetworkMonitor
 import co.jp.tv.network.data.LocationAccess
@@ -73,6 +75,8 @@ class AppContainer(context: Context) {
     val stockHomeResolver = StockHomeResolver(appContext)
     val stockLauncherOpener = StockLauncherOpener(appContext, stockHomeResolver, redirectPolicy)
     val accessibilityStatus = AccessibilityStatusReader(appContext)
+    val watcherPermissions = WatcherPermissions(appContext)
+    val foregroundWatcher = ForegroundWatcherController(appContext, watcherPermissions)
 
     private val httpTransport = HttpUrlConnectionTransport()
     val weatherRepository: WeatherRepository = CachedWeatherRepository(

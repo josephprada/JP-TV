@@ -17,15 +17,19 @@ import kotlinx.coroutines.withTimeoutOrNull
 /**
  * After a normal boot (BOOT_COMPLETED only, never direct boot) starts JP-TV a moment later when the
  * override is on and the guards allow it. By then the stock launcher has shown, so the system is healthy.
+ * Boot and app updates also bring the foreground watcher back (an update stops its service).
  */
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
+        val booted = intent.action == Intent.ACTION_BOOT_COMPLETED
+        if (!booted && intent.action != Intent.ACTION_MY_PACKAGE_REPLACED) return
         val container = (context.applicationContext as JpTvApp).container
         val pending = goAsync()
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 val enabled = withTimeoutOrNull(CONFIG_TIMEOUT_MS) { container.configStore.config.first() }?.homeOverrideEnabled == true
+                container.foregroundWatcher.sync(enabled)
+                if (!booted) return@launch
                 if (container.redirectPolicy.decide(enabled, Trigger.BOOT) !is Decision.Redirect) return@launch
                 delay(START_DELAY_MS)
                 if (container.redirectPolicy.decide(enabled, Trigger.BOOT) !is Decision.Redirect) return@launch

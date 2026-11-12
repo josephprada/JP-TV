@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,6 +15,14 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Home override, usage-stats backend: see which app is in front (Special app access > Usage access). -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <!-- Display over other apps: lets JP-TV start its home from the background (Android 10+) and from boot. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <uses-feature
         android:name="android.hardware.location"
@@ -81,6 +90,16 @@
                 android:resource="@xml/home_override_service" />
         </service>
 
+        <!-- Usage-stats backend of the home override: polls which app is in front while the screen is on. -->
+        <service
+            android:name=".homeoverride.data.ForegroundWatcherService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Detect the stock launcher to show JP-TV as home" />
+        </service>
+
         <!-- Shows up in Android Settings > Screensaver; the user picks it there (JP-TV never changes that setting). -->
         <service
             android:name=".screensaver.data.JpScreensaverService"
@@ -104,12 +123,13 @@
             android:label="@string/screensaver_title"
             android:screenOrientation="landscape" />
 
-        <!-- Regular BOOT_COMPLETED only: nothing here is direct-boot aware. -->
+        <!-- Regular BOOT_COMPLETED only (nothing here is direct-boot aware), plus app updates, which stop the watcher. -->
         <receiver
             android:name=".homeoverride.data.BootReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
     </application>
