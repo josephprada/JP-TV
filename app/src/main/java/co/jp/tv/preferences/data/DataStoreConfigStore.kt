@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
@@ -30,6 +31,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
             prefs[APP_ORDER] = next.appOrder.joinToString(SEPARATOR)
             prefs[HIDDEN_APPS] = next.hiddenApps
             prefs[HOUR_FORMAT] = next.hourFormat.name
+            prefs[WALLPAPER_DIM] = next.wallpaperDim
+            prefs[PAUSE_IN_APPS] = next.pauseWallpaperInApps
         }
     }
 
@@ -46,6 +49,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
                 appOrder = this[APP_ORDER].orEmpty().split(SEPARATOR).filter { it.isNotEmpty() },
                 hiddenApps = this[HIDDEN_APPS].orEmpty(),
                 hourFormat = HourFormat.entries.firstOrNull { it.name == this[HOUR_FORMAT] } ?: HourFormat.H24,
+                wallpaperDim = this[WALLPAPER_DIM] ?: 0,
+                pauseWallpaperInApps = this[PAUSE_IN_APPS] ?: true,
             )
         }
 
@@ -61,6 +66,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         val HIDDEN_APPS = stringSetPreferencesKey("hidden_apps")
 
         /** Absent on installs from before the setting existed; reads as 24-hour. */
+        val WALLPAPER_DIM = intPreferencesKey("wallpaper_dim")
+        val PAUSE_IN_APPS = booleanPreferencesKey("pause_wallpaper_in_apps")
         val HOUR_FORMAT = stringPreferencesKey("hour_format")
     }
 }

@@ -85,4 +85,22 @@ class DataStoreConfigStoreTest {
         store.update { it!!.copy(hiddenApps = setOf("a")) }
         assertEquals(LauncherConfig(appOrder = listOf("a"), hiddenApps = setOf("a")), store.config.first())
     }
+
+    @Test
+    fun `wallpaper dim and pause in apps round trip`() = runTest {
+        val store = store()
+        store.update { LauncherConfig.Default.copy(wallpaperDim = 40, pauseWallpaperInApps = false) }
+        val read = store.config.first()
+        assertEquals(40, read?.wallpaperDim)
+        assertEquals(false, read?.pauseWallpaperInApps)
+    }
+
+    @Test
+    fun `a saved config from before the wallpaper settings reads as no dim and pausing`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "legacy2.preferences_pb") })
+        dataStore.edit { prefs -> prefs[booleanPreferencesKey("saved")] = true }
+        val read = DataStoreConfigStore(dataStore).config.first()
+        assertEquals(0, read?.wallpaperDim)
+        assertEquals(true, read?.pauseWallpaperInApps)
+    }
 }
