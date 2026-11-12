@@ -28,7 +28,10 @@ private const val CardHalfPx = 130f
 private const val CenterPx = 960f
 
 /** Cards further than this from focus are off screen even mid-slide, so they are not composed. */
-private const val VisibleReach = 5
+private const val VisibleReach = 4
+
+/** Width of the edge fade on each side: 12 % of the 1920 px artboard. */
+private const val EdgeFadePx = 1920f * 0.12f
 
 /**
  * The case-file strip: a 600 px band at y = 250 whose edges fade out
@@ -48,19 +51,6 @@ internal fun GothamCaseFiles(apps: List<TvApp>, focusedIndex: Int, modifier: Mod
             .fillMaxWidth()
             .height(300.dp)
             .clipToBounds()
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-            .drawWithCache {
-                val mask = Brush.horizontalGradient(
-                    0f to Color.Transparent,
-                    0.12f to Color.Black,
-                    0.88f to Color.Black,
-                    1f to Color.Transparent,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(mask, blendMode = BlendMode.DstIn)
-                }
-            },
     ) {
         if (apps.isEmpty()) return@Box
         val first = (focusedIndex - VisibleReach).coerceAtLeast(0)
@@ -72,11 +62,18 @@ internal fun GothamCaseFiles(apps: List<TvApp>, focusedIndex: Int, modifier: Mod
                     name = app.label,
                     index = index,
                     focusedIndex = focusedIndex,
-                    modifier = Modifier.offset {
-                        val k = 0.5.dp.toPx()
-                        val x = CenterPx - (track * StepPx + CardHalfPx) + index * StepPx
-                        IntOffset((x * k).roundToInt(), 55.dp.roundToPx())
-                    },
+                    modifier = Modifier
+                        .offset {
+                            val k = 0.5.dp.toPx()
+                            val x = CenterPx - (track * StepPx + CardHalfPx) + index * StepPx
+                            IntOffset((x * k).roundToInt(), 55.dp.roundToPx())
+                        }
+                        // The artboard masks the outer 12 % of the screen; an offscreen mask layer is too costly on
+                        // the TV, so each card fades by how close its centre is to the edge instead.
+                        .graphicsLayer {
+                            val centre = CenterPx + (index - track) * StepPx
+                            alpha = (minOf(centre, 1920f - centre) / EdgeFadePx).coerceIn(0f, 1f)
+                        },
                 )
             }
         }

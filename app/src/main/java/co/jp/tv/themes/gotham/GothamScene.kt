@@ -1,6 +1,8 @@
 package co.jp.tv.themes.gotham
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -58,24 +60,21 @@ internal fun GothamScene(city: GothamCity, time: () -> Long, modifier: Modifier 
             val t = time()
             inDesignSpace { for (i in Clouds.indices) drawHaze(Clouds[i], t) }
         }
-        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
-            inDesignSpace { drawCityLayer(city.far) }
-        }
+        // Static skyline: baked once into the lower half of the screen, where the buildings stand.
+        Spacer(Modifier.fillMaxSize().bakedLayer(topFraction = SkylineTop) { inDesignSpace { drawCityLayer(city.far) } })
         Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val t = time()
             inDesignSpace { drawHaze(FarFog, t) }
         }
-        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
-            inDesignSpace { drawCityLayer(city.mid) }
-        }
+        // Static skyline: baked once into the lower half of the screen, where the buildings stand.
+        Spacer(Modifier.fillMaxSize().bakedLayer(topFraction = SkylineTop) { inDesignSpace { drawCityLayer(city.mid) } })
         Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val t = time()
             inDesignSpace { drawBeacons(city.midBeacons, t) }
         }
         GothamSearchlight(city.motes, time)
-        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
-            inDesignSpace { drawCityLayer(city.near) }
-        }
+        // Static skyline: baked once into the lower half of the screen, where the buildings stand.
+        Spacer(Modifier.fillMaxSize().bakedLayer(topFraction = SkylineTop) { inDesignSpace { drawCityLayer(city.near) } })
         Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val t = time()
             inDesignSpace {
@@ -85,6 +84,9 @@ internal fun GothamScene(city: GothamCity, time: () -> Long, modifier: Modifier 
         }
     }
 }
+
+/** Fraction of the screen height above which no building reaches (towers top out at y = 540). */
+private const val SkylineTop = 0.5f
 
 /** Maps the 1920x1080 artboard onto the screen (one dp per two design px). */
 internal inline fun DrawScope.inDesignSpace(block: DrawScope.() -> Unit) {

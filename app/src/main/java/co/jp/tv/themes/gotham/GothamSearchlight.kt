@@ -1,6 +1,8 @@
 package co.jp.tv.themes.gotham
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -47,10 +49,9 @@ internal fun GothamSearchlight(motes: List<BeamMote>, time: () -> Long, modifier
                 transformOrigin = TransformOrigin(0.5f, 1f)
             },
     ) {
-        Canvas(Modifier.fillMaxSize()) {
-            scale(0.5.dp.toPx(), pivot = Offset.Zero) { paint.drawStatic(this) }
-        }
-        Canvas(Modifier.fillMaxSize()) {
+        // Beam, glows and housing never change: baked once, rotated with the rig.
+        Spacer(Modifier.fillMaxSize().bakedLayer { scale(0.5.dp.toPx(), pivot = Offset.Zero) { paint.drawStatic(this) } })
+        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val t = time()
             scale(0.5.dp.toPx(), pivot = Offset.Zero) { drawMotes(motes, t) }
         }
