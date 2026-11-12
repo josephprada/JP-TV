@@ -30,16 +30,16 @@ Out of scope unless the user asks: the non-theme screens (`Network`, `Edit`, `Se
 
 ## Tasks
 
-- [~] T1 — S3, S4 — Foundation: `DayPhase` rule, clock format preference, formatter, Customize card, tests. Route: delegated (user instruction: "delega la implementacion a los subagentes"), runs alone first because T2-T9 depend on it. Commit: e3b2ec7 (written, not compiled or tested)
-- [~] T2 — S1, S3, S5 — `lofi` with day/night. Route: delegated, parallel. Commit: fe3736a (written, not compiled or tested)
-- [~] T3 — S2, S3, S5 — `cyberpunk` (new) with day/night. Route: delegated, parallel. Commit: 21f5a35 (written, not compiled or tested)
-- [~] T4 — S2, S3, S5 — `oceano` (new) with day/night. Route: delegated, parallel. Commit: 0b18369 (written, not compiled or tested)
-- [~] T5 — S2, S5 — `gotham` (new). Route: delegated, parallel. Commit: 012de03 (written, not compiled or tested)
-- [~] T6 — S2, S5 — `multiverso` (new). Route: delegated, parallel. Commit: 08b33e8 (written, not compiled or tested)
-- [~] T7 — S1, S5 — `pixel`, `terminal`, `hud`. Route: delegated, parallel. Commit: 19e2963 (written, not compiled or tested)
-- [~] T8 — S1, S5 — `cartelera`, `vinilo`, `zen`. Route: delegated, parallel. Commit: 86d65dc (written, not compiled or tested)
-- [~] T9 — S1, S5 — `jptv` home and the Themes selector screen. Route: delegated, parallel. Commit: f4ecdd2 (written, not compiled or tested)
-- [~] T10 — S2 — Register the four new themes in `ThemeRegistry`; seam check (full unit suite, `assembleDebug`). Route: inline (parent owns the shared file). Commit: 16503a2, 6dd1cd6 (written, not compiled or tested)
+- [x] T1 — S3, S4 — Foundation: `DayPhase` rule, clock format preference, formatter, Customize card, tests. Route: delegated (user instruction: "delega la implementacion a los subagentes"), runs alone first because T2-T9 depend on it. Commit: e3b2ec7 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T2 — S1, S3, S5 — `lofi` with day/night. Route: delegated, parallel. Commit: fe3736a (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T3 — S2, S3, S5 — `cyberpunk` (new) with day/night. Route: delegated, parallel. Commit: 21f5a35 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T4 — S2, S3, S5 — `oceano` (new) with day/night. Route: delegated, parallel. Commit: 0b18369 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T5 — S2, S5 — `gotham` (new). Route: delegated, parallel. Commit: 012de03 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T6 — S2, S5 — `multiverso` (new). Route: delegated, parallel. Commit: 08b33e8 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T7 — S1, S5 — `pixel`, `terminal`, `hud`. Route: delegated, parallel. Commit: 19e2963 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T8 — S1, S5 — `cartelera`, `vinilo`, `zen`. Route: delegated, parallel. Commit: 86d65dc (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T9 — S1, S5 — `jptv` home and the Themes selector screen. Route: delegated, parallel. Commit: f4ecdd2 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
+- [x] T10 — S2 — Register the four new themes in `ThemeRegistry`; seam check (full unit suite, `assembleDebug`). Route: inline (parent owns the shared file). Commit: 16503a2, 6dd1cd6 (compiled, `make test` green, rendered off-device against the artboard; NOT yet confirmed on the TV)
 
 Parallel-writer rules for T2-T9: one tree, disjoint surfaces, the parent owns git. No writer edits `ThemeRegistry.kt`, `res/values/strings.xml`, `core/design/*` or `themes/shared/*`. New strings go in `res/values/strings_theme_<id>.xml`. No font downloads: use the fonts already in `res/font`, and report any design font that is missing.
 
@@ -53,3 +53,4 @@ Parallel-writer rules for T2-T9: one tree, disjoint surfaces, the parent owns gi
 - L4 (2026-11-11): environment. No `local.properties`, so there is no `tv.host`: `make deploy` and `make shot` cannot run, and visual verification on the TV is pending. The SDK is at `%LOCALAPPDATA%\Android\Sdk`.
 
 - L7 (2026-11-12): all tasks written and committed on `feat/themes-design-sync`; marked [~] = written but NOT compiled or run (L5). Pending on a machine with Google Maven access: `make test`, `make build`, then `make deploy`/`make shot` against each artboard. Known risks: Compose API signatures, cartelera `cameraDistance`/`rotationY` sign, hud perspective grid omitted (computed off-screen), fonts not bundled (Special Elite, Fredoka, Share Tech Mono, Chakra Petch, DM Mono). Unused strings to remove: `themes_use`, `theme_zen_press_ok`, `theme_pixel_launch`, `theme_lofi_status`.
+- L8 (2026-11-12): verified on a machine with Google Maven access. One compile error (`Size.center` import in `TerminalCrtOverlay`). Fonts bundled and wired: Special Elite (Apache-2.0, gotham), Fredoka (pixel), Share Tech Mono (hud, cyberpunk readouts), Chakra Petch (cyberpunk display), DM Mono (lofi). Unused strings removed. `make test` green; `make screens` renders all 12 homes (lofi, cyberpunk and oceano also day) with no crash; `ThemeDpadReachTest` (run via `make screens`) checks every theme reaches the settings control from the list and returns with the D-pad. jptv gained the long-press Back to Settings gesture the other themes already had. Still pending on the TV: `make deploy`/`make shot`, real perf on the 2 GB box (oceano, multiverso, cyberpunk are the heaviest), long-press Back on the real remote, and the hud perspective grid (still omitted).
