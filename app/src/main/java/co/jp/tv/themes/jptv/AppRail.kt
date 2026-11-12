@@ -83,6 +83,7 @@ internal fun AppRail(
     val currentApps by rememberUpdatedState(apps)
     val currentFocus by rememberUpdatedState(focusedIndex)
     val okPress = remember { OkPress() }
+    val backPress = remember { BackPress() }
 
     Column(
         modifier = modifier
@@ -94,7 +95,7 @@ internal fun AppRail(
             .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 20.dp)
             .focusRequester(focusRequester)
             .focusable()
-            .onKeyEvent { handleKey(it, currentApps, currentFocus, actions, okPress) },
+            .onKeyEvent { handleKey(it, currentApps, currentFocus, actions, okPress, backPress) },
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(
@@ -159,7 +160,10 @@ private fun monoLabel(fontSize: TextUnit = 6.5.sp, letterSpacing: TextUnit = 0.1
 /** Tracks an OK press so a short press launches on release and a long press opens the editor instead. */
 private class OkPress { var pending = false }
 
-private fun handleKey(event: KeyEvent, apps: List<TvApp>, focusedIndex: Int, actions: HomeActions, ok: OkPress): Boolean {
+/** Same Back gesture as the other themes (see themeKeyNavigation): long press opens Settings. */
+private class BackPress { var pending = false }
+
+private fun handleKey(event: KeyEvent, apps: List<TvApp>, focusedIndex: Int, actions: HomeActions, ok: OkPress, back: BackPress): Boolean {
     val key = event.key
     val isOk = key == Key.DirectionCenter || key == Key.Enter || key == Key.NumPadEnter
     return when {
@@ -178,6 +182,20 @@ private fun handleKey(event: KeyEvent, apps: List<TvApp>, focusedIndex: Int, act
                 ok.pending = false
                 apps.getOrNull(focusedIndex)?.let(actions::launch)
             }
+            true
+        }
+        key == Key.Back && event.type == KeyEventType.KeyDown -> {
+            val native = event.nativeKeyEvent
+            if (native.repeatCount == 0) {
+                back.pending = true
+            } else if (native.isLongPress && back.pending) {
+                back.pending = false
+                actions.openSettings()
+            }
+            true
+        }
+        key == Key.Back && event.type == KeyEventType.KeyUp -> {
+            back.pending = false
             true
         }
         event.type != KeyEventType.KeyDown -> false
