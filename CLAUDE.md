@@ -63,7 +63,10 @@ The TV address comes from `local.properties` (`tv.host=…`). If the TV is unrea
 
 - NEVER `pm disable`/`pm disable-user` a stock launcher or `FallbackHome` on any device. On the HY320 projector (192.168.1.14, Allwinner H713, Android 13-ish) this caused a reboot loop: the OEM keystone service `com.softwinner.tcorrection` crashes in system_server when the launcher list is empty, and Wi-Fi/ADB never come up long enough to undo it.
 - To use JP-TV as home, only mark it preferred (`cmd package set-home-activity`) and leave every stock launcher enabled. If the firmware ignores the preference, accept it; do not force it.
-- The projector currently keeps its stock launcher (`com.htc.htclauncherhighenglishd08`) as home; JP-TV is installed as a normal app there.
+- On the projector the HOME key is hard-wired: the system starts `com.jm.jmlauncher/.Launcher` (system app, category `HOME.JM`), which starts `com.htc.htclauncherhighenglishd08/com.mao.launcher.activity.BarrelActivity`. `set-home-activity` is ignored there.
+- JP-TV takes over WITHOUT touching the system through the opt-in `homeoverride/` feature (default OFF): `HomeOverrideService` (accessibility, no window content) brings JP-TV forward on the Home key (where the platform delivers it to `onKeyEvent`) and whenever a stock home package comes to the front (known list + MAIN/HOME and HOME.JM resolvers; never JP-TV, Settings, SystemUI). `BootReceiver` (BOOT_COMPLETED only, nothing direct-boot aware) starts JP-TV 2 s after boot. The stock launchers stay enabled as the fallback.
+- Guards (`RedirectPolicy`, unit-tested): the override stands down when the toggle is off, after 3 crashes or non-drawn redirects in 10 min, and for 10 min after "Abrir launcher original" in Settings. Stock windows are debounced 1.5 s and ignored for 15 s after boot.
+- Enable on the projector (manual, once): JP-TV > Ajustes > "Usar JP-TV como inicio" > ACTIVAR, then DAR PERMISO (opens Android Accessibility; enable the "JP-TV como inicio" service and confirm the dialog). The row shows ACTIVO when both are on. Escape hatch: DESACTIVAR, or turn the service off in Accessibility. Never `pm disable` anything to get this working.
 
 ## Verify before saying "done"
 
