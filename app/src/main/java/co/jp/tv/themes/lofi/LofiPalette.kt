@@ -36,6 +36,17 @@ object LofiPalette {
     val DayBuildingB = Color(0xFF93A2CC)
 
     val RainDrop = Color(0xFFDCD7FF).copy(alpha = 0.45f)
+
+    /** Rain against the bright day sky needs a darker streak than the night's pale one. */
+    val RainDropDay = Color(0xFF55608F).copy(alpha = 0.55f)
+
+    // Weather: the grey veil over the sky, dark clouds in the night sky, haze over the skyline, lightning.
+    val DayVeil = Color(0xFF6C7488)
+    val NightVeil = Color(0xFF14102A)
+    val NightCloud = Color(0xFF4B3F6B)
+    val DayFog = Color(0xFFD9DEE8)
+    val NightFog = Color(0xFF6C5A8C)
+    val Flash = Color(0xFFEAF0FF)
     val CityLightAmber = Color(0xFFF2A65A)
     val CityLightPaper = Color(0xFFF6E7D0)
     val WindowFrame = Color(0xFF3A2D4A)

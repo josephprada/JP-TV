@@ -38,10 +38,10 @@ private val TailPivot = Offset(340f, 751f)
 /**
  * The room under the window, in artboard order: desk, sunbeam (day), lamp glow (night),
  * lamp, mug, sleeping cat. The desk switches at once; sunbeam and glow fade with [fade]
- * (0 = day, 1 = night). The mug steam is [LofiSteam], drawn right after this.
+ * (0 = day, 1 = night); the sunbeam also scales with [sunbeam] (cloud cover). The mug steam is [LofiSteam], drawn right after this.
  */
 @Composable
-internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState) {
+internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState, sunbeam: Float = 1f) {
     val shapes = remember { RoomShapes() }
     // Desk: baked per phase, below the light.
     Spacer(
@@ -81,8 +81,8 @@ internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState) {
                 onDrawBehind {
                     val nightAmount = fade.value
                     inArtboardPx {
-                        if (nightAmount < 1f) {
-                            drawPath(shapes.sunbeam, sunbeamBrush, alpha = 1f - nightAmount)
+                        if (nightAmount < 1f && sunbeam > 0f) {
+                            drawPath(shapes.sunbeam, sunbeamBrush, alpha = (1f - nightAmount) * sunbeam)
                         }
                         if (nightAmount > 0f) {
                             val glowAlpha = nightAmount * lampFlicker(millis.longValue)

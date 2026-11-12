@@ -15,6 +15,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
@@ -49,14 +50,26 @@ private const val BUILDING_SHRINK = 2f / 720f
 
 private const val FRAME_BAR = 14f
 
+// Weather: how strongly the overcast veil and the dark night clouds show, and the lightning flash.
+private const val VEIL_GAIN = 1.4f
+private const val NIGHT_CLOUD_ALPHA = 0.7f
+private const val FLASH_ALPHA = 0.5f
+
 /**
- * The window: sky, sun or moon, clouds, skyline, lit windows, rain and frame. Sky, orb and
- * buildings switch at once like the artboard and are baked into a bitmap per phase (with the
- * frame ring and its shadow); clouds, lights and rain fade with [fade] (0 = day, 1 = night) over
- * the artboard's 2 s transition and are the only part redrawn on a clock tick.
+ * The window: sky, sun or moon, clouds, skyline, lit windows, rain and frame. Sky, orb, buildings and
+ * the weather's veil and haze switch at once like the artboard and are baked into a bitmap per phase
+ * and [sky] (with the frame ring and its shadow); clouds, lights, rain and lightning fade with [fade]
+ * (0 = day, 1 = night) over the artboard's 2 s transition and are the only part redrawn on a clock tick.
  */
 @Composable
-internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, scatter: LofiScatter) {
+internal fun LofiWindow(
+    night: Boolean,
+    fade: State<Float>,
+    millis: LongState,
+    scatter: LofiScatter,
+    sky: LofiSky = LofiSky.Artboard,
+    lowEnd: Boolean = false,
+) {
     val cloudShapes = remember { CloudShapes() }
     // Static: shadow, frame ring, sky, orb and skyline. The window sits at (60, 60) dp, so everything below
     // y = 0.8 of the screen is empty and left out of the bitmap.
@@ -83,7 +96,7 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
                         cornerRadius = CornerRadius(21.dp.toPx()),
                     )
                     clipPath(Path().apply { addRoundRect(RoundRect(0f, 0f, 380.dp.toPx(), 260.dp.toPx(), CornerRadius(12.dp.toPx()))) }) {
-                        scale(scaleX = k, scaleY = k, pivot = Offset.Zero) { drawWindowBackdrop(night) }
+                        scale(scaleX = k, scaleY = k, pivot = Offset.Zero) { drawWindowBackdrop(night, sky) }
                     }
                 }
             },
@@ -99,12 +112,22 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
                     val ms = millis.longValue
                     val nightAmount = fade.value
                     inArtboardPx {
-                        val cloudAmount = 1f - nightAmount
+                        val cloudAmount = (1f - nightAmount) * sky.clouds
                         if (cloudAmount > 0f) {
                             for (i in CloudW.indices) {
                                 val drift = CLOUD_DRIFT * JpMotion.InOut.transform(LofiMotion.alternate(ms, CloudPeriodMs[i]))
                                 translate(left = CloudX[i] + drift, top = CloudY[i]) {
                                     drawPath(cloudShapes.paths[i], LofiPalette.Cloud, alpha = CloudAlpha[i] * cloudAmount)
+                                }
+                            }
+                        }
+                        // Overcast nights: dark clouds drifting over the moon.
+                        val nightCloudAmount = nightAmount * sky.overcast
+                        if (nightCloudAmount > 0f) {
+                            for (i in CloudW.indices) {
+                                val drift = CLOUD_DRIFT * JpMotion.InOut.transform(LofiMotion.alternate(ms, CloudPeriodMs[i]))
+                                translate(left = CloudX[i] + drift, top = CloudY[i]) {
+                                    drawPath(cloudShapes.paths[i], LofiPalette.NightCloud, alpha = NIGHT_CLOUD_ALPHA * nightCloudAmount)
                                 }
                             }
                         }
@@ -117,17 +140,15 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
                                     alpha = 0.8f * nightAmount,
                                 )
                             }
-                            for (i in 0 until LofiScatter.RAIN_COUNT) {
-                                // lo-rain: translateY(-120px) -> translateY(520px), linear.
-                                val t = LofiMotion.loop(ms, scatter.rainPeriodMs[i], scatter.rainDelayMs[i])
-                                // 2 px wide: a plain rect reads the same as a 1 px radius and skips the rounded-rect op.
-                                drawRect(
-                                    LofiPalette.RainDrop,
-                                    topLeft = Offset(scatter.rainX[i], -120f + 640f * t),
-                                    size = Size(2f, scatter.rainHeight[i]),
-                                    alpha = nightAmount,
-                                )
-                            }
+                        }
+                        // Rain falls in either phase when the weather says so; the day and night streaks fade with the phase.
+                        val dayDrops = LofiSky.dropCount(sky.rainDay, LofiScatter.RAIN_COUNT, lowEnd)
+                        if (dayDrops > 0 && nightAmount < 1f) drawRain(scatter, dayDrops, ms, LofiPalette.RainDropDay, 1f - nightAmount)
+                        val nightDrops = LofiSky.dropCount(sky.rainNight, LofiScatter.RAIN_COUNT, lowEnd)
+                        if (nightDrops > 0 && nightAmount > 0f) drawRain(scatter, nightDrops, ms, LofiPalette.RainDrop, nightAmount)
+                        if (sky.lightning) {
+                            val flash = LofiSky.flash(ms)
+                            if (flash > 0f) drawRect(LofiPalette.Flash, size = Size(WINDOW_W, WINDOW_H), alpha = FLASH_ALPHA * flash)
                         }
                         drawRect(
                             LofiPalette.WindowFrame,
@@ -145,8 +166,17 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
     )
 }
 
-/** Sky, sun or moon with its glow, and the skyline, in window artboard px. */
-private fun DrawScope.drawWindowBackdrop(night: Boolean) {
+/** [count] rain streaks, each looping down the window on its own period (lo-rain: translateY(-120px) -> translateY(520px), linear). */
+private fun DrawScope.drawRain(scatter: LofiScatter, count: Int, ms: Long, color: Color, alpha: Float) {
+    for (i in 0 until count) {
+        val t = LofiMotion.loop(ms, scatter.rainPeriodMs[i], scatter.rainDelayMs[i])
+        // 2 px wide: a plain rect reads the same as a 1 px radius and skips the rounded-rect op.
+        drawRect(color, topLeft = Offset(scatter.rainX[i], -120f + 640f * t), size = Size(2f, scatter.rainHeight[i]), alpha = alpha)
+    }
+}
+
+/** Sky, sun or moon with its glow, the weather's veil, the skyline and the haze over it, in window artboard px. */
+private fun DrawScope.drawWindowBackdrop(night: Boolean, weather: LofiSky) {
     val sky = Brush.verticalGradient(
         0f to if (night) LofiPalette.NightSkyTop else LofiPalette.DaySkyTop,
         0.55f to if (night) LofiPalette.NightSkyMid else LofiPalette.DaySkyMid,
@@ -164,6 +194,10 @@ private fun DrawScope.drawWindowBackdrop(night: Boolean) {
         drawCircle(LofiGlow.brush(OrbCenter, ORB_RADIUS + 20f, 90f, LofiPalette.DayOrbGlow), radius = LofiGlow.extent(ORB_RADIUS + 20f, 90f), center = OrbCenter)
         drawCircle(LofiPalette.DayOrb, radius = ORB_RADIUS, center = OrbCenter)
     }
+    // Overcast: the sun or moon sinks behind a grey veil.
+    if (weather.overcast > 0f) {
+        drawRect(if (night) LofiPalette.NightVeil else LofiPalette.DayVeil, size = Size(WINDOW_W, WINDOW_H), alpha = weather.overcast * VEIL_GAIN)
+    }
     var x = 0f
     for (i in BuildingW.indices) {
         val w = BuildingW[i] * (1f - BUILDING_SHRINK)
@@ -176,6 +210,14 @@ private fun DrawScope.drawWindowBackdrop(night: Boolean) {
         }
         drawRect(color, topLeft = Offset(x, WINDOW_H - h), size = Size(w, h))
         x += w + BUILDING_GAP
+    }
+    // Fog: the lower skyline dissolves into haze.
+    if (weather.fog > 0f) {
+        val haze = if (night) LofiPalette.NightFog else LofiPalette.DayFog
+        drawRect(
+            Brush.verticalGradient(0f to haze.copy(alpha = 0f), 1f to haze.copy(alpha = weather.fog), startY = WINDOW_H * 0.15f, endY = WINDOW_H),
+            size = Size(WINDOW_W, WINDOW_H),
+        )
     }
 }
 

@@ -58,6 +58,8 @@ object LofiTheme : LauncherTheme {
         val millis = rememberFrameMillis(paused = LocalPaused.current, maxFps = DeviceProfile.wallpaperMaxFps(context))
         val scatter = remember { LofiScatter.create() }
         val room = remember(night) { roomBrush(night) }
+        // The window follows the reading's condition only; temperature and clock ticks do not rebuild the scene.
+        val sky = remember(state.weather?.condition) { LofiSky.of(state.weather?.condition) }
 
         val date = LofiDate.format(
             state.now,
@@ -84,10 +86,10 @@ object LofiTheme : LauncherTheme {
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
-            LofiWindow(night, fade, millis, scatter)
-            LofiRoom(night, fade, millis)
+            LofiWindow(night, fade, millis, scatter, sky, lowEnd)
+            LofiRoom(night, fade, millis, sky.sunbeam)
             LofiSteam(millis)
-            LofiClockLine(clockLine, millis)
+            LofiClockLine(clockLine, millis, state.weather)
             LofiNotebook(state.brand, night, state.apps, state.focusedIndex, Modifier.align(Alignment.TopEnd))
             LofiBottomBar(state.network, actions, focus, Modifier.align(Alignment.BottomCenter))
             LofiFilmGrain(millis, showGrain = !lowEnd)

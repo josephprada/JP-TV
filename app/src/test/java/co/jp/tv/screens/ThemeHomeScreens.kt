@@ -48,6 +48,14 @@ class ThemeHomeScreens : ScreenshotTest() {
     // Weather: the badge in each header, and the scenes that react to it.
     @Test fun jptvCloudy() = home("jptv", "-weather", weather = ScreenFixtures.weather(WeatherCondition.PartlyCloudy, temperatureC = 24))
 
+    private fun w(c: WeatherCondition, night: Boolean = true) = ScreenFixtures.weather(c, night = night)
+
+    @Test fun lofiRainNight() = home("lofi", "-rain", weather = w(WeatherCondition.Rain))
+    @Test fun lofiStormNight() = home("lofi", "-storm", weather = w(WeatherCondition.Storm))
+    @Test fun lofiRainDay() = home("lofi", "-rain-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Rain, night = false))
+    @Test fun lofiFogDay() = home("lofi", "-fog-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Fog, night = false))
+    @Test fun lofiClearNight() = home("lofi", "-clear", weather = w(WeatherCondition.Clear))
+
     @Test fun registryMatchesTests() {
         // Keeps this file honest when a theme is added to the registry.
         val covered = setOf(
