@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
@@ -48,14 +48,19 @@ internal fun Modifier.terminalEllipse(
     }
 }
 
-/** Scanlines, rolling bar and vignette. Drawn above the content, like the design's CRT layers. */
+/**
+ * Rolling bar, then scanlines and vignette. The scanlines (hundreds of 1 dp rects) and the vignette
+ * never change, so they are baked into one bitmap instead of being replayed every frame; the roll
+ * bar sits under them (a faint band, so the order is hardly visible).
+ */
 @Composable
 internal fun TerminalCrtOverlay() {
     Box(Modifier.fillMaxSize()) {
+        TerminalRollBar()
         Box(
             Modifier
                 .fillMaxSize()
-                .drawBehind {
+                .bakedLayer {
                     // 2px dark every 4px of the 1920x1080 design, counted from the bottom edge.
                     val dark = 1.dp.toPx()
                     val period = 2.dp.toPx()
@@ -64,18 +69,17 @@ internal fun TerminalCrtOverlay() {
                         drawRect(TerminalPalette.Scanline, Offset(0f, top), Size(size.width, dark))
                         top -= period
                     }
+                    val ry = size.height
+                    val sx = (size.width * 1.2f) / ry
+                    val vignette = Brush.radialGradient(
+                        0f to TerminalPalette.VignetteClear,
+                        0.6f to TerminalPalette.VignetteClear,
+                        1f to TerminalPalette.Vignette,
+                        center = size.center,
+                        radius = ry,
+                    )
+                    scale(sx, 1f, pivot = size.center) { drawRect(vignette, size = size) }
                 },
-        )
-        TerminalRollBar()
-        Box(
-            Modifier
-                .fillMaxSize()
-                .terminalEllipse(
-                    listOf(TerminalPalette.VignetteClear, TerminalPalette.VignetteClear, TerminalPalette.Vignette),
-                    listOf(0f, 0.6f, 1f),
-                    widthFactor = 1.2f,
-                    heightFactor = 1f,
-                ),
         )
     }
 }

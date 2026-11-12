@@ -28,7 +28,7 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 
 /** Cartridges kept composed on each side of the shelf position (the screen shows about three). */
-private const val Margin = 5
+private const val Margin = 4
 
 /**
  * The cartridge shelf. The focused cartridge is always centred; the track slides there with the
@@ -51,19 +51,6 @@ internal fun PixelShelf(apps: List<TvApp>, focusedIndex: Int, modifier: Modifier
         modifier
             .fillMaxWidth()
             .height(300.dp)
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-            .drawWithCache {
-                val mask = Brush.horizontalGradient(
-                    0f to Color.Transparent,
-                    0.12f to Color.Black,
-                    0.88f to Color.Black,
-                    1f to Color.Transparent,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(mask, blendMode = BlendMode.DstIn)
-                }
-            },
     ) {
         val centerPx = constraints.maxWidth / 2f
         for (index in first..last) {
@@ -74,9 +61,16 @@ internal fun PixelShelf(apps: List<TvApp>, focusedIndex: Int, modifier: Modifier
                     tint = PixelPalette.Tints[index % PixelPalette.Tints.size],
                     focused = index == focusedIndex,
                     distance = abs(index - focusedIndex),
-                    modifier = Modifier.offset {
-                        IntOffset((centerPx - cartridgePx / 2f + (index - position) * stepPx).roundToInt(), topPx)
-                    },
+                    modifier = Modifier
+                        .offset {
+                            IntOffset((centerPx - cartridgePx / 2f + (index - position) * stepPx).roundToInt(), topPx)
+                        }
+                        // The design masks the outer 12 % of the width; an offscreen mask layer is too costly on the
+                        // TV, so each cartridge fades by how close its centre is to the edge instead.
+                        .graphicsLayer {
+                            val centre = centerPx + (index - position) * stepPx
+                            alpha = (minOf(centre, 2f * centerPx - centre) / (0.12f * 2f * centerPx)).coerceIn(0f, 1f)
+                        },
                 )
             }
         }

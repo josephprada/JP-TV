@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -91,6 +92,12 @@ private const val BigRowDp = 72f
 private const val EaseMs = 600
 private const val RiseMs = 800
 private val ZenEase = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+/** Rows further than this from the focus are above or below the 540 dp list and fully masked out. */
+private const val LastVisibleAway = 7
+
+/** The vertical edge fade (transparent at 0, opaque from 20 % of the height) at the row [away] places from the centre. */
+private fun edgeMask(away: Int): Float = ((270f - away * SmallRowDp) / 108f).coerceIn(0f, 1f)
+
 private val IconShape = RoundedCornerShape(percent = 23)
 
 /** Geist at weight 300, which [JpFonts.Body] does not register. */
@@ -196,19 +203,6 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int) {
         Modifier
             .width(600.dp)
             .fillMaxHeight()
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-            .drawWithCache {
-                val mask = Brush.verticalGradient(
-                    0f to Color.Transparent,
-                    0.2f to Color.Black,
-                    0.8f to Color.Black,
-                    1f to Color.Transparent,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(mask, blendMode = BlendMode.DstIn)
-                }
-            },
     ) {
         Column(
             Modifier
@@ -216,7 +210,14 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int) {
                 .offset(y = offsetY),
         ) {
             apps.forEachIndexed { index, app ->
-                key(app.packageName) { ZenRow(app, index, focusedIndex) }
+                // The artboard fades the list out towards the top and bottom edges (a 20 % mask); an offscreen
+                // mask layer is too costly on the TV, so each row fades by its distance from the focus instead
+                // and rows past the visible ones are just spacing.
+                if (abs(index - focusedIndex) > LastVisibleAway) {
+                    Spacer(Modifier.height(SmallRowDp.dp))
+                } else {
+                    key(app.packageName) { ZenRow(app, index, focusedIndex) }
+                }
             }
         }
     }
@@ -234,7 +235,7 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int) {
             1 -> 0.66f
             2 -> 0.54f
             else -> 0.46f
-        },
+        } * edgeMask(away),
         ease,
         label = "zenFade",
     )
