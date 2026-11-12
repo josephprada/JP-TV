@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -72,6 +74,7 @@ import java.time.LocalDateTime
 private const val COLUMNS = 4
 private val Coral = Color(0xFFFF7A6E)
 private val Amber = Color(0xFFFF8A1F)
+private val Ember = Color(0xFF5A0F12)
 private val AppSwatches = listOf(0xFFDC2626, 0xFF1ED760, 0xFF2A5BD7, 0xFFF97316, 0xFF8B5CF6).map(::Color)
 
 /** What the screen needs to print on its tiles; all of it cheap and permission-free. */
@@ -94,6 +97,31 @@ data class QuickSettingsInfo(
     val titleFontId: String,
 )
 
+/**
+ * The artboard's two red blobs behind the screen, without their 24 s drift: an accent glow at the top
+ * and a dark ember one at the bottom right (`radial-gradient(circle, c 0, transparent 65%)` on 1100
+ * and 1300 px circles, so the gradient reaches the box corner). Static brushes built once per size.
+ */
+private fun Modifier.settingsGlow(accent: Color): Modifier = drawWithCache {
+    val k = size.width / 1920f
+    val top = Brush.radialGradient(
+        0f to accent.copy(alpha = 0.45f),
+        0.65f to accent.copy(alpha = 0f),
+        center = Offset(850f * k, 130f * k),
+        radius = 777f * k,
+    )
+    val bottom = Brush.radialGradient(
+        0f to Ember.copy(alpha = 0.9f),
+        0.65f to Ember.copy(alpha = 0f),
+        center = Offset(1650f * k, 900f * k),
+        radius = 919f * k,
+    )
+    onDrawBehind {
+        drawRect(bottom)
+        drawRect(top)
+    }
+}
+
 /** Compact header, a 4-column grid of shortcuts and a big "all Android settings" button. dp = design px / 2. */
 @Composable
 fun QuickSettingsScreen(
@@ -112,6 +140,7 @@ fun QuickSettingsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .settingsGlow(accent)
             .background(JpColors.Ink.copy(alpha = 0.5f))
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
