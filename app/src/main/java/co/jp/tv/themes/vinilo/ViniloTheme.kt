@@ -45,6 +45,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
@@ -81,14 +82,19 @@ import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
+import co.jp.tv.core.util.rememberLowEnd
 import co.jp.tv.wallpaper.cssGradientLine
 import java.time.LocalDateTime
 import kotlinx.coroutines.delay
 
 // The design is 1920x1080; dp and sp are half of its px.
 
-/** The shelf shows this many sleeves, as in the artboard. */
-private const val ShelfSlots = 5
+/**
+ * The shelf shows this many sleeves. The artboard has five, but with the focused sleeve open (210 dp
+ * plus 85 dp each and 11 dp gaps) five run to x = 634 dp, under the turntable that starts at 570 dp.
+ * Four end at 538 dp, inside the 555 dp shelf board.
+ */
+private const val ShelfSlots = 4
 
 private val SleeveShape = RoundedCornerShape(5.dp)
 
@@ -359,6 +365,7 @@ private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, s
     val width by animateDpAsState(if (focused) 210.dp else 85.dp, spec, label = "coverWidth")
     val discLeft by animateDpAsState(if (focused) 65.dp else 10.dp, spec, label = "discLeft")
     val discTop = if (focused) 5.dp else 3.dp
+    val lowEnd = rememberLowEnd()
     val entrance = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         delay(slot * 80L)
@@ -384,7 +391,7 @@ private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, s
         Box(
             Modifier
                 .size(sleeve)
-                .shadow(8.dp, SleeveShape)
+                .softShadow(lowEnd, 8.dp, SleeveShape)
                 .clip(SleeveShape)
                 .background(color)
                 .focusRing(focused),
@@ -405,6 +412,10 @@ private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, s
         }
     }
 }
+
+/** Elevation shadows are redrawn by the GPU every frame the deck spins; low-end boxes go without the small ones. */
+private fun Modifier.softShadow(lowEnd: Boolean, elevation: Dp, shape: Shape): Modifier =
+    if (lowEnd) this else shadow(elevation, shape)
 
 /** 2 dp cream outline drawn 2 dp outside the sleeve. */
 private fun Modifier.focusRing(focused: Boolean): Modifier = if (!focused) this else drawWithCache {
@@ -477,7 +488,7 @@ private fun ViniloTurntable(
             Modifier
                 .offset(x = 25.dp, y = 20.dp)
                 .size(240.dp)
-                .shadow(6.dp, CircleShape)
+                .softShadow(rememberLowEnd(), 6.dp, CircleShape)
                 .clip(CircleShape)
                 .background(ViniloPalette.Vinyl),
             contentAlignment = Alignment.Center,
