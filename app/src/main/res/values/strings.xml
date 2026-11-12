@@ -108,6 +108,12 @@
     <string name="customize_hour_format">FORMATO DE HORA</string>
     <string name="customize_hour_format_24">24 h</string>
     <string name="customize_hour_format_12">12 h</string>
+    <string name="customize_sounds">SONIDOS</string>
+    <string name="customize_sounds_on">Activados</string>
+    <string name="customize_sounds_off">Desactivados</string>
+    <string name="customize_volume_low">Volumen bajo</string>
+    <string name="customize_volume_medium">Volumen medio</string>
+    <string name="customize_volume_high">Volumen alto</string>
     <string name="customize_apply">APLICAR</string>
 
     <string name="theme_terminal_hint">↑↓ elegir · OK ejecutar · tab ajustes</string>

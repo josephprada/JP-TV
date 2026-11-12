@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import co.jp.tv.core.sound.SoundVolume
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.domain.ConfigStore
@@ -35,6 +36,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
             prefs[WALLPAPER_DIM] = next.wallpaperDim
             prefs[PAUSE_IN_APPS] = next.pauseWallpaperInApps
             prefs[WEATHER_PLACE] = WeatherPlaceCodec.encode(next.weatherPlace)
+            prefs[SOUNDS_ENABLED] = next.soundsEnabled
+            prefs[SOUND_VOLUME] = next.soundVolume.name
         }
     }
 
@@ -54,6 +57,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
                 wallpaperDim = this[WALLPAPER_DIM] ?: 0,
                 pauseWallpaperInApps = this[PAUSE_IN_APPS] ?: true,
                 weatherPlace = WeatherPlaceCodec.decode(this[WEATHER_PLACE]),
+                soundsEnabled = this[SOUNDS_ENABLED] ?: true,
+                soundVolume = SoundVolume.entries.firstOrNull { it.name == this[SOUND_VOLUME] } ?: SoundVolume.MEDIUM,
             )
         }
 
@@ -75,5 +80,9 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
 
         /** Absent before the weather feature existed, or unreadable: reads as Bucaramanga. */
         val WEATHER_PLACE = stringPreferencesKey("weather_place")
+
+        /** Absent before the sounds existed: reads as on, at medium volume. */
+        val SOUNDS_ENABLED = booleanPreferencesKey("sounds_enabled")
+        val SOUND_VOLUME = stringPreferencesKey("sound_volume")
     }
 }

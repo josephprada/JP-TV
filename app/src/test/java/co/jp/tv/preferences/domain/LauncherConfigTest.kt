@@ -1,5 +1,6 @@
 package co.jp.tv.preferences.domain
 
+import co.jp.tv.core.sound.SoundVolume
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -32,5 +33,11 @@ class LauncherConfigTest {
     fun `a blank brand falls back to the default`() {
         assertEquals(LauncherConfig.DEFAULT_BRAND, LauncherConfig.sanitizeBrand("   "))
         assertEquals(LauncherConfig.DEFAULT_BRAND, LauncherConfig.sanitizeBrand(""))
+    }
+
+    @Test
+    fun `sounds are on at a moderate volume by default`() {
+        assertEquals(true, LauncherConfig.Default.soundsEnabled)
+        assertEquals(SoundVolume.MEDIUM, LauncherConfig.Default.soundVolume)
     }
 }

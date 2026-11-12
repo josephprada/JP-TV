@@ -1,5 +1,6 @@
 package co.jp.tv.preferences.domain
 
+import co.jp.tv.core.sound.SoundVolume
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.weather.domain.WeatherPlace
 
@@ -23,6 +24,9 @@ data class LauncherConfig(
     val pauseWallpaperInApps: Boolean = true,
     /** Where the weather is read for. */
     val weatherPlace: WeatherPlace = WeatherPlace.Default,
+    /** Short interface sounds in the theme's own voice. */
+    val soundsEnabled: Boolean = true,
+    val soundVolume: SoundVolume = SoundVolume.MEDIUM,
 ) {
     companion object {
         const val DEFAULT_BRAND = "JP-TV"

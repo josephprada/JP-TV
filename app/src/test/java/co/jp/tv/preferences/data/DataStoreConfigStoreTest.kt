@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import co.jp.tv.core.sound.SoundVolume
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.weather.domain.WeatherPlace
@@ -136,5 +137,33 @@ class DataStoreConfigStoreTest {
         val read = DataStoreConfigStore(dataStore).config.first()
         assertEquals("Casa", read?.brand)
         assertEquals(WeatherPlace.Default, read?.weatherPlace)
+    }
+
+    @Test
+    fun `sound settings round trip`() = runTest {
+        val store = store()
+        store.update { LauncherConfig.Default.copy(soundsEnabled = false, soundVolume = SoundVolume.HIGH) }
+        val read = store.config.first()
+        assertEquals(false, read?.soundsEnabled)
+        assertEquals(SoundVolume.HIGH, read?.soundVolume)
+    }
+
+    @Test
+    fun `a saved config without sound settings reads as sounds on at medium`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "legacy-sound.preferences_pb") })
+        dataStore.edit { prefs -> prefs[booleanPreferencesKey("saved")] = true }
+        val read = DataStoreConfigStore(dataStore).config.first()
+        assertEquals(true, read?.soundsEnabled)
+        assertEquals(SoundVolume.MEDIUM, read?.soundVolume)
+    }
+
+    @Test
+    fun `an unknown stored volume reads as medium`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "bad-volume.preferences_pb") })
+        dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("saved")] = true
+            prefs[stringPreferencesKey("sound_volume")] = "LOUDEST"
+        }
+        assertEquals(SoundVolume.MEDIUM, DataStoreConfigStore(dataStore).config.first()?.soundVolume)
     }
 }

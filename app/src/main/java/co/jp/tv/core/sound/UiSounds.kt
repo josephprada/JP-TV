@@ -10,6 +10,10 @@ enum class SoundVolume(val gain: Float) {
     LOW(0.25f),
     MEDIUM(0.5f),
     HIGH(0.85f),
+    ;
+
+    /** One step along low, medium, high (stops at the ends). */
+    fun step(direction: Int): SoundVolume = entries[(ordinal + direction).coerceIn(0, entries.lastIndex)]
 }
 
 /**

@@ -51,6 +51,7 @@ import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
+import co.jp.tv.core.sound.SoundVolume
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.preferences.domain.AccentPreset
@@ -69,6 +70,13 @@ private val PreviewTime: LocalDateTime = LocalDateTime.of(2025, 11, 8, 21, 40)
 private val HourFormatOptions = listOf(
     HourFormat.H24 to R.string.customize_hour_format_24,
     HourFormat.H12 to R.string.customize_hour_format_12,
+)
+
+/** Volume chips in display order, each with its label resource. */
+private val SoundVolumeOptions = listOf(
+    SoundVolume.LOW to R.string.customize_volume_low,
+    SoundVolume.MEDIUM to R.string.customize_volume_medium,
+    SoundVolume.HIGH to R.string.customize_volume_high,
 )
 
 /**
@@ -179,6 +187,34 @@ fun CustomizeScreen(
                                 accent = accent,
                                 onClick = { draft = draft.copy(hourFormat = format) },
                             )
+                        }
+                    }
+                }
+                OptionsCard(stringResource(R.string.customize_sounds), delayMs = 180) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Chip(
+                            label = stringResource(R.string.customize_sounds_on),
+                            selected = draft.soundsEnabled,
+                            accent = accent,
+                            onClick = { draft = draft.copy(soundsEnabled = true) },
+                        )
+                        Chip(
+                            label = stringResource(R.string.customize_sounds_off),
+                            selected = !draft.soundsEnabled,
+                            accent = accent,
+                            onClick = { draft = draft.copy(soundsEnabled = false) },
+                        )
+                    }
+                    if (draft.soundsEnabled) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            SoundVolumeOptions.forEach { (volume, label) ->
+                                Chip(
+                                    label = stringResource(label),
+                                    selected = draft.soundVolume == volume,
+                                    accent = accent,
+                                    onClick = { draft = draft.copy(soundVolume = volume) },
+                                )
+                            }
                         }
                     }
                 }
