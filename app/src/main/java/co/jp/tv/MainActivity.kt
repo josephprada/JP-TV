@@ -1,5 +1,6 @@
 package co.jp.tv
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -79,7 +80,10 @@ class MainActivity : ComponentActivity() {
                 Box(Modifier.fillMaxSize().background(JpColors.Ink)) {
                     if (!customizeOpen) {
                         WallpaperRegistry.byId(state.config.wallpaperId)
-                            .Render(accent, paused || overlayOpen, Modifier.fillMaxSize())
+                            .Render(accent, (paused && state.config.pauseWallpaperInApps) || overlayOpen, Modifier.fillMaxSize())
+                        if (state.config.wallpaperDim > 0) {
+                            Box(Modifier.fillMaxSize().background(JpColors.Ink.copy(alpha = state.config.wallpaperDim / 100f)))
+                        }
                     }
                     if (!hideHome) {
                         Box(Modifier.fillMaxSize().focusRequester(homeFocus).focusRestorer()) {
@@ -120,6 +124,10 @@ class MainActivity : ComponentActivity() {
                             freeGb = remember { container.deviceInfo.storage()?.let { SettingsShortcuts.formatGb(it.freeBytes) } },
                             accent = accent,
                             initialFocus = viewModel.editFocusPackage,
+                            config = state.config,
+                            onWallpaper = viewModel::setWallpaper,
+                            onDim = viewModel::setWallpaperDim,
+                            onPauseInApps = viewModel::setPauseWallpaperInApps,
                             onMove = viewModel::moveApp,
                             onSetHidden = viewModel::setAppHidden,
                             onReset = viewModel::resetApps,
@@ -155,6 +163,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    /** The Home key re-delivers the HOME intent to this singleTask activity: close every panel and show the theme home. */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasCategory(Intent.CATEGORY_HOME)) viewModel.closeAll()
     }
 
     private fun openShortcut(shortcut: SettingsShortcut) {

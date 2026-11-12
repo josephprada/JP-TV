@@ -202,6 +202,18 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `the home key closes every open screen at once`() {
+        val vm = vm(FakeCatalog(apps))
+        vm.openSettings()
+        vm.openThemes()
+        vm.openCustomize()
+        assertEquals(true, vm.closeAll())
+        assertEquals(Screen.Home, vm.screen.value)
+        assertEquals(emptyList<Screen>(), vm.screens.value)
+        assertEquals(false, vm.closeAll())
+    }
+
+    @Test
     fun `opening the same screen twice does not stack it`() {
         val vm = vm(FakeCatalog(apps))
         vm.openNetwork()

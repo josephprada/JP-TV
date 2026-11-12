@@ -81,7 +81,11 @@ class PanelScreens : ScreenshotTest() {
         )
         EditAppsScreen(
             apps = AppLayout.resolve(ScreenFixtures.apps, order),
-            freeGb = "9 GB",
+            freeGb = "3.5",
+            config = LauncherConfig.Default.copy(wallpaperId = "embers", wallpaperDim = 40),
+            onWallpaper = {},
+            onDim = {},
+            onPauseInApps = {},
             accent = accent,
             initialFocus = null,
             onMove = { _, _ -> },

@@ -207,6 +207,12 @@ class HomeViewModel(
         back()
     }
 
+    fun setWallpaper(id: String) = applyAppearance { it.copy(wallpaperId = id) }
+
+    fun setWallpaperDim(percent: Int) = applyAppearance { it.copy(wallpaperDim = percent.coerceIn(0, LauncherConfig.MAX_DIM)) }
+
+    fun setPauseWallpaperInApps(pause: Boolean) = applyAppearance { it.copy(pauseWallpaperInApps = pause) }
+
     fun setTheme(themeId: String) {
         applyAppearance { it.copy(themeId = themeId) }
     }
@@ -215,6 +221,13 @@ class HomeViewModel(
     fun back(): Boolean {
         if (backStack.value.isEmpty()) return false
         backStack.update { it.dropLast(1) }
+        return true
+    }
+
+    /** Home key: drops every open screen at once. Returns false when already at home. */
+    fun closeAll(): Boolean {
+        if (backStack.value.isEmpty()) return false
+        backStack.value = emptyList()
         return true
     }
 

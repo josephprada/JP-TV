@@ -64,6 +64,9 @@ import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.preferences.ui.rememberMediaPermissionRequester
+import co.jp.tv.wallpaper.WallpaperRegistry
 
 private val PillShape = RoundedCornerShape(11.dp)
 private val RowShape = RoundedCornerShape(12.dp)
@@ -81,6 +84,10 @@ fun EditAppsScreen(
     freeGb: String?,
     accent: Color,
     initialFocus: String?,
+    config: LauncherConfig,
+    onWallpaper: (String) -> Unit,
+    onDim: (Int) -> Unit,
+    onPauseInApps: (Boolean) -> Unit,
     onMove: (packageName: String, up: Boolean) -> Unit,
     onSetHidden: (packageName: String, hidden: Boolean) -> Unit,
     onReset: () -> Unit,
@@ -93,6 +100,9 @@ fun EditAppsScreen(
     var movingFlag by remember { mutableStateOf(false) }
     var resetSelected by remember { mutableStateOf(false) }
     var resetArmed by remember { mutableStateOf(false) }
+    // Slot of the wallpaper column ([WallSlot]) while D-pad focus is there; null in the app columns.
+    var wallSlot by remember { mutableStateOf<Int?>(null) }
+    val requestMedia = rememberMediaPermissionRequester { }
 
     val railPackages = apps.visible.map { it.packageName }
     val hiddenPackages = apps.hidden.map { it.packageName }
@@ -117,6 +127,28 @@ fun EditAppsScreen(
                 if (isOk && event.nativeKeyEvent.repeatCount > 0) return@onKeyEvent true
                 val handled = key in HANDLED_KEYS || isOk
                 if (!handled) return@onKeyEvent false
+                wallSlot?.let { slot ->
+                    val walls = WallpaperRegistry.all
+                    when {
+                        key == Key.DirectionLeft -> when {
+                            slot == WallSlot.Dim -> onDim(LauncherConfig.stepDim(config.wallpaperDim, -1))
+                            slot in 1 until WallSlot.chips -> wallSlot = slot - 1
+                            slot == 0 -> wallSlot = null
+                        }
+                        key == Key.DirectionRight -> when {
+                            slot == WallSlot.Dim -> onDim(LauncherConfig.stepDim(config.wallpaperDim, 1))
+                            slot < WallSlot.chips - 1 -> wallSlot = slot + 1
+                        }
+                        key == Key.DirectionDown -> if (slot < WallSlot.Pause) wallSlot = if (slot < WallSlot.chips) WallSlot.Dim else WallSlot.Pause
+                        key == Key.DirectionUp -> if (slot == WallSlot.Pause) wallSlot = WallSlot.Dim
+                            else if (slot == WallSlot.Dim) wallSlot = walls.indexOfFirst { it.id == config.wallpaperId }.coerceAtLeast(0)
+                        isOk -> when {
+                            slot < WallSlot.chips -> walls[slot].let { onWallpaper(it.id); requestMedia(it.id) }
+                            slot == WallSlot.Pause -> onPauseInApps(!config.pauseWallpaperInApps)
+                        }
+                    }
+                    return@onKeyEvent true
+                }
                 if (!(isOk && resetSelected)) resetArmed = false
                 val list = if (inRail) railPackages else hiddenPackages
                 val index = list.indexOf(focus)
@@ -137,6 +169,7 @@ fun EditAppsScreen(
                         moving -> focus?.let { onSetHidden(it, true) }.also { movingFlag = false }
                         inRail && hiddenPackages.isNotEmpty() ->
                             focusedPackage = hiddenPackages[index.coerceAtMost(hiddenPackages.lastIndex)]
+                        else -> wallSlot = WallpaperRegistry.all.indexOfFirst { it.id == config.wallpaperId }.coerceAtLeast(0)
                     }
                     key == Key.DirectionLeft -> when {
                         resetSelected || moving -> Unit
@@ -168,7 +201,7 @@ fun EditAppsScreen(
                 title = stringResource(R.string.edit_col_rail, railPackages.size),
                 emptyText = stringResource(R.string.edit_empty_rail),
                 apps = apps.visible,
-                focus = focus.takeIf { !resetSelected },
+                focus = focus.takeIf { !resetSelected && wallSlot == null },
                 moving = moving,
                 numbered = true,
                 accent = accent,
@@ -179,13 +212,14 @@ fun EditAppsScreen(
                 title = stringResource(R.string.edit_col_hidden, hiddenPackages.size),
                 emptyText = stringResource(R.string.edit_empty_hidden),
                 apps = apps.hidden,
-                focus = focus.takeIf { !resetSelected },
+                focus = focus.takeIf { !resetSelected && wallSlot == null },
                 moving = false,
                 numbered = false,
                 accent = accent,
                 riseDelayMs = 180,
                 modifier = Modifier.weight(1f),
             )
+            EditWallpaperColumn(config, accent, wallSlot, Modifier.weight(1f))
         }
     }
 }
