@@ -36,6 +36,7 @@ class StockHomesTest {
         assertFalse(StockHomes.isStockHome("com.android.settings", resolved, own))
         assertFalse(StockHomes.isStockHome("com.android.systemui", resolved, own))
         assertFalse(StockHomes.isStockHome("android", resolved, own))
+        assertFalse(StockHomes.isStockHome("com.android.tv.settings", setOf("com.android.tv.settings"), own))
     }
 
     @Test

@@ -64,6 +64,20 @@
     </plurals>
     <string name="settings_version">%1$s %2$s · ANDROID %3$s · %4$s</string>
 
+    <string name="home_override_service_label">JP-TV como inicio</string>
+    <string name="home_override_service_description">JP-TV solo detecta el botón Inicio y cuándo se abre el launcher original, para mostrar JP-TV en su lugar. No lee el contenido de la pantalla, ni lo que escribes, ni tus datos.</string>
+    <string name="home_override_title">Usar JP-TV como inicio</string>
+    <string name="home_override_status_active">ACTIVO</string>
+    <string name="home_override_status_off">DESACTIVADO</string>
+    <string name="home_override_status_needs_permission">NECESITA PERMISO</string>
+    <string name="home_override_hint_off">Si el botón Inicio abre otro launcher, JP-TV puede abrirse en su lugar. No se desactiva ni se cambia nada del sistema.</string>
+    <string name="home_override_hint_needs_permission">Falta activar el servicio JP-TV en Accesibilidad. Solo detecta el botón Inicio y el launcher original; no lee contenido.</string>
+    <string name="home_override_hint_active">JP-TV se abre al pulsar Inicio. Si falla varias veces seguidas, vuelve solo el launcher original.</string>
+    <string name="home_override_turn_on">ACTIVAR</string>
+    <string name="home_override_turn_off">DESACTIVAR</string>
+    <string name="home_override_grant">DAR PERMISO →</string>
+    <string name="home_override_open_stock">ABRIR LAUNCHER ORIGINAL →</string>
+
     <string name="settings_edit_apps">EDITAR APPS →</string>
 
     <string name="edit_title">Apps</string>

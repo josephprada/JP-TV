@@ -10,7 +10,13 @@ object StockHomes {
     )
 
     /** Never redirected, even if they resolve HOME (Settings hosts FallbackHome, needed while booting). */
-    val NEVER = setOf("com.android.settings", "com.android.systemui", "android")
+    val NEVER = setOf(
+        "com.android.settings",
+        "com.android.tv.settings",
+        "com.android.systemui",
+        "com.android.provision",
+        "android",
+    )
 
     fun candidates(resolved: Set<String>, ownPackage: String): Set<String> = resolved - NEVER - ownPackage
 

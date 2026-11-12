@@ -3,6 +3,7 @@ package co.jp.tv
 import android.app.Application
 import co.jp.tv.core.design.FontPreloader
 import co.jp.tv.core.util.StartupTrace
+import co.jp.tv.homeoverride.data.CrashRecorder
 import co.jp.tv.preferences.domain.LauncherConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class JpTvApp : Application() {
         StartupTrace.init(this)
         StartupTrace.mark("Application.onCreate")
         container = AppContainer(this)
+        CrashRecorder.install(container.redirectPolicy)
         warmUp()
     }
 

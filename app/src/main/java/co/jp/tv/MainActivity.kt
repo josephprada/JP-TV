@@ -105,6 +105,10 @@ class MainActivity : ComponentActivity() {
                     reportFullyDrawn()
                 }
             }
+            // Heartbeat for the home override's safety guards: the home is on screen (also when resuming).
+            LaunchedEffect(paused, state.apps.isNotEmpty()) {
+                if (!paused && state.apps.isNotEmpty()) container.redirectPolicy.onHomeDrawn()
+            }
             val locationRequest = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
                 viewModel.refreshNetworkAccess()
             }
@@ -277,7 +281,11 @@ class MainActivity : ComponentActivity() {
     /** The Home key re-delivers the HOME intent to this singleTask activity: close every panel and show the theme home. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.hasCategory(Intent.CATEGORY_HOME)) viewModel.closeAll()
+        if (intent.hasCategory(Intent.CATEGORY_HOME)) {
+            viewModel.closeAll()
+            // Already in front, so no lifecycle change will report it: tell the home override guards.
+            container.redirectPolicy.onHomeDrawn()
+        }
     }
 
     private fun openShortcut(shortcut: SettingsShortcut) {

@@ -1,6 +1,7 @@
 package co.jp.tv
 
 import android.content.Context
+import android.os.SystemClock
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,12 @@ import co.jp.tv.core.sound.UiSounds
 import co.jp.tv.core.sound.data.SoundPoolUiSounds
 import co.jp.tv.core.util.ClockTicker
 import co.jp.tv.home.HomeViewModel
+import co.jp.tv.homeoverride.data.AccessibilityStatusReader
+import co.jp.tv.homeoverride.data.HomeStarter
+import co.jp.tv.homeoverride.data.SharedPrefsGuardStateStore
+import co.jp.tv.homeoverride.data.StockHomeResolver
+import co.jp.tv.homeoverride.data.StockLauncherOpener
+import co.jp.tv.homeoverride.domain.RedirectPolicy
 import co.jp.tv.network.data.ConnectivityNetworkMonitor
 import co.jp.tv.network.data.LocationAccess
 import co.jp.tv.network.domain.NetworkMonitor
@@ -46,6 +53,12 @@ class AppContainer(context: Context) {
     val uiSounds: UiSounds = SoundPoolUiSounds(appContext)
     val settingsLauncher = SettingsLauncher(appContext)
     val deviceInfo = DeviceInfo(appContext)
+
+    val redirectPolicy = RedirectPolicy(SharedPrefsGuardStateStore(appContext), clock = System::currentTimeMillis, uptime = SystemClock::elapsedRealtime)
+    val homeStarter = HomeStarter(appContext)
+    val stockHomeResolver = StockHomeResolver(appContext)
+    val stockLauncherOpener = StockLauncherOpener(appContext, stockHomeResolver, redirectPolicy)
+    val accessibilityStatus = AccessibilityStatusReader(appContext)
 
     private val httpTransport = HttpUrlConnectionTransport()
     val weatherRepository: WeatherRepository = CachedWeatherRepository(
