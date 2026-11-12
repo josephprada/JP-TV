@@ -59,6 +59,12 @@ The TV address comes from `local.properties` (`tv.host=…`). If the TV is unrea
 
 `make screens` renders with Roborazzi + Robolectric (tests in `app/src/test/.../screens/`, fixtures in `ScreenFixtures.kt`) at 1280x720 / 213 dpi with a frozen clock and paused animations: `home-<theme>.png`, `themes`, `customize-<wallpaper>`, `customize-focus-*` (D-pad presses), `settings`, `network`, `edit`. `tools/design-shots/render.sh` renders `design/project/*.dc.html` headless (Chromium + a small shim, since the canvas runtime is not in the repo) to `screens/design/<Board>.png` at 1280x720 (`@1920` = native). `python3 tools/design-shots/compare.py` writes side-by-side sheets to `screens/compare/`. Loop: edit, `make screens-app`, open the PNG next to the artboard. Limits: no real video, app icons or blur; confirm those on the TV.
 
+## Device safety (read before touching any TV)
+
+- NEVER `pm disable`/`pm disable-user` a stock launcher or `FallbackHome` on any device. On the HY320 projector (192.168.1.14, Allwinner H713, Android 13-ish) this caused a reboot loop: the OEM keystone service `com.softwinner.tcorrection` crashes in system_server when the launcher list is empty, and Wi-Fi/ADB never come up long enough to undo it.
+- To use JP-TV as home, only mark it preferred (`cmd package set-home-activity`) and leave every stock launcher enabled. If the firmware ignores the preference, accept it; do not force it.
+- The projector currently keeps its stock launcher (`com.htc.htclauncherhighenglishd08`) as home; JP-TV is installed as a normal app there.
+
 ## Verify before saying "done"
 
 `make test` passes, `make deploy` succeeds, and a `make shot` screenshot matches the design. Report what you checked and what you couldn't.
