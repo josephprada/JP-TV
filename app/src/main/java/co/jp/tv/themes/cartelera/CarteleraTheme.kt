@@ -1,12 +1,7 @@
 package co.jp.tv.themes.cartelera
 
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -75,6 +70,7 @@ import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
@@ -83,7 +79,11 @@ import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import java.time.LocalDateTime
+import co.jp.tv.core.design.bakeToBitmap
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.mutableIntStateOf
 import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.sign
 import kotlin.math.sqrt
 
@@ -95,6 +95,10 @@ private val BulbSize = 8.dp
 /** Lamps and the focused frame blink on a 1.2 s cycle; three delays make the chase. */
 private const val LampCycleMs = 1200f
 private const val LampLoopMs = 3600
+
+/** Every lamp edge falls on a multiple of this (half a cycle, three delays of a third of one). */
+private const val LampStepMs = 200
+private const val LampSteps = LampLoopMs / LampStepMs
 
 /** Posters further than this many places from the focus are fully transparent, so they are not composed. */
 private const val PosterWindow = 4
@@ -177,20 +181,22 @@ object CarteleraTheme : LauncherTheme {
 }
 
 /**
- * Milliseconds on the lamp cycle, read lazily from draw scopes. While paused no transition is
- * created at all, so nothing animates and the lamps stay on their first frame.
+ * Milliseconds on the lamp cycle, read lazily from draw scopes. The lamps are CSS `steps(1)`, so
+ * they only change every [LampStepMs]; the clock steps at that rate instead of ticking every frame,
+ * which keeps the posters and the marquee from being redrawn 30 times a second for nothing. While
+ * paused no ticker runs and the lamps stay on their first frame.
  */
 @Composable
 private fun rememberLampClock(): () -> Float {
     if (LocalPaused.current) return StillClock
-    val transition = rememberInfiniteTransition(label = "cartLamps")
-    val t = transition.animateFloat(
-        initialValue = 0f,
-        targetValue = LampLoopMs.toFloat(),
-        animationSpec = infiniteRepeatable(tween(LampLoopMs, easing = LinearEasing), RepeatMode.Restart),
-        label = "lampT",
-    )
-    return remember(t) { { t.value } }
+    val step = remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(LampStepMs.toLong())
+            step.intValue = (step.intValue + 1) % LampSteps
+        }
+    }
+    return remember(step) { { step.intValue * LampStepMs.toFloat() } }
 }
 
 /** CSS `steps(1)` lamp: dark for the first half of the cycle, lit for the second, after [delayMs]. */
@@ -316,7 +322,7 @@ private fun CarteleraMarquee(
 
 @Composable
 private fun BulbRow(clock: () -> Float) {
-    Canvas(Modifier.fillMaxWidth().height(BulbSize)) {
+    Canvas(Modifier.fillMaxWidth().height(BulbSize).graphicsLayer()) {
         val diameter = BulbSize.toPx()
         val radius = diameter / 2f
         val halo = radius + 6.dp.toPx()
@@ -508,7 +514,7 @@ private fun CarteleraPoster(
 @Composable
 private fun PosterFrame(onAmount: () -> Float, clock: () -> Float, modifier: Modifier = Modifier) {
     Box(
-        modifier.drawWithCache {
+        modifier.graphicsLayer().drawWithCache {
             val stroke = 4.dp.toPx()
             val dots = Stroke(
                 width = stroke,
@@ -561,7 +567,8 @@ private fun PosterArt(initial: String, tint: PosterTint) {
                 val radius = sqrt(dx * dx + dy * dy)
                 val topLeft = Offset(center.x - radius, center.y - radius)
                 val arc = Size(radius * 2f, radius * 2f)
-                onDrawBehind {
+                // 45 wedges are drawn once into a bitmap; the poster is replayed on every frame of a coverflow move.
+                val burst = bakeToBitmap(ceil(size.width).toInt(), ceil(size.height).toInt()) {
                     for (ray in 0 until 45) {
                         drawArc(
                             color = if (ray % 2 == 0) tint.rayA else tint.rayB,
@@ -573,6 +580,7 @@ private fun PosterArt(initial: String, tint: PosterTint) {
                         )
                     }
                 }
+                onDrawBehind { drawImage(burst) }
             },
         contentAlignment = Alignment.Center,
     ) {
@@ -660,9 +668,9 @@ private fun CarteleraFooter(
     ) {
         BasicText(
             if (ms != null) {
-                stringResource(R.string.cartelera_box_office_ms, ms)
+                stringResource(R.string.cartelera_box_office_ms, networkName(network).uppercase(), ms)
             } else {
-                stringResource(R.string.cartelera_box_office)
+                stringResource(R.string.cartelera_box_office, networkName(network).uppercase())
             },
             modifier = Modifier
                 .dashedPill { false }

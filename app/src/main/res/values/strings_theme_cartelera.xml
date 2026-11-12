@@ -4,8 +4,8 @@
     <string name="cartelera_tonight">ESTA NOCHE</string>
     <string name="cartelera_showtime">FUNCIÓN %1$s</string>
     <string name="cartelera_room">SALA %1$d</string>
-    <string name="cartelera_box_office">TAQUILLA · [RED WI-FI]</string>
-    <string name="cartelera_box_office_ms">TAQUILLA · [RED WI-FI] · %1$d MS</string>
+    <string name="cartelera_box_office">TAQUILLA · %1$s</string>
+    <string name="cartelera_box_office_ms">TAQUILLA · %1$s · %2$d MS</string>
     <string name="cartelera_now_showing">EN CARTELERA: %1$s</string>
     <string name="cartelera_prev">App anterior</string>
     <string name="cartelera_next">App siguiente</string>
