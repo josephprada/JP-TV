@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager
 import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkRules
 import co.jp.tv.network.domain.NetworkStatus
+import co.jp.tv.network.domain.SsidAccess
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
@@ -33,14 +34,21 @@ import kotlinx.coroutines.withTimeoutOrNull
  * 1.1.1.1 every [PROBE_INTERVAL_MS]); cancelling the collection unregisters and stops everything.
  * All blocking work runs on the IO dispatcher.
  */
-class ConnectivityNetworkMonitor(context: Context) : NetworkMonitor {
+class ConnectivityNetworkMonitor(context: Context, private val access: LocationAccess = LocationAccess(context)) : NetworkMonitor {
     private val appContext = context.applicationContext
     private val connectivity = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     private val wifi = appContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
     private val probeTrigger = Channel<Unit>(Channel.CONFLATED)
 
+    // Bumped when the location permission or switch may have changed, so the name is read again.
+    private val accessVersion = MutableStateFlow(0)
+
     override fun probeNow() {
         probeTrigger.trySend(Unit)
+    }
+
+    override fun refreshAccess() {
+        accessVersion.update { it + 1 }
     }
 
     /** What the system told us about the default network; a null [network] means "no connection". */
@@ -99,7 +107,7 @@ class ConnectivityNetworkMonitor(context: Context) : NetworkMonitor {
         }
 
         launch(Dispatchers.IO) {
-            combine(link, latency) { l, lat -> l?.let { assemble(it, lat) } ?: NetworkStatus.Unknown }
+            combine(link, latency, accessVersion) { l, lat, _ -> l?.let { assemble(it, lat) } ?: NetworkStatus.Unknown }
                 .collect { send(it) }
         }
 
@@ -125,10 +133,16 @@ class ConnectivityNetworkMonitor(context: Context) : NetworkMonitor {
         }
         val validated = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
         val wifiInfo = if (transport == NetworkStatus.Transport.WIFI) wifiInfoOrNull() else null
+        val ssid = NetworkRules.cleanSsid(wifiInfo?.ssid)
         return NetworkStatus(
             state = NetworkStatus.State.CONNECTED,
             transport = transport,
-            ssid = NetworkRules.cleanSsid(wifiInfo?.ssid),
+            ssid = ssid,
+            ssidAccess = if (transport == NetworkStatus.Transport.WIFI) {
+                NetworkRules.ssidAccess(ssid, access.permissionGranted(), access.locationOn())
+            } else {
+                SsidAccess.Available
+            },
             ip = props?.let(::ipOf),
             gateway = props?.let(::gatewayOf),
             dns = props?.let(::dnsOf).orEmpty(),

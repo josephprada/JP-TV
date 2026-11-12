@@ -29,6 +29,10 @@
     <string name="panel_router_latency">LATENCIA ROUTER</string>
     <string name="panel_internet_latency">LATENCIA INTERNET</string>
     <string name="panel_mac">MAC</string>
+    <string name="panel_ssid_needs_location">Activa la ubicación para ver el nombre de la red</string>
+    <string name="panel_ssid_needs_permission">Permite el acceso a la ubicación para ver el nombre de la red</string>
+    <string name="panel_ssid_location_settings">ACTIVAR UBICACIÓN →</string>
+    <string name="panel_ssid_grant">PERMITIR</string>
     <string name="panel_test">PROBAR CONEXIÓN</string>
     <string name="panel_wifi_settings">AJUSTES DE RED →</string>
     <string name="cd_signal">Señal %1$d de 4</string>

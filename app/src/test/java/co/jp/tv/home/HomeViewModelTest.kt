@@ -57,6 +57,8 @@ class HomeViewModelTest {
             .onStart { collectors++ }
             .onCompletion { collectors-- }
         override fun probeNow() { probes++ }
+        var accessRefreshes = 0
+        override fun refreshAccess() { accessRefreshes++ }
     }
 
     private class FakeConfigStore(initial: LauncherConfig? = null) : ConfigStore {
@@ -206,6 +208,13 @@ class HomeViewModelTest {
         val monitor = FakeMonitor()
         vm(FakeCatalog(apps), monitor = monitor).testConnection()
         assertEquals(1, monitor.probes)
+    }
+
+    @Test
+    fun `refreshing network access asks the monitor to read the name again`() {
+        val monitor = FakeMonitor()
+        vm(FakeCatalog(apps), monitor = monitor).refreshNetworkAccess()
+        assertEquals(1, monitor.accessRefreshes)
     }
 
     @Test

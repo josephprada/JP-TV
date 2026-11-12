@@ -100,6 +100,14 @@ class PanelScreens : ScreenshotTest() {
         NetworkPanel(status = ScreenFixtures.network, accent = accent, onTest = {}, onWifiSettings = {})
     }
 
+    @Test fun networkNeedsLocation() = shoot("network-location") {
+        ThemeRegistry.default.Home(ScreenFixtures.homeState(), ScreenFixtures.actions)
+        NetworkPanel(
+            status = ScreenFixtures.network.copy(ssid = null, ssidAccess = co.jp.tv.network.domain.SsidAccess.NeedsLocation),
+            accent = accent, onTest = {}, onWifiSettings = {},
+        )
+    }
+
     @Test fun edit() = shoot("edit") {
         val order = AppOrdering(
             order = ScreenFixtures.apps.map { it.packageName },

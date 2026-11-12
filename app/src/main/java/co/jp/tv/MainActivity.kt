@@ -1,10 +1,13 @@
 package co.jp.tv
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -53,6 +56,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private val container get() = (application as JpTvApp).container
     private val viewModel: HomeViewModel by viewModels { container.homeViewModelFactory }
+    private var locationAsked = false
 
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,6 +88,20 @@ class MainActivity : ComponentActivity() {
                 if (state.apps.isNotEmpty()) {
                     StartupTrace.mark("home drawn with ${state.apps.size} apps")
                     reportFullyDrawn()
+                }
+            }
+            val locationRequest = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                viewModel.refreshNetworkAccess()
+            }
+            val askForLocation = {
+                locationRequest.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+            }
+            // The Wi-Fi name needs location access: ask once, when the user opens the network panel (their own
+            // action, so the dialog is expected). The panel's button asks again on demand.
+            LaunchedEffect(networkOpen) {
+                if (networkOpen && !locationAsked && !container.locationAccess.permissionGranted()) {
+                    locationAsked = true
+                    askForLocation()
                 }
             }
             val editState by viewModel.editState.collectAsStateWithLifecycle()
@@ -200,6 +218,13 @@ class MainActivity : ComponentActivity() {
                             status = state.network,
                             accent = accent,
                             onTest = viewModel::testConnection,
+                            onLocationSettings = {
+                                container.settingsLauncher.open(
+                                    SettingsShortcuts.LOCATION_SETTINGS_ACTION,
+                                    SettingsShortcuts.ALL_SETTINGS_ACTION,
+                                )
+                            },
+                            onGrantLocation = askForLocation,
                             onWifiSettings = {
                                 container.settingsLauncher.open(
                                     SettingsShortcuts.WIFI_SETTINGS_ACTION,

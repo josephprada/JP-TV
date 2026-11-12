@@ -46,6 +46,7 @@ import co.jp.tv.network.domain.NetworkRules
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.network.ui.SignalBars
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.themes.shared.networkName
 
 @Composable
 internal fun TopPills(network: NetworkStatus, accent: Color, actions: HomeActions, modifier: Modifier = Modifier) {
@@ -87,13 +88,7 @@ private fun GlassPill(
 
 @Composable
 private fun NetworkChip(network: NetworkStatus, accent: Color, onClick: () -> Unit) {
-    val title = when {
-        network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline)
-        network.ssid != null -> network.ssid
-        network.transport == NetworkStatus.Transport.WIFI -> stringResource(R.string.network_wifi)
-        network.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.network_ethernet)
-        else -> stringResource(R.string.network_generic)
-    }
+    val title = networkName(network)
     val detail = when {
         network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline_detail)
         else -> NetworkRules.chipDetail(network).uppercase().ifEmpty { stringResource(R.string.network_no_detail) }

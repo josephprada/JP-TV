@@ -59,6 +59,8 @@ import co.jp.tv.network.domain.NetworkRules
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.jptv.JpIconView
 import co.jp.tv.themes.jptv.JpIcons
+import co.jp.tv.themes.shared.networkName
+import co.jp.tv.network.domain.SsidAccess
 
 private val OnlineGreen = Color(0xFF38D670)
 private val OnlineText = Color(0xFF8FF0B2)
@@ -77,6 +79,10 @@ fun NetworkPanel(
     onTest: () -> Unit,
     onWifiSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Opens the system location switch; shown when Android hides the Wi-Fi name because location is off. */
+    onLocationSettings: () -> Unit = {},
+    /** Asks for the location permission; shown when it is missing. */
+    onGrantLocation: () -> Unit = {},
 ) {
     val slide = remember { Animatable(0f) }
     LaunchedEffect(Unit) { slide.animateTo(1f, tween(600, easing = JpMotion.Entrance)) }
@@ -100,6 +106,7 @@ fun NetworkPanel(
         ) {
             Header(status)
             LinkCard(status)
+            SsidHint(status, accent, onLocationSettings, onGrantLocation)
             Facts(status)
             Spacer(Modifier.weight(1f))
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -173,8 +180,7 @@ private fun PulseDot(color: Color, pulsing: Boolean) {
 private fun LinkCard(status: NetworkStatus) {
     val title = when {
         !status.isConnected -> stringResource(R.string.network_offline)
-        status.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.network_ethernet)
-        else -> status.ssid ?: stringResource(R.string.network_wifi)
+        else -> networkName(status)
     }
     val detail = when {
         !status.isConnected -> stringResource(R.string.panel_no_link)
@@ -201,6 +207,24 @@ private fun LinkCard(status: NetworkStatus) {
             barWidth = 3.5.dp,
             heights = listOf(5.dp, 8.5.dp, 12.dp, 16.dp),
             gap = 2.5.dp,
+        )
+    }
+}
+
+/** Explains why the Wi-Fi name is missing and offers the one action that fixes it. */
+@Composable
+private fun SsidHint(status: NetworkStatus, accent: Color, onLocationSettings: () -> Unit, onGrant: () -> Unit) {
+    val needsLocation = status.ssidAccess == SsidAccess.NeedsLocation
+    if (!needsLocation && status.ssidAccess != SsidAccess.NeedsPermission) return
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        BasicText(
+            stringResource(if (needsLocation) R.string.panel_ssid_needs_location else R.string.panel_ssid_needs_permission),
+            style = TextStyle(JpColors.Muted, 9.sp, fontFamily = JpFonts.Body),
+        )
+        GlassButton(
+            stringResource(if (needsLocation) R.string.panel_ssid_location_settings else R.string.panel_ssid_grant),
+            accent,
+            if (needsLocation) onLocationSettings else onGrant,
         )
     }
 }

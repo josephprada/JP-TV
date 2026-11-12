@@ -48,8 +48,16 @@ object NetworkRules {
 
     /** Without the location permission Android reports "<unknown ssid>"; treat it as no name. */
     fun cleanSsid(raw: String?): String? {
-        val name = raw?.removeSurrounding("\"")?.trim()
-        return name?.takeIf { it.isNotEmpty() && it != UNKNOWN_SSID }
+        val name = raw?.trim()?.removeSurrounding("\"")?.trim()
+        return name?.takeIf { it.isNotEmpty() && !it.equals(UNKNOWN_SSID, ignoreCase = true) }
+    }
+
+    /** Why the network name may be missing: the permission, the system location switch, or neither. */
+    fun ssidAccess(ssid: String?, permissionGranted: Boolean, locationOn: Boolean): SsidAccess = when {
+        ssid != null -> SsidAccess.Available
+        !permissionGranted -> SsidAccess.NeedsPermission
+        !locationOn -> SsidAccess.NeedsLocation
+        else -> SsidAccess.Unavailable
     }
 
     /** Android 6+ hides the real MAC behind a constant placeholder. */

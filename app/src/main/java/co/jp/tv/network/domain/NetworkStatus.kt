@@ -1,11 +1,16 @@
 package co.jp.tv.network.domain
 
+/** What stands between the app and the Wi-Fi name (Android hides it without location access). */
+enum class SsidAccess { Available, NeedsPermission, NeedsLocation, Unavailable }
+
 /** Connectivity snapshot shown by the chip and the network panel. */
 data class NetworkStatus(
     val state: State = State.UNKNOWN,
     val transport: Transport? = null,
     /** Null when unknown or hidden by Android (no location permission). */
     val ssid: String? = null,
+    /** Why [ssid] is missing, so the panel can ask for the permission or for location services. */
+    val ssidAccess: SsidAccess = SsidAccess.Available,
     val ip: String? = null,
     val gateway: String? = null,
     val dns: List<String> = emptyList(),

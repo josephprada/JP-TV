@@ -196,6 +196,9 @@ class HomeViewModel(
 
     fun testConnection() = monitor.probeNow()
 
+    /** The location permission or switch changed: read the Wi-Fi name again. */
+    fun refreshNetworkAccess() = monitor.refreshAccess()
+
     override fun openNetwork() = push(Screen.Network)
     override fun openSettings() = push(Screen.Settings)
 

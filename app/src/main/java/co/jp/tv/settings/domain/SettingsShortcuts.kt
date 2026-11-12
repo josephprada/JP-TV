@@ -9,6 +9,7 @@ import java.util.Locale
 object SettingsShortcuts {
     const val ALL_SETTINGS_ACTION = "android.settings.SETTINGS"
     const val WIFI_SETTINGS_ACTION = "android.settings.WIFI_SETTINGS"
+    const val LOCATION_SETTINGS_ACTION = "android.settings.LOCATION_SOURCE_SETTINGS"
 
     private fun native(id: SettingsShortcut.Id, action: String) =
         SettingsShortcut(id, ShortcutTarget.Native(action, ALL_SETTINGS_ACTION))

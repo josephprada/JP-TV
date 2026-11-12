@@ -12,4 +12,7 @@ interface NetworkMonitor {
 
     /** Re-runs the latency probes right away (the "PROBAR CONEXIÓN" button). */
     fun probeNow()
+
+    /** Re-reads what depends on permissions and system switches (the network name) after they changed. */
+    fun refreshAccess()
 }

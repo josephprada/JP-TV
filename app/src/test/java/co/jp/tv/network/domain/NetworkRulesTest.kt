@@ -94,4 +94,38 @@ class NetworkRulesTest {
         assertEquals("60:35:73:··:··:1F", NetworkRules.maskMac("60:35:73:AB:CD:1F"))
         assertEquals("not-a-mac", NetworkRules.maskMac("not-a-mac"))
     }
+
+    @Test
+    fun `ssid placeholder is matched ignoring case and surrounding quotes`() {
+        assertEquals(null, NetworkRules.cleanSsid("\"<unknown ssid>\""))
+        assertEquals(null, NetworkRules.cleanSsid("<UNKNOWN SSID>"))
+        assertEquals(null, NetworkRules.cleanSsid("  \"\"  "))
+    }
+
+    @Test
+    fun `ssid keeps inner quotes and spaces but trims the edges`() {
+        assertEquals("Casa de \"JP\"", NetworkRules.cleanSsid("\"Casa de \"JP\"\""))
+        assertEquals("Mi Red", NetworkRules.cleanSsid("  Mi Red "))
+    }
+
+    @Test
+    fun `a known ssid needs nothing from the user`() {
+        assertEquals(SsidAccess.Available, NetworkRules.ssidAccess("Casa", permissionGranted = false, locationOn = false))
+    }
+
+    @Test
+    fun `without the permission the user must grant it first`() {
+        assertEquals(SsidAccess.NeedsPermission, NetworkRules.ssidAccess(null, permissionGranted = false, locationOn = false))
+        assertEquals(SsidAccess.NeedsPermission, NetworkRules.ssidAccess(null, permissionGranted = false, locationOn = true))
+    }
+
+    @Test
+    fun `with the permission but location services off the user must turn them on`() {
+        assertEquals(SsidAccess.NeedsLocation, NetworkRules.ssidAccess(null, permissionGranted = true, locationOn = false))
+    }
+
+    @Test
+    fun `with everything granted an unknown ssid is just unavailable`() {
+        assertEquals(SsidAccess.Unavailable, NetworkRules.ssidAccess(null, permissionGranted = true, locationOn = true))
+    }
 }
