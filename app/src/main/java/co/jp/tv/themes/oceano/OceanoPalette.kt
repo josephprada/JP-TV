@@ -1,213 +1,76 @@
 package co.jp.tv.themes.oceano
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 
 /**
- * Fixed palette of the Océano home (design/project/ThemeOceano.dc.html). The only file of the
- * theme with literal colors. Day and night values that differ are named separately; the theme
- * crossfades between them in 2.5 s like the artboard's `opacity 2.5s ease` transitions.
+ * Palette indices of the pixel scene. Sprites and the baked backdrop store these bytes instead of
+ * colors; [OceanoPalette.day] and [OceanoPalette.night] map them to ARGB. 0 is transparent, 1..24 are
+ * the 24 scene colors, 25..27 are the per-app jelly ramp (dark, base, light).
+ */
+internal object Px {
+    const val CLEAR = 0
+
+    // Water column, lightest first: Hi is the ray / caustic / sun color, W0 the surface, W4 the abyss.
+    const val HI = 1
+    const val W0 = 2
+    const val W1 = 3
+    const val W2 = 4
+    const val W3 = 5
+    const val W4 = 6
+    const val WATER_FIRST = 1
+    const val WATER_LAST = 6
+
+    const val FAR = 7
+    const val SAND_LIGHT = 8
+    const val SAND_MID = 9
+    const val SAND_DARK = 10
+    const val SAND_FIRST = 8
+    const val SAND_LAST = 10
+    const val ROCK_DARK = 11
+    const val ROCK_MID = 12
+    const val PURPLE = 13
+    const val ORANGE = 14
+    const val RED = 15
+    const val GREEN = 16
+    const val GREEN_LIGHT = 17
+    const val GOLD = 18
+    const val WHITE = 19
+    const val INK = 20
+    const val SHELL = 21
+    const val BLUE = 22
+
+    /** Day: silver and pink. Night: the two bioluminescent glow colors (the day-only silver school is not drawn). */
+    const val SILVER = 23
+    const val PINK = 24
+    const val GLOW_A = 23
+    const val GLOW_B = 24
+
+    const val JELLY_DARK = 25
+    const val JELLY_BASE = 26
+    const val JELLY_LIGHT = 27
+
+    const val SCENE_COLORS = 24
+    const val JELLY_FIRST = 25
+
+    /** One step lighter in the water, sand and caustic ramps; other colors stay. */
+    fun lighten(index: Int): Int = when (index) {
+        in W0..W4 -> index - 1
+        SAND_MID, SAND_DARK -> index - 1
+        else -> index
+    }
+}
+
+/**
+ * Fixed palette of the Océano home (design/project/ThemeOceano.dc.html), cut down to 24 scene colors per
+ * phase for the pixel scene. The only file of the theme with literal colors. The night palette is the day
+ * one pushed into the deep blue, except the water ramp and the two glow colors, which are chosen by hand.
  */
 object OceanoPalette {
-    // Water column, top to bottom (stops 0, .14, .36, .62, 1).
-    val WaterSurface = Color(0xFF1597CF)
-    val WaterShallow = Color(0xFF0A6AA8)
-    val WaterMid = Color(0xFF074F86)
-    val WaterDeep = Color(0xFF04355F)
-    val WaterAbyss = Color(0xFF021D3A)
-
-    val Text = Color(0xFFE6FBFF)
-    val White = Color(0xFFFFFFFF)
-    val TextShadow = Color(0x99031E3C)
-    val InitialShadow = Color(0xB3031E3C)
-    val LabelShadow = Color(0xE6010C1A)
-    val LabelShadowSoft = Color(0xFF010C1A)
-
-    // Sunlit window at the surface.
-    val SunCore = Color(0xB3E1FAFF)
-    val SunHalo = Color(0x40A0E6FF)
-    val SunEdge = Color(0x00A0E6FF)
-
-    // Caustics: the design's feColorMatrix output, rgb(0.85, 0.97, 1).
-    val Caustic = Color(0xFFD9F7FF)
-
-    // God rays.
-    val RayTop = Color(0xFFBEF0FF)
-    val RayMid = Color(0x0FA0E1FF)
-    val RayEnd = Color(0x00CDF5FF)
-
-    val Snow = Color(0xFFE1F8FF)
-    val FrontParticle = Color(0x59DCFAFF)
-    val FrontParticleEdge = Color(0x00DCFAFF)
-
-    // Far reef in blue haze.
-    val FarRidgeBack = Color(0xFF11609C)
-    val FarRidgeFront = Color(0xFF0D5089)
-    val FarBommie = Color(0xFF0F5892)
-    val FarSnapper = Color(0xFF0D3A63)
-    val FarShark = Color(0xFF082A4C)
-    val FarManta = Color(0xFF0A2F55)
-    val CrossSnapper = Color(0xFF123F66)
-
-    // Sand floor and mid reef.
-    val SandTop = Color(0xFF1F5F86)
-    val SandBottom = Color(0xFF5F8F8A)
-    val SandRippleDark = Color(0xFF163F5C)
-    val SandRippleLight = Color(0xFFCFE6DC)
-    val MidReefTop = Color(0xFF1C4361)
-    val MidReefBottom = Color(0xFF0A263E)
-    val ForeReefTop = Color(0xFF284558)
-    val ForeReefBottom = Color(0xFF0B1B28)
-    val ReefShadow = Color(0x59021A33)
-
-    // Reef dressing (radial "rg*" and horizontal "hg*" gradients of the artboard).
-    val BrainGreen = listOf(Color(0xFFAACB8E), Color(0xFF7CAF51), Color(0xFF3E5828))
-    val BrainOlive = listOf(Color(0xFFA7B885), Color(0xFF789144), Color(0xFF3C4822))
-    val BrainOchre = listOf(Color(0xFFC4AE85), Color(0xFFA58344), Color(0xFF524222))
-    val BrainMauve = listOf(Color(0xFFB494B5), Color(0xFF8C5A8D), Color(0xFF462D46))
-    val BrainBlue = listOf(Color(0xFF98C1D5), Color(0xFF619FBE), Color(0xFF30505F))
-    val MidBrainKhaki = listOf(Color(0xFFA5A08C), Color(0xFF756D4E), Color(0xFF3A3627))
-    val MidBrainBrown = listOf(Color(0xFFAC9F82), Color(0xFF7F6B3E), Color(0xFF40361F))
-    val MidBrainMoss = listOf(Color(0xFF91A78C), Color(0xFF56774E), Color(0xFF2B3C27))
-    val MidBrainSteel = listOf(Color(0xFF8AB0C5), Color(0xFF4B86A6), Color(0xFF264353))
-    val TableSand = listOf(Color(0xFFD2BF92), Color(0xFFBA9D58), Color(0xFF5D4E2C))
-    val TableSandUnder = Color(0xFF756130)
-    val TableSandStem = Color(0xFF6C592C)
-    val TableBlue = listOf(Color(0xFF98C1D5), Color(0xFF619FBE), Color(0xFF30505F))
-    val TableBlueUnder = Color(0xFF366278)
-    val TableBlueStem = Color(0xFF325B6E)
-    val TubePurple = listOf(Color(0xFF340851), Color(0xFF8845B6), Color(0xFF6710A2), Color(0xFF2E0749))
-    val TubePurpleMouth = Color(0xFF1D042D)
-    val TubePurpleRim = Color(0xFF9558BE)
-    val TubeOrange = listOf(Color(0xFF652802), Color(0xFFD6763B), Color(0xFFCA5004), Color(0xFF5B2402))
-    val TubeOrangeMouth = Color(0xFF391601)
-    val TubeOrangeRim = Color(0xFFDA844F)
-    val MidTubeViolet = listOf(Color(0xFF250E48), Color(0xFF724FA8), Color(0xFF4A1D90), Color(0xFF210D41))
-    val MidTubeVioletMouth = Color(0xFF150828)
-    val MidTubeVioletRim = Color(0xFF8061B1)
-    val MidTubeRust = listOf(Color(0xFF482510), Color(0xFFA87252), Color(0xFF8F4A21), Color(0xFF40210F))
-    val MidTubeRustMouth = Color(0xFF281509)
-    val MidTubeRustRim = Color(0xFFA87252)
-    val BranchTan = listOf(Color(0xFF7E6B44), Color(0xFF907A4E), Color(0xFF9D8555), Color(0xFFA68D5A))
-    val BranchPlum = listOf(Color(0xFF723C5A), Color(0xFF824466), Color(0xFF8E4A70), Color(0xFF974F77))
-    val BranchBlue = listOf(Color(0xFF2A5A7F), Color(0xFF306791), Color(0xFF34709E), Color(0xFF3777A8))
-    val MidBranchNavy = listOf(Color(0xFF1F4B6E), Color(0xFF23547C), Color(0xFF265B86), Color(0xFF296291))
-    val MidBranchPlum = listOf(Color(0xFF513553), Color(0xFF5D3D5F), Color(0xFF644266), Color(0xFF6C476E))
-
-    // Swaying gorgonian fans: branch color and mesh color.
-    val FanViolet = Color(0xFF9A2FC0)
-    val FanVioletMesh = Color(0xFFA94EC9)
-    val FanRed = Color(0xFFE0302A)
-    val FanRedMesh = Color(0xFFE54F4A)
-    val FanPurple = Color(0xFFA92FD0)
-    val FanPurpleMesh = Color(0xFFB64ED7)
-    val FanCrimson = Color(0xFFE0283C)
-    val FanCrimsonMesh = Color(0xFFE54859)
-
-    // Anemones and seagrass.
-    val AnemoneGreen = Color(0xFF7FE05A)
-    val AnemoneGreenTip = Color(0xFFFF9CF0)
-    val AnemoneGreenBase = Color(0xFF4C8636)
-    val AnemonePink = Color(0xFFFF6FAE)
-    val AnemonePinkTip = Color(0xFFFFF07A)
-    val AnemonePinkBase = Color(0xFF994368)
-    val Seagrass = Color(0xFF5C8F5A)
-
-    // Fish (symbols fAnth, fAnthFar, fSerg, fAngel, fSilv, fYel).
-    val AnthTop = Color(0xFFFF3D14)
-    val AnthMid = Color(0xFFFF7414)
-    val AnthBelly = Color(0xFFFFAE5C)
-    val AnthTail = Color(0xFFFF6A4A)
-    val AnthFin = Color(0xFFFF7A52)
-    val AnthLine = Color(0x99FFD9B0)
-    val AnthEye = Color(0xFF1A0C08)
-    val AnthFarTail = Color(0xFFC8552C)
-    val AnthFarBody = Color(0xFFE0683A)
-    val SergTop = Color(0xFFD7D98A)
-    val SergMid = Color(0xFFE9EEDB)
-    val SergBelly = Color(0xFFF6F8F2)
-    val SergTail = Color(0xFFD9DCB0)
-    val SergFin = Color(0xFFCFD59A)
-    val SergBar = Color(0xBF1B1E24)
-    val FishEye = Color(0xFF111111)
-    val AngelBlue = Color(0xFF1F47B8)
-    val AngelYellow = Color(0xFFFFD23A)
-    val AngelTail = Color(0xFFFFCC2E)
-    val AngelFace = Color(0xFF0D1A3A)
-    val AngelLine = Color(0xFF7FD0FF)
-    val SilvTop = Color(0xFF3FA0E8)
-    val SilvMid = Color(0xFFA8D8FF)
-    val SilvBelly = Color(0xFFF0F8FF)
-    val SilvGold = Color(0xFFFFD84A)
-    val SilvEye = Color(0xFF0A1A2A)
-    val YelTop = Color(0xFFFFB300)
-    val YelMid = Color(0xFFFFD81A)
-    val YelBelly = Color(0xFFFFF3A8)
-    val YelFin = Color(0xFFFFC21A)
-    val YelLine = Color(0x99FFFFFF)
-    val YelEye = Color(0xFF1A1200)
-
-    // Sea turtle.
-    val TurtleSkinLight = Color(0xFF9A8A62)
-    val TurtleSkinDark = Color(0xFF5A4C32)
-    val TurtleShellLight = Color(0xFFA07A42)
-    val TurtleShellMid = Color(0xFF6E5228)
-    val TurtleShellDark = Color(0xFF3E2C14)
-    val TurtleOutline = Color(0xFF2E2210)
-    val TurtleScute = Color(0xE68A6634)
-    val TurtleRim = Color(0x80C49A5A)
-    val TurtleLines = Color(0x8C3E3420)
-    val TurtleEye = Color(0xFF120C06)
-    val TurtleSheen = Color(0x14FFFFFF)
-
-    // Bubbles.
-    val BubbleRim = Color(0xB3E1FAFF)
-    val BubbleHighlight = Color(0xCCFFFFFF)
-    val BubbleClear = Color(0x0FFFFFFF)
-
-    // Day / night.
-    /** Night darkness over the scene, top and bottom (day: not drawn). */
-    val NightTintTop = Color(0x8C02081E)
-    val NightTintBottom = Color(0xC7010410)
-
-    /** Bioluminescent plankton and glowing coral tips, night only. */
-    val GlowColors = listOf(
-        Color(0xFF3DFFE0),
-        Color(0xFF7AFFC4),
-        Color(0xFF9CF2FF),
-        Color(0xFF7FD8FF),
-        Color(0xFFFF6FE8),
-        Color(0xFFB17BFF),
-        Color(0xFFD8FF3D),
-    )
-
-    const val SunAlphaDay = 1f
-    const val SunAlphaNight = 0.28f
-    const val CausticsAlphaDay = 1f
-    const val CausticsAlphaNight = 0.3f
-    const val RaysAlphaDay = 1f
-    const val RaysAlphaNight = 0.28f
-    const val ReefFishAlphaDay = 1f
-    const val ReefFishAlphaNight = 0.5f
-    const val SchoolAlphaDay = 1f
-    const val SchoolAlphaNight = 0f
-    const val JellyGlowBoostDay = 0f
-    const val JellyGlowBoostNight = 0.2f
-
-    // Edges.
-    val BottomFadeTop = Color(0x00010C1A)
-    val BottomFadeBottom = Color(0xBF010C1A)
-    val VignetteClear = Color(0x00021226)
-    val VignetteEdge = Color(0xBF010A18)
-
-    // Scrubber.
-    val ScrubLine = Color(0x8CE1FAFF)
-    val ScrubLineClear = Color(0x00E1FAFF)
-    val ScrubTick = Color(0x99EBFCFF)
-    val ScrubPosition = Color(0xD9EBFCFF)
-    val ControlFocus = Color(0x33FFFFFF)
+    private fun hex(v: Long): Int = v.toInt()
 
     /** One tint per jelly, in the artboard's order; real apps take them by index modulo size. */
-    val JellyTints = listOf(
+    val JellyTints: List<Color> = listOf(
         Color(0xFFB17BFF),
         Color(0xFFFF4FA8),
         Color(0xFFFF5A78),
@@ -220,5 +83,84 @@ object OceanoPalette {
         Color(0xFFFF6FE8),
     )
 
-    fun jellyTint(index: Int): Color = JellyTints[Math.floorMod(index, JellyTints.size)]
+    private val DEEP = hex(0xFF010B1D)
+
+
+    private val dayColors: IntArray = intArrayOf(
+        0x00000000,
+        // water: Hi, surface, shallow, mid, deep, abyss
+        hex(0xFF8FDDF2), hex(0xFF1597CF), hex(0xFF0A6AA8), hex(0xFF074F86), hex(0xFF04355F), hex(0xFF021D3A),
+        // far reef in haze
+        hex(0xFF11609C),
+        // sand: light, mid, dark
+        hex(0xFFA9CFC4), hex(0xFF5F8F8A), hex(0xFF2A5E78),
+        // rock: dark, mid
+        hex(0xFF0B1B28), hex(0xFF284558),
+        // coral: purple, orange, red; green, light green
+        hex(0xFF8845B6), hex(0xFFD6763B), hex(0xFFE0302A), hex(0xFF4C8636), hex(0xFF7FE05A),
+        // gold, white, ink, turtle shell, fish blue
+        hex(0xFFFFD23A), hex(0xFFE6FBFF), hex(0xFF0A1A2A), hex(0xFF8A6634), hex(0xFF3FA0E8),
+        // silver, pink
+        hex(0xFFC8E4F2), hex(0xFFFF6FAE),
+    )
+
+    private val nightWater = intArrayOf(
+        hex(0xFF1C5C93), hex(0xFF0B3A6C), hex(0xFF062A55), hex(0xFF041F42), hex(0xFF021430), hex(0xFF010B1D),
+    )
+
+    private val nightColors: IntArray = IntArray(dayColors.size) { i ->
+        when (i) {
+            0 -> 0
+            in Px.WATER_FIRST..Px.WATER_LAST -> nightWater[i - Px.WATER_FIRST]
+            Px.GLOW_A -> hex(0xFF3DFFE0)
+            Px.GLOW_B -> hex(0xFFFF6FE8)
+            Px.WHITE -> hex(0xFFB8D6E8)
+            else -> shade(dayColors[i], DEEP, 0.55f)
+        }
+    }
+
+    /** Colors of one tint ramp: dark, base, light. */
+    private fun jellyRamp(tint: Color, out: IntArray, at: Int) {
+        val base = tint.toArgb()
+        out[at] = shade(base, hex(0xFF0A1A3A), 0.5f)
+        out[at + 1] = base
+        out[at + 2] = shade(base, hex(0xFFFFFFFF), 0.55f)
+    }
+
+    private val jellyRamps = IntArray(JellyTints.size * 3).also { r -> JellyTints.forEachIndexed { i, c -> jellyRamp(c, r, i * 3) } }
+
+    /** Scene colors by palette index for the day, ARGB. Index 0 is transparent. */
+    fun day(): IntArray = dayColors
+
+    /** Scene colors by palette index for the night, ARGB. */
+    fun night(): IntArray = nightColors
+
+    /** Jelly ramps, three ARGB colors (dark, base, light) per tint; the same in both phases, the jellies are lights. */
+    fun jelly(): IntArray = jellyRamps
+
+    /** Blend of [from] toward [to] by [amount], opaque. */
+    fun shade(from: Int, to: Int, amount: Float): Int {
+        val a = (amount * 256f).toInt().coerceIn(0, 256)
+        val r = (((from shr 16) and 255) * (256 - a) + ((to shr 16) and 255) * a) shr 8
+        val g = (((from shr 8) and 255) * (256 - a) + ((to shr 8) and 255) * a) shr 8
+        val b = ((from and 255) * (256 - a) + (to and 255) * a) shr 8
+        return (0xFF shl 24) or (r shl 16) or (g shl 8) or b
+    }
+
+    // Text and controls, drawn at screen resolution over the pixel scene.
+    val Text = Color(0xFFE6FBFF)
+    val White = Color(0xFFFFFFFF)
+
+    /** Hard, blur-free drop shadow under pixel-font text. */
+    val TextShadow = Color(0xFF031E3C)
+    val ControlFocus = Color(0x33FFFFFF)
+    val ScrubPosition = Color(0xD9EBFCFF)
+
+    /** The scrubber's tick colors and the focused tick, as ARGB for the pixel buffer. */
+    val ScrubTick: Int = hex(0xFFA9D8EC)
+    val ScrubTickOn: Int = hex(0xFFFFFFFF)
+
+    fun jellyTintIndex(index: Int): Int = Math.floorMod(index, JellyTints.size)
+
+    fun jellyTint(index: Int): Color = JellyTints[jellyTintIndex(index)]
 }

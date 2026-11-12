@@ -1,110 +1,95 @@
 package co.jp.tv.themes.oceano
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.withTransform
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.floor
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
- * One fish of the scene with its artboard motion, all in design px:
- * - [Motion.Hover]: `sw-hov-*`, eases to ([a], [b]) and back.
- * - [Motion.Dart]: `sw-dart-*`, holds, darts to ([a], [b]), settles at ([c], [d]), and back.
- * - [Motion.Orbit]: `sw-path` on an ellipse centred ([a], [b]) with radii ([c], [d]), starting at its
- *   left end and going over the top (under it when [reverse]); the fish turns at each end.
- * - [Motion.Cross]: `sw-cross-r` / `sw-cross-l`, crossing from -420 to 2340 px (or back) at height [y].
+ * One animal on a fixed path, placed from the scene time alone (no state, no allocation): it crosses
+ * the screen, hovers around a point, or circles a school's centre. Sprites face right; [flip] mirrors
+ * them when the animal swims left. The tail flaps between the sprite's frames five times a second.
  */
-internal class OceanoSwimmer(
-    val shape: OceanoFishShapes.Shape,
-    val width: Float,
-    val height: Float,
-    val alpha: Float,
-    val motion: Motion,
-    /** Top-left of the fish for Hover, Dart and Cross; offset from the path for Orbit. */
-    val x: Float,
-    val y: Float,
-    /** 1 faces right, -1 faces left (Orbit ignores it and faces its direction of travel). */
-    val facing: Float,
-    val periodS: Float,
-    val delayS: Float,
-    val a: Float = 0f,
-    val b: Float = 0f,
-    val c: Float = 0f,
-    val d: Float = 0f,
-    val reverse: Boolean = false,
-    val tint: Color? = null,
-    /** `sw-wag` / `sw-swag` tail beat, as a small rocking angle; 0 disables it. */
-    val wagS: Float = 0f,
-    val wagDeg: Float = 4f,
-    /** `sw-fbob` / `sw-tbob`: vertical bob of [bobPx] over [bobS]; 0 disables it. */
-    val bobS: Float = 0f,
-    val bobPx: Float = 0f,
-    /** `sw-flap`: wings squash to 78 % height (manta). */
-    val flapS: Float = 0f,
+internal class Swimmer private constructor(
+    private val frames: Array<Sprite>,
+    private val kind: Int,
+    private val x0: Float,
+    private val y0: Float,
+    private val rx: Float,
+    private val ry: Float,
+    private val period: Float,
+    private val delay: Float,
+    private val dir: Int,
+    private val bobAmp: Float,
+    private val bobPeriod: Float,
+    private val frameStep: Int,
+    private val frameOffset: Int,
 ) {
-    enum class Motion { Hover, Dart, Orbit, Cross }
+    private var x = 0f
+    private var y = 0f
+    private var flip = false
 
-    fun draw(scope: DrawScope, t: Float, layerAlpha: Float) {
-        var cx = 0f
-        var cy = 0f
-        var face = facing
-        when (motion) {
-            Motion.Hover -> {
-                val p = OceanoMotion.alternate(t, periodS, delayS)
-                cx = x + width / 2f + a * p
-                cy = y + height / 2f + b * p
+    /** Moves the swimmer to where it is at tick [tick] (scene seconds [t]). */
+    fun update(tick: Int, t: Float) {
+        when (kind) {
+            CROSS -> {
+                val u = loop((t + delay) / period)
+                val span = OceanoPixels.W + 2f * frames[0].w
+                val travel = u * span
+                x = if (dir > 0) -frames[0].w + travel + x0 else OceanoPixels.W + frames[0].w - travel - x0
+                y = y0 + bobAmp * sin(TWO_PI * t / bobPeriod)
+                flip = dir < 0
             }
-            Motion.Dart -> {
-                val raw = (t + delayS) / periodS
-                val u = raw - 2f * floor(raw / 2f)
-                val f = if (u < 1f) u else 2f - u
-                var dx = 0f
-                var dy = 0f
-                if (f >= 0.76f) {
-                    val k = OceanoMotion.smooth((f - 0.76f) / 0.24f)
-                    dx = OceanoMotion.lerp(a, c, k)
-                    dy = OceanoMotion.lerp(b, d, k)
-                } else if (f >= 0.68f) {
-                    val k = OceanoMotion.smooth((f - 0.68f) / 0.08f)
-                    dx = a * k
-                    dy = b * k
-                }
-                cx = x + width / 2f + dx
-                cy = y + height / 2f + dy
+            HOVER -> {
+                val ph = TWO_PI * (t + delay) / period
+                x = x0 + rx * sin(ph)
+                y = y0 + ry * sin(ph * 1.7f + 1f)
+                flip = cos(ph) < 0f
             }
-            Motion.Orbit -> {
-                val p = OceanoMotion.loop(t, periodS, delayS)
-                val theta = if (reverse) PI - 2.0 * PI * p else PI + 2.0 * PI * p
-                cx = a + c * cos(theta).toFloat() + x
-                cy = b + d * sin(theta).toFloat() + y
-                val dxdt = -sin(theta) * (if (reverse) -1.0 else 1.0)
-                face = if (dxdt >= 0.0) 1f else -1f
-            }
-            Motion.Cross -> {
-                val p = OceanoMotion.loop(t, periodS, delayS)
-                val travel = if (facing > 0f) OceanoMotion.lerp(-420f, 2340f, p) else OceanoMotion.lerp(2340f, -420f, p)
-                cx = x + travel + width / 2f
-                cy = y + height / 2f
+            else -> {
+                val th = TWO_PI * (t + delay) / period * dir
+                x = x0 + rx * cos(th)
+                y = y0 + ry * sin(th)
+                flip = -sin(th) * dir < 0f
             }
         }
-        if (bobS > 0f) cy -= bobPx * OceanoMotion.pulse(t, bobS, delayS)
-        val wag = if (wagS > 0f) OceanoMotion.lerp(-wagDeg, wagDeg, OceanoMotion.alternate(t, wagS, delayS)) else 0f
-        val squash = if (flapS > 0f) OceanoMotion.lerp(1f, 0.78f, OceanoMotion.alternate(t, flapS)) else 1f
-        val sx = face * width / shape.viewWidth
-        val sy = squash * height / shape.viewHeight
-        val vw = shape.viewWidth
-        val vh = shape.viewHeight
-        val drawAlpha = alpha * layerAlpha
-        scope.withTransform({
-            translate(cx, cy)
-            rotate(wag, Offset.Zero)
-            scale(sx, sy, Offset.Zero)
-            translate(-vw / 2f, -vh / 2f)
-        }) {
-            shape.draw(this, drawAlpha, tint)
-        }
+        frame = ((tick / frameStep) + frameOffset) and 1
+    }
+
+    private var frame = 0
+
+    fun draw(out: PixelBlitter, fade: Int = 16) {
+        val s = frames[if (frames.size == 1) 0 else frame % frames.size]
+        out.blit(s, (x - s.w / 2f).roundToInt(), (y - s.h / 2f).roundToInt(), flip, fade = fade)
+    }
+
+    /** Index of the sprite frame for turtles, which have four, instead of the two-frame fish tail. */
+    fun drawWithFrame(out: PixelBlitter, tick: Int) {
+        val s = frames[(tick / 4) % frames.size]
+        out.blit(s, (x - s.w / 2f).roundToInt(), (y - s.h / 2f).roundToInt(), flip)
+    }
+
+    companion object {
+        private const val CROSS = 0
+        private const val HOVER = 1
+        private const val ORBIT = 2
+        private const val TWO_PI = (PI * 2).toFloat()
+
+        private fun loop(v: Float): Float = v - floor(v)
+
+        /** Crosses the screen once per [period] seconds on a line at [y], [xOff] pixels ahead of the group's lead. */
+        fun cross(
+            frames: Array<Sprite>, y: Float, period: Float, delay: Float, dir: Int,
+            xOff: Float = 0f, bobAmp: Float = 0f, bobPeriod: Float = 6f, offset: Int = 0,
+        ) = Swimmer(frames, CROSS, xOff, y, 0f, 0f, period, delay, dir, bobAmp, bobPeriod, 3, offset)
+
+        /** Hovers around ([x], [y]) in a small loop of radii [rx] by [ry]. */
+        fun hover(frames: Array<Sprite>, x: Float, y: Float, rx: Float, ry: Float, period: Float, delay: Float, offset: Int = 0) =
+            Swimmer(frames, HOVER, x, y, rx, ry, period, delay, 1, 0f, 1f, 3, offset)
+
+        /** Circles ([cx], [cy]) on an ellipse, starting [theta] radians round it. */
+        fun orbit(frames: Array<Sprite>, cx: Float, cy: Float, rx: Float, ry: Float, period: Float, theta: Float, dir: Int, offset: Int = 0) =
+            Swimmer(frames, ORBIT, cx, cy, rx, ry, period, theta / TWO_PI * period * dir, dir, 0f, 1f, 3, offset)
     }
 }

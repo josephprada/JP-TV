@@ -16,8 +16,7 @@ import org.junit.Test
 /**
  * Every theme must let a D-pad-only remote reach the settings control from the app list and come
  * back. The settings control is a clickable that takes focus; the list root is not clickable.
- * Every theme with a themes control (all but oceano, which is covered by its own rewrite) must also
- * reach that control, and come back from it.
+ * Every theme must also reach its themes control, and come back from it.
  */
 @OptIn(ExperimentalTestApi::class)
 class ThemeDpadReachTest : ScreenshotTest() {
@@ -88,4 +87,5 @@ class ThemeDpadReachTest : ScreenshotTest() {
     @Test fun gothamThemes() = reachThemes("gotham", listOf(Up, Right), listOf(Down))
     @Test fun multiversoThemes() = reachThemes("multiverso", listOf(Up, Right), listOf(Down))
     @Test fun cyberpunkThemes() = reachThemes("cyberpunk", listOf(Up, Right), listOf(Down))
+    @Test fun oceanoThemes() = reachThemes("oceano", listOf(Up, Right), listOf(Down))
 }

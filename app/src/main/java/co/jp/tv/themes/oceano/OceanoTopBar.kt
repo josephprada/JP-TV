@@ -1,6 +1,7 @@
 package co.jp.tv.themes.oceano
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,9 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import co.jp.tv.R
 import co.jp.tv.core.design.riseIn
@@ -37,27 +34,27 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 
-/** A text shadow given in design px (`text-shadow: 0 dy blur color`), scaled to the screen. */
+/** A hard, blur-free text shadow [dy] design px down and right, scaled to the screen. */
 @Composable
-private fun rememberTextShadow(color: Color, dy: Float, blur: Float): Shadow {
+private fun rememberTextShadow(color: Color, dy: Float): Shadow {
     val toPx = with(LocalDensity.current) { OceanoDesign.dp(1f).toPx() }
-    return remember(color, dy, blur, toPx) { Shadow(color, Offset(0f, dy * toPx), blur * toPx) }
+    return remember(color, dy, toPx) { Shadow(color, Offset(dy * toPx, dy * toPx), 0f) }
 }
 
-/** "JP-TV" at the top left: 30 px, weight 600, rising in over 0.9 s. */
+/** "JP-TV" at the top left in the pixel font, rising in over 0.9 s. */
 @Composable
 internal fun OceanoBrand(brand: String, modifier: Modifier = Modifier) {
-    val shadow = rememberTextShadow(OceanoPalette.TextShadow, dy = 2f, blur = 18f)
+    val shadow = rememberTextShadow(OceanoPalette.TextShadow, dy = 3f)
     BasicText(
         brand,
         modifier = modifier.riseIn(0, OceanoMotion.EntranceMs, distanceDp = 7f),
         style = TextStyle(
             color = OceanoPalette.White,
-            fontSize = 15.sp,
-            fontFamily = OceanoType.Geist,
-            fontWeight = FontWeight.SemiBold,
-            letterSpacing = (-0.01).em,
+            fontSize = 30.sp,
+            lineHeight = 30.sp,
+            fontFamily = OceanoType.Pixel,
             shadow = shadow,
         ),
     )
@@ -74,7 +71,7 @@ internal fun OceanoTopRight(
     focus: ThemeControlFocus,
     modifier: Modifier = Modifier,
 ) {
-    val shadow = rememberTextShadow(OceanoPalette.TextShadow, dy = 2f, blur = 14f)
+    val shadow = rememberTextShadow(OceanoPalette.TextShadow, dy = 3f)
     Row(
         modifier.riseIn(OceanoMotion.EntranceStaggerMs, OceanoMotion.EntranceMs, distanceDp = 7f),
         horizontalArrangement = Arrangement.spacedBy(OceanoDesign.dp(32f)),
@@ -91,8 +88,9 @@ internal fun OceanoTopRight(
         IconButton(
             icon = JpIcons.Palette,
             description = stringResource(R.string.cd_themes),
-            highlighted = false,
+            highlighted = focus.onThemes,
             onClick = actions::openThemes,
+            modifier = Modifier.themesControlTarget(focus),
         )
         OceanoTime(state, shadow)
     }
@@ -125,8 +123,8 @@ private fun NetworkLink(network: NetworkStatus, shadow: Shadow, onClick: () -> U
             label,
             style = TextStyle(
                 color = OceanoPalette.White,
-                fontSize = 9.5.sp,
-                fontFamily = OceanoType.Geist,
+                fontSize = 17.sp,
+                fontFamily = OceanoType.Pixel,
                 shadow = shadow,
             ),
             maxLines = 1,
@@ -146,7 +144,8 @@ private fun IconButton(
         modifier
             .size(OceanoDesign.dp(48f))
             .semantics { contentDescription = description }
-            .background(if (highlighted) OceanoPalette.ControlFocus else Color.Transparent, RoundedCornerShape(OceanoDesign.dp(12f)))
+            .background(if (highlighted) OceanoPalette.ControlFocus else Color.Transparent)
+            .border(OceanoDesign.dp(3f), if (highlighted) OceanoPalette.White else Color.Transparent)
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
@@ -158,7 +157,7 @@ private fun IconButton(
     }
 }
 
-/** The clock at 46 px, weight 300; a 12-hour clock adds a small AM/PM beside the digits. */
+/** The clock in the pixel font; a 12-hour clock adds a small AM/PM beside the digits. */
 @Composable
 private fun OceanoTime(state: HomeState, shadow: Shadow) {
     val parts = ClockFormat.parts(state.now, state.config.hourFormat)
@@ -168,10 +167,9 @@ private fun OceanoTime(state: HomeState, shadow: Shadow) {
             modifier = Modifier.alignByBaseline(),
             style = TextStyle(
                 color = OceanoPalette.White,
-                fontSize = 23.sp,
-                lineHeight = 23.sp,
-                fontFamily = OceanoType.Light,
-                letterSpacing = (-0.02).em,
+                fontSize = 30.sp,
+                lineHeight = 30.sp,
+                fontFamily = OceanoType.Pixel,
                 shadow = shadow,
             ),
         )
@@ -181,10 +179,9 @@ private fun OceanoTime(state: HomeState, shadow: Shadow) {
                 modifier = Modifier.alignByBaseline(),
                 style = TextStyle(
                     color = OceanoPalette.White,
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp,
-                    fontFamily = OceanoType.Light,
-                    letterSpacing = (-0.02).em,
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = OceanoType.Pixel,
                     shadow = shadow,
                 ),
             )
