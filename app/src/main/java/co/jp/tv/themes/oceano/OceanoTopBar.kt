@@ -35,6 +35,7 @@ import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themesControlTarget
+import co.jp.tv.weather.ui.WeatherBadge
 
 /** A hard, blur-free text shadow [dy] design px down and right, scaled to the screen. */
 @Composable
@@ -91,6 +92,13 @@ internal fun OceanoTopRight(
             highlighted = focus.onThemes,
             onClick = actions::openThemes,
             modifier = Modifier.themesControlTarget(focus),
+        )
+        WeatherBadge(
+            weather = state.weather,
+            color = OceanoPalette.White,
+            textStyle = TextStyle(fontSize = 17.sp, fontFamily = OceanoType.Pixel, shadow = shadow),
+            iconSize = OceanoDesign.dp(28f),
+            gap = OceanoDesign.dp(10f),
         )
         OceanoTime(state, shadow)
     }

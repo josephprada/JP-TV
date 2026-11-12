@@ -31,18 +31,12 @@ import co.jp.tv.themes.shared.themeKeyNavigation
  * is one 320x180 bitmap scaled up with nearest-neighbour (see [OceanoPixelScene]); only the text is drawn at
  * screen resolution. Left and right move the focus and the row of jellies slides to keep it centred; the
  * scene is a day or a night (from [DayPhase]) and dithers from one to the other over 2.5 s when the hour
- * crosses 06:00 or 18:00.
+ * crosses 06:00 or 18:00. The sky above it follows the weather (see [OceanoWeather]).
  */
 object OceanoTheme : LauncherTheme {
     override val id = "oceano"
     override val displayName = "Océano"
     override val supportsAccent = false
-
-    /**
-     * What the sky is doing. A later task feeds this from the weather reading; the scene already draws
-     * every [OceanoWeather], so only the source is missing.
-     */
-    internal val weather: OceanoWeather = OceanoWeather.Clear
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
@@ -54,6 +48,8 @@ object OceanoTheme : LauncherTheme {
             tween(OceanoMotion.PhaseFadeMs, easing = OceanoMotion.PhaseFade),
             label = "oceanoNight",
         )
+        // The sky follows the reading's condition; it only changes when the condition does, not on every tick.
+        val oceanoWeather = OceanoWeather.of(state.weather?.condition)
         val focusedIndex = state.focusedIndex.coerceIn(0, (state.apps.size - 1).coerceAtLeast(0))
         // Focus moves settle like every other theme's; the jellies snap to the pixel grid on the way.
         val scroll = animateFloatAsState(
@@ -82,7 +78,7 @@ object OceanoTheme : LauncherTheme {
                 scroll = remember(scroll) { { scroll.value } },
                 focusedIndex = focusedIndex,
                 apps = state.apps,
-                weather = weather,
+                weather = oceanoWeather,
             )
             OceanoJellyLabels(
                 apps = state.apps,
