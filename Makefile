@@ -10,7 +10,7 @@ TV := $(TV_HOST):5555
 APK := app/build/outputs/apk/debug/app-debug.apk
 PKG := co.jp.tv
 
-.PHONY: build test deploy shot logs check-host screens screens-app screens-design
+.PHONY: build test deploy aot startup shot logs check-host screens screens-app screens-design
 
 build:
 	./gradlew :app:assembleDebug
@@ -27,6 +27,19 @@ deploy: check-host build
 	-adb -s $(TV) shell pm grant $(PKG) android.permission.READ_EXTERNAL_STORAGE
 	adb -s $(TV) shell cmd package set-home-activity $(PKG)/.MainActivity
 	adb -s $(TV) shell input keyevent KEYCODE_HOME
+
+# After a deploy and one launch (ProfileInstaller writes the profile in the background), AOT-compile the
+# app with it so the next cold start skips the JIT warm-up (Android 9 does not do it on install).
+aot: check-host
+	adb -s $(TV) shell cmd package compile -f -m speed-profile $(PKG)
+
+# Cold start timeline: JpStartup marks (debug build) and the system's own start/fully-drawn times.
+startup: check-host
+	adb -s $(TV) shell am force-stop $(PKG)
+	adb -s $(TV) logcat -c
+	adb -s $(TV) shell am start -W -n $(PKG)/.MainActivity
+	sleep 8
+	adb -s $(TV) logcat -d -s JpStartup ActivityTaskManager:I ActivityManager:I | rg 'JpStartup|Fully drawn|Displayed'
 
 shot: check-host
 	@mkdir -p shots
