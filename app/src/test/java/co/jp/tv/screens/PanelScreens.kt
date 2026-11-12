@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -17,7 +18,16 @@ import co.jp.tv.apps.domain.AppOrdering
 import co.jp.tv.apps.ui.EditAppsScreen
 import co.jp.tv.network.ui.NetworkPanel
 import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.playlist.domain.MediaKind
+import co.jp.tv.playlist.domain.PlaylistOrder
+import co.jp.tv.playlist.domain.PlaylistSettings
+import co.jp.tv.playlist.domain.RotationInterval
+import co.jp.tv.playlist.ui.LocalImageSource
+import co.jp.tv.playlist.ui.LocalMediaThumbnails
 import co.jp.tv.preferences.ui.CustomizeScreen
+import co.jp.tv.preferences.ui.OptionsCard
+import co.jp.tv.preferences.ui.PlaylistSection
+import co.jp.tv.screensaver.domain.ScreensaverSettings
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.homeoverride.domain.HomeOverrideStatus
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
@@ -72,6 +82,41 @@ class PanelScreens : ScreenshotTest() {
         }
     }
 
+    /** The wallpaper card with a playlist: toggle chips with previews, rotation and order chips, the hint. */
+    private fun customizePlaylist(name: String, wallpaperId: String, keys: List<Key> = emptyList()) = shoot(name, keys) {
+        val files = if (wallpaperId == "video") ScreenFixtures.library.videos else ScreenFixtures.library.images
+        val config = LauncherConfig.Default.copy(wallpaperId = wallpaperId).withPlaylist(
+            if (wallpaperId == "video") MediaKind.VIDEO else MediaKind.IMAGE,
+            PlaylistSettings(selected = listOf(files[0].id, files[1].id, files[3].id), interval = RotationInterval.MIN_30, order = PlaylistOrder.SHUFFLE),
+        )
+        CompositionLocalProvider(LocalMediaThumbnails provides ScreenFixtures.thumbnails, LocalImageSource provides ScreenFixtures.imageSource) {
+            CustomizeScreen(initial = config, onApply = {}, media = ScreenFixtures.library)
+        }
+    }
+
+    @Test fun customizeVideoList() = customizePlaylist("customize-video-list", "video", List(9) { Key.DirectionDown })
+    /** Further down the same list: the rotation chips and the order chips are reachable with the D-pad too. */
+    @Test fun customizeVideoListOrder() = customizePlaylist("customize-video-list-order", "video", List(16) { Key.DirectionDown })
+    @Test fun customizeImageList() = customizePlaylist("customize-image-list", "image", List(9) { Key.DirectionDown })
+
+    /** The card on its own, so the whole list is visible whatever the scroll position. */
+    @Test fun playlistCard() = shoot("customize-playlist-card") {
+        CompositionLocalProvider(LocalMediaThumbnails provides ScreenFixtures.thumbnails) {
+            Column(Modifier.background(JpColors.Ink).width(400.dp).padding(24.dp)) {
+                OptionsCard("LIVE WALLPAPER", delayMs = 0) {
+                    PlaylistSection(
+                        kind = MediaKind.VIDEO,
+                        found = ScreenFixtures.library.videos,
+                        loaded = true,
+                        settings = PlaylistSettings(selected = listOf("/sdcard/JPTV/loop.mp4", "/sdcard/JPTV/fondos/aurora.mp4", "/storage/ABCD-1234/JPTV/fondos/playa.mp4")),
+                        accent = accent,
+                        onChange = {},
+                    )
+                }
+            }
+        }
+    }
+
     @Test fun settings() = shoot("settings") {
         val info = QuickSettingsInfo(
             launcherName = "JP-TV",
@@ -95,6 +140,8 @@ class PanelScreens : ScreenshotTest() {
             onAllSettings = {},
             onEditApps = {},
             homeOverride = HomeOverrideUi(HomeOverrideStatus.NEEDS_PERMISSION, {}, {}, {}),
+            screensaver = ScreensaverSettings.Default,
+            onOpenScreensaver = {},
         )
     }
 
@@ -128,6 +175,25 @@ class PanelScreens : ScreenshotTest() {
             onMove = { _, _ -> },
             onSetHidden = { _, _ -> },
             onReset = {},
+        )
+    }
+
+    /** The edit screen's wallpaper column mirrors the playlist when "Mi video" is the wallpaper. */
+    @Test fun editVideoPlaylist() = shoot("edit-video") {
+        val order = AppOrdering(order = ScreenFixtures.apps.map { it.packageName }, hidden = emptySet())
+        EditAppsScreen(
+            apps = AppLayout.resolve(ScreenFixtures.apps, order),
+            freeGb = "3.5",
+            config = LauncherConfig.Default.copy(wallpaperId = "video"),
+            onWallpaper = {},
+            onDim = {},
+            onPauseInApps = {},
+            accent = accent,
+            initialFocus = null,
+            onMove = { _, _ -> },
+            onSetHidden = { _, _ -> },
+            onReset = {},
+            media = ScreenFixtures.library,
         )
     }
 

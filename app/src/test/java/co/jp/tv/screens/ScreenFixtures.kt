@@ -8,7 +8,17 @@ import androidx.compose.ui.graphics.toArgb
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.apps.ui.AppIcons
 import co.jp.tv.network.domain.NetworkStatus
+import co.jp.tv.playlist.domain.MediaItem
+import co.jp.tv.playlist.domain.MediaKind
+import co.jp.tv.playlist.domain.MediaLibraryState
+import co.jp.tv.playlist.domain.MediaSource
+import co.jp.tv.playlist.domain.PlaylistSelection
+import co.jp.tv.playlist.domain.WallpaperMedia
+import co.jp.tv.playlist.ui.ImageSource
+import co.jp.tv.playlist.ui.MediaThumbnails
 import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.screensaver.domain.ScreensaverSettings
+import co.jp.tv.screensaver.domain.ScreensaverState
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.weather.domain.Weather
@@ -110,5 +120,72 @@ object ScreenFixtures {
         }
         canvas.nativeCanvas.drawText(app.label.take(1), 160f, 125f, paint)
         bitmap
+    }
+
+    // --- Wallpaper playlists and screensaver ---
+
+    private fun file(path: String, kind: MediaKind, source: MediaSource = MediaSource.FONDOS) =
+        MediaItem(path, path.substringAfterLast('/'), kind, source)
+
+    private val videoFiles = listOf(
+        file("/sdcard/JPTV/loop.mp4", MediaKind.VIDEO, MediaSource.LEGACY),
+        file("/sdcard/JPTV/fondos/aurora.mp4", MediaKind.VIDEO),
+        file("/sdcard/JPTV/fondos/ciudad-noche.webm", MediaKind.VIDEO),
+        file("/sdcard/JPTV/fondos/lluvia.mkv", MediaKind.VIDEO),
+        file("/storage/ABCD-1234/JPTV/fondos/playa.mp4", MediaKind.VIDEO, MediaSource.USB),
+    )
+
+    private val imageFiles = listOf(
+        file("/sdcard/JPTV/fondo.jpg", MediaKind.IMAGE, MediaSource.LEGACY),
+        file("/sdcard/JPTV/fondos/montana.jpg", MediaKind.IMAGE),
+        file("/sdcard/JPTV/fondos/atardecer.png", MediaKind.IMAGE),
+        file("/sdcard/JPTV/fondos/bosque.webp", MediaKind.IMAGE),
+        file("/storage/ABCD-1234/JPTV/fondos/ciudad.jpg", MediaKind.IMAGE, MediaSource.USB),
+    )
+
+    val library = MediaLibraryState(videoFiles + imageFiles, loaded = true)
+
+    /** A made-up landscape (sky, sun, two hills) tinted from the file name: stands in for the real thumbnail or photo. */
+    private fun scene(item: MediaItem, width: Int, height: Int): ImageBitmap {
+        val hue = (item.name.hashCode().and(0x7fffffff) % 360).toFloat()
+        val sky = android.graphics.Color.HSVToColor(floatArrayOf(hue, 0.55f, 0.85f))
+        val dusk = android.graphics.Color.HSVToColor(floatArrayOf((hue + 40f) % 360f, 0.7f, 0.35f))
+        val hill = android.graphics.Color.HSVToColor(floatArrayOf((hue + 160f) % 360f, 0.5f, 0.22f))
+        val bitmap = ImageBitmap(width, height)
+        val canvas = androidx.compose.ui.graphics.Canvas(bitmap).nativeCanvas
+        val paint = Paint().apply { isAntiAlias = true }
+        paint.shader = android.graphics.LinearGradient(0f, 0f, 0f, height.toFloat(), sky, dusk, android.graphics.Shader.TileMode.CLAMP)
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        paint.shader = null
+        paint.color = android.graphics.Color.argb(230, 255, 240, 200)
+        canvas.drawCircle(width * 0.7f, height * 0.38f, height * 0.12f, paint)
+        paint.color = hill
+        canvas.drawCircle(width * 0.25f, height * 1.15f, height * 0.62f, paint)
+        paint.color = android.graphics.Color.argb(255, 8, 8, 12)
+        canvas.drawCircle(width * 0.8f, height * 1.3f, height * 0.7f, paint)
+        return bitmap
+    }
+
+    val thumbnails = MediaThumbnails { item -> scene(item, 192, 108) }
+
+    val imageSource = ImageSource { item, _, _ -> scene(item, 960, 540) }
+
+    fun saverState(
+        themeId: String = LauncherConfig.DEFAULT_THEME_ID,
+        screensaver: ScreensaverSettings = ScreensaverSettings.Default,
+        weather: Weather? = weather(WeatherCondition.Clear),
+        photos: List<MediaItem> = imageFiles.filter { it.source != MediaSource.LEGACY },
+        at: LocalDateTime = now,
+    ): ScreensaverState {
+        val config = LauncherConfig.Default.copy(themeId = themeId, screensaver = screensaver)
+        return ScreensaverState(
+            now = at,
+            config = config,
+            weather = weather,
+            photos = photos,
+            videos = PlaylistSelection.of(library.videos, config.videoPlaylist),
+            wallpaperMedia = WallpaperMedia.of(library, config.videoPlaylist, config.imagePlaylist),
+            mediaLoaded = true,
+        )
     }
 }

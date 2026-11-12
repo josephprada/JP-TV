@@ -6,6 +6,7 @@ Read [PLAN.md](PLAN.md) for the why. This file is the how: map, commands, conven
 
 - `app/src/main/java/co/jp/tv/` — all code, by feature: `apps/`, `network/`, `settings/`, `preferences/`, `wallpaper/`, `themes/`, `home/`, `core/`.
 - Inside a feature: `domain/` (pure Kotlin, no Android imports), `data/` (Android adapters), `ui/` (Compose).
+- `playlist/` — wallpaper media: scan of `/sdcard/JPTV/{fondos,protector}` (+ legacy `loop.mp4`/`fondo.jpg`, + USB `JPTV/`), `PlaylistScheduler` rotation rules, playlist cursor. `screensaver/` — modes, idle rules, `ScreensaverHost`, `JpScreensaverService` (DreamService).
 - `AppContainer.kt` — the only file that creates adapters. New dependency? Add it here.
 - `themes/ThemeRegistry.kt` — the only list of themes.
 - `tools/sounds/synth.py` — generates every UI sound clip in `res/raw`.
@@ -39,7 +40,8 @@ The TV address comes from `local.properties` (`tv.host=…`). If the TV is unrea
 **Add a theme**
 1. Create `themes/<id>/<Id>Theme.kt` implementing `LauncherTheme` and `themes/<id>/<Id>Palette.kt`.
 2. Register it in `ThemeRegistry`.
-3. Match `design/project/Theme<Id>.dc.html`; verify with `make deploy && make shot`.
+3. Optionally override `Ambient(state)` (the scene without app UI, used by the screensaver's "Ambiente del tema"); the default shows the wallpaper.
+4. Match `design/project/Theme<Id>.dc.html`; verify with `make deploy && make shot`.
 
 **Add a live wallpaper**
 1. Create `wallpaper/<id>/<Id>Wallpaper.kt` implementing `Wallpaper` (`render(accent, paused)`).
