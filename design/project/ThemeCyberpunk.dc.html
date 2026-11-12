@@ -1,169 +1,15 @@
-<!DOCTYPE html>
-<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
-
-
+<!doctype html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
 <title>JP-TV — Tema Cyberpunk</title>
-<script src="263f636d-54ac-441a-b576-3676ad83008a"></script>
+<script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<style>/* thai */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWi6pgeL4.woff2) format('woff2');
-  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWkKpgeL4.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWkapgeL4.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWn6pg.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* thai */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1U5_F7AY.woff2) format('woff2');
-  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1SJ_F7AY.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1SZ_F7AY.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("ee226da8-b97e-4c86-aeac-4ed3d3d0f209") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* thai */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51U5_F7AY.woff2) format('woff2');
-  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51SJ_F7AY.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51SZ_F7AY.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("ebf7dbb4-9a19-473d-9705-b725416b095c") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* thai */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("58d22bcf-16ed-4fac-a6c4-9182072bc7ff") format('woff2');
-  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("2e327397-c19f-4c27-b46e-0dd61ebf5ad9") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("6baf442c-1aba-48d9-842b-b1b57d8a1ba7") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Chakra Petch';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("2ad6b770-81d9-4719-910a-4d278ed070c8") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* latin */
-@font-face {
-  font-family: 'Share Tech Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFcLowEF.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#05020c}
 a{color:#e8fdff}a:hover{color:#ffffff}
@@ -210,7 +56,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #19f0ff;outline-offset:6p
   </div>
 
   <!-- Overhead cables -->
-  <svg aria-hidden="true" width="1920" height="1080" sc-camel-view-box="0 0 1920 1080" style="position: absolute; left: 0; top: 0;">
+  <svg aria-hidden="true" width="1920" height="1080" viewBox="0 0 1920 1080" style="position: absolute; left: 0; top: 0;">
     <g fill="none" stroke="#05020c" stroke-width="2.5">
       <path d="M-20 110 C 500 210, 1100 190, 1940 90"></path>
       <path d="M-20 170 C 420 250, 900 260, 1940 160"></path>
@@ -242,7 +88,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #19f0ff;outline-offset:6p
           <span aria-hidden="true" style="{{s.reflectStyle}}"></span>
           <span aria-hidden="true" style="position: absolute; left: 126px; top: 686px; width: 8px; height: 94px; background: linear-gradient(90deg, #07040d 0%, #2a2238 50%, #07040d 100%);"></span>
           <span aria-hidden="true" style="position: absolute; left: 106px; top: 774px; width: 48px; height: 8px; border-radius: 2px; background: #0b0614;"></span>
-          <button sc-camel-on-click="{{s.pick}}" aria-current="{{s.current}}" aria-label="{{s.name}}" style="{{s.btnStyle}}">
+          <button onClick="{{s.pick}}" aria-current="{{s.current}}" aria-label="{{s.name}}" style="{{s.btnStyle}}">
             <span aria-hidden="true" style="{{s.bloomStyle}}"></span>
             <span style="{{s.bodyStyle}}">
               <span aria-hidden="true" style="{{s.tubeStyle}}"></span>
@@ -280,14 +126,14 @@ button:focus-visible,a:focus-visible{outline:2px solid #19f0ff;outline-offset:6p
   <!-- Top-right -->
   <div style="position: absolute; right: 96px; top: 46px; display: flex; align-items: center; gap: 16px; animation: cy-in 0.8s cubic-bezier(0.16,1,0.3,1) both;">
     <a href="Network.dc.html" aria-label="Ver detalles de red" style="height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-radius: 26px; background: rgba(7,3,20,0.55); border: 1px solid rgba(25,240,255,0.45); text-decoration: none; font-weight: 500; font-size: 18px; letter-spacing: 0.04em; color: #e8fdff;">
-      <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="#19f0ff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#19f0ff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
       [RED WI-FI]
     </a>
     <a href="Settings.dc.html" aria-label="Ajustes" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(7,3,20,0.55); border: 1px solid rgba(25,240,255,0.45); color: #19f0ff;">
-      <svg width="24" height="24" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
     </a>
     <a href="Themes.dc.html" aria-label="Temas" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(7,3,20,0.55); border: 1px solid rgba(255,42,109,0.55); color: #ff6b9a;">
-      <svg width="24" height="24" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
     </a>
     <span style="font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: 0.02em; margin-left: 10px; color: #e8fdff; text-shadow: 0 0 18px rgba(25,240,255,0.6);">{{clock}}</span>
   </div>
@@ -302,12 +148,12 @@ button:focus-visible,a:focus-visible{outline:2px solid #19f0ff;outline-offset:6p
   <div style="position: absolute; right: 96px; width: 620px; bottom: 96px; height: 48px;">
     <span aria-hidden="true" style="position: absolute; left: -30px; right: -30px; top: 50%; height: 1px; background: linear-gradient(90deg, rgba(25,240,255,0) 0%, rgba(25,240,255,0.45) 15%, rgba(255,42,109,0.45) 85%, rgba(255,42,109,0) 100%);"></span>
     <sc-for list="{{ticks}}" as="t" hint-placeholder-count="10">
-      <button sc-camel-on-click="{{t.pick}}" aria-label="{{t.name}}" style="{{t.btnStyle}}"><span style="{{t.markStyle}}"></span></button>
+      <button onClick="{{t.pick}}" aria-label="{{t.name}}" style="{{t.btnStyle}}"><span style="{{t.markStyle}}"></span></button>
     </sc-for>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;momento&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Auto&quot;,&quot;options&quot;:[&quot;Auto&quot;,&quot;Día&quot;,&quot;Noche&quot;],&quot;section&quot;:&quot;Tema&quot;},&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+<script type="text/x-dc" data-dc-script data-props='{"momento":{"editor":"enum","default":"Auto","options":["Auto","Día","Noche"],"section":"Tema"},"$preview":{"width":1920,"height":1080}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -493,6 +339,5 @@ class Component extends DCLogic {
   }
 }
 </script>
-
-
-</body></html>
+</body>
+</html>

@@ -1,30 +1,191 @@
 {
   "v": 3,
-  "createdOnFiles": {"v": 1, "at": "2026-11-08T15:00:00Z"},
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-08T15:00:00Z"
+  },
   "title": "JPTV Launcher",
-  "launch": {"view": "canvas"},
+  "launch": {
+    "view": "canvas"
+  },
   "pages": [],
   "boards": {
-    "Main.dc.html": {"x": 0, "y": 0, "w": 1920, "h": 1080, "title": "Inicio — glass + Galaxia (Tweaks: acento, fuente, wallpaper)", "is_interactive": true},
-    "Network.dc.html": {"x": 2000, "y": 0, "w": 1920, "h": 1080, "title": "Panel de red abierto"},
-    "Edit.dc.html": {"x": 4000, "y": 0, "w": 1920, "h": 1080, "title": "Editar apps — ordenar y ocultar"},
-    "Settings.dc.html": {"x": 6000, "y": 0, "w": 1920, "h": 1080, "title": "Ajustes rápidos — nombre del launcher + Android"},
-    "Customize.dc.html": {"x": 8000, "y": 0, "w": 1920, "h": 1080, "title": "Personalizar tema — acento, fuente, wallpaper", "is_interactive": true},
-    "Themes.dc.html": {"x": 0, "y": 1500, "w": 1920, "h": 1080, "title": "Temas — selector", "is_interactive": true},
-    "ThemePixel.dc.html": {"x": 2000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema Pixel — inicio"},
-    "ThemeTerminal.dc.html": {"x": 4000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema Terminal — inicio", "is_interactive": true},
-    "ThemeCartelera.dc.html": {"x": 6000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema Cartelera — inicio"},
-    "ThemeZen.dc.html": {"x": 8000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema Zen — inicio", "is_interactive": true},
-    "ThemeHUD.dc.html": {"x": 10000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema HUD — inicio", "is_interactive": true},
-    "ThemeVinilo.dc.html": {"x": 12000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema Vinilo — inicio", "is_interactive": true},
-    "ThemeLofi.dc.html": {"x": 14000, "y": 1500, "w": 1920, "h": 1080, "title": "Tema Lo-fi — inicio", "is_interactive": true}
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1920,
+      "h": 1080,
+      "title": "Inicio — glass + Galaxia (Tweaks: acento, fuente, wallpaper)",
+      "is_interactive": true
+    },
+    "Network.dc.html": {
+      "x": 2000,
+      "y": 0,
+      "w": 1920,
+      "h": 1080,
+      "title": "Panel de red abierto"
+    },
+    "Edit.dc.html": {
+      "x": 4000,
+      "y": 0,
+      "w": 1920,
+      "h": 1080,
+      "title": "Editar apps — ordenar y ocultar"
+    },
+    "Settings.dc.html": {
+      "x": 6000,
+      "y": 0,
+      "w": 1920,
+      "h": 1080,
+      "title": "Ajustes rápidos — accesos a Android"
+    },
+    "Customize.dc.html": {
+      "x": 8000,
+      "y": 0,
+      "w": 1920,
+      "h": 1080,
+      "title": "Personalizar tema — nombre, acento, fuente, wallpaper",
+      "is_interactive": true
+    },
+    "Themes.dc.html": {
+      "x": 0,
+      "y": 1500,
+      "w": 1920,
+      "h": 1340,
+      "title": "Temas — selector",
+      "is_interactive": true
+    },
+    "ThemePixel.dc.html": {
+      "x": 2000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Pixel (N64) — inicio",
+      "is_interactive": true
+    },
+    "ThemeTerminal.dc.html": {
+      "x": 4000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Terminal — inicio",
+      "is_interactive": true
+    },
+    "ThemeCartelera.dc.html": {
+      "x": 6000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Cartelera — inicio",
+      "is_interactive": true
+    },
+    "ThemeZen.dc.html": {
+      "x": 8000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Zen — inicio",
+      "is_interactive": true
+    },
+    "ThemeHUD.dc.html": {
+      "x": 10000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema HUD — inicio",
+      "is_interactive": true
+    },
+    "ThemeVinilo.dc.html": {
+      "x": 12000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Vinilo — inicio",
+      "is_interactive": true
+    },
+    "ThemeLofi.dc.html": {
+      "x": 14000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Lo-fi — inicio",
+      "is_interactive": true
+    },
+    "ThemeGotham.dc.html": {
+      "x": 16000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Gotham — inicio",
+      "is_interactive": true
+    },
+    "ThemeMultiverso.dc.html": {
+      "x": 18000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Multiverso — inicio",
+      "is_interactive": true
+    },
+    "ThemeCyberpunk.dc.html": {
+      "x": 20000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Cyberpunk — inicio",
+      "is_interactive": true
+    },
+    "ThemeOceano.dc.html": {
+      "x": 22000,
+      "y": 1500,
+      "w": 1920,
+      "h": 1080,
+      "title": "Tema Océano — inicio",
+      "is_interactive": true
+    }
   },
-  "order": ["Main.dc.html", "Network.dc.html", "Edit.dc.html", "Settings.dc.html", "Customize.dc.html", "Themes.dc.html", "ThemePixel.dc.html", "ThemeTerminal.dc.html", "ThemeCartelera.dc.html", "ThemeZen.dc.html", "ThemeHUD.dc.html", "ThemeVinilo.dc.html", "ThemeLofi.dc.html"],
+  "order": [
+    "Main.dc.html",
+    "Network.dc.html",
+    "Edit.dc.html",
+    "Settings.dc.html",
+    "Customize.dc.html",
+    "Themes.dc.html",
+    "ThemePixel.dc.html",
+    "ThemeTerminal.dc.html",
+    "ThemeCartelera.dc.html",
+    "ThemeZen.dc.html",
+    "ThemeHUD.dc.html",
+    "ThemeVinilo.dc.html",
+    "ThemeLofi.dc.html",
+    "ThemeGotham.dc.html",
+    "ThemeMultiverso.dc.html",
+    "ThemeCyberpunk.dc.html",
+    "ThemeOceano.dc.html"
+  ],
   "notes": {
-    "flow": {"x": 0, "y": -300, "text": "JP-TV — tema por defecto (glass, redondo, animado)", "kind": "title1", "maxW": 9920},
-    "row2": {"x": 0, "y": 1200, "text": "Temas: selector y alternativos aplicados", "kind": "title1", "maxW": 15920}
+    "flow": {
+      "x": 0,
+      "y": -300,
+      "text": "JP-TV — tema por defecto (glass, redondo, animado)",
+      "kind": "title1",
+      "maxW": 9920
+    },
+    "row2": {
+      "x": 0,
+      "y": 1200,
+      "text": "Temas: selector y alternativos aplicados",
+      "kind": "title1",
+      "maxW": 23920
+    }
   },
   "designSystems": [
-    {"title": "JP", "namespace": "jp", "artifact": "https://claude.ai/artifact/1D366ZsrpwiHgdZLV9mTxN", "version": "1794156020-3944", "copiedAt": "2026-11-08T15:00:00Z"}
+    {
+      "title": "JP",
+      "namespace": "jp",
+      "artifact": "https://claude.ai/artifact/1D366ZsrpwiHgdZLV9mTxN",
+      "version": "1794156020-3944",
+      "copiedAt": "2026-11-08T15:00:00Z"
+    }
   ]
 }

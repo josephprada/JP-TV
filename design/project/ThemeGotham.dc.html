@@ -1,52 +1,15 @@
-<!DOCTYPE html>
-<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
-
-
+<!doctype html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
 <title>JP-TV — Tema Gotham</title>
-<script src="f768169d-20b3-4b67-98bd-bc843bd696aa"></script>
+<script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<style>/* latin-ext */
-@font-face {
-  font-family: 'Bebas Neue';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/bebasneue/v16/JTUSjIg69CK48gW7PXoo9Wdhyzbi.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bebas Neue';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("527623bf-ea2f-4b55-92b8-da742242615f") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Special Elite';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/specialelite/v20/XLYgIZbkc4JPUL5CVArUVL0ntn4OSEFt.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Special Elite';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("f3039524-f32d-4d43-b9cf-b3b7d8599105") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#05070b}
 a{color:#e8edf2}a:hover{color:#ffffff}
@@ -123,7 +86,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #ffffff;outline-offset:4p
   <nav aria-label="Apps" style="position: absolute; left: 0; top: 250px; width: 1920px; height: 600px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);">
     <div style="{{trackStyle}}">
       <sc-for list="{{cards}}" as="c" hint-placeholder-count="10">
-        <button sc-camel-on-click="{{c.pick}}" aria-current="{{c.current}}" aria-label="{{c.name}}" style="{{c.btnStyle}}">
+        <button onClick="{{c.pick}}" aria-current="{{c.current}}" aria-label="{{c.name}}" style="{{c.btnStyle}}">
           <span style="{{c.liftStyle}}">
             <span style="position: absolute; left: 50%; top: -9px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff7b7b 0%, #c0272d 55%, #6e0f14 100%); box-shadow: 0 4px 6px rgba(0,0,0,0.5); z-index: 2;"></span>
             <span style="position: absolute; inset: 0; display: flex; flex-direction: column; gap: 14px; padding: 28px 24px 24px; box-sizing: border-box; border-radius: 4px; background: linear-gradient(170deg, #e0d3ae 0%, #cdbd90 100%); color: #2b2314;">
@@ -147,11 +110,11 @@ button:focus-visible,a:focus-visible{outline:2px solid #ffffff;outline-offset:4p
   </nav>
 
   <!-- Arrows -->
-  <button aria-label="App anterior" sc-camel-on-click="{{prev}}" style="position: absolute; left: 64px; top: 520px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(8,11,16,0.7); border: 2px solid rgba(232,237,242,0.5); color: #e8edf2; cursor: pointer;">
-    <svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+  <button aria-label="App anterior" onClick="{{prev}}" style="position: absolute; left: 64px; top: 520px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(8,11,16,0.7); border: 2px solid rgba(232,237,242,0.5); color: #e8edf2; cursor: pointer;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
   </button>
-  <button aria-label="App siguiente" sc-camel-on-click="{{next}}" style="position: absolute; right: 64px; top: 520px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(8,11,16,0.7); border: 2px solid rgba(232,237,242,0.5); color: #e8edf2; cursor: pointer;">
-    <svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+  <button aria-label="App siguiente" onClick="{{next}}" style="position: absolute; right: 64px; top: 520px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(8,11,16,0.7); border: 2px solid rgba(232,237,242,0.5); color: #e8edf2; cursor: pointer;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
   </button>
 
   <!-- Rain -->
@@ -167,14 +130,14 @@ button:focus-visible,a:focus-visible{outline:2px solid #ffffff;outline-offset:4p
   <!-- Top-right -->
   <div style="position: absolute; right: 80px; top: 48px; display: flex; align-items: center; gap: 32px; animation: ng-in 0.8s 0.12s cubic-bezier(0.16,1,0.3,1) both;">
     <a href="Network.dc.html" aria-label="Ver detalles de red" style="min-height: 48px; display: flex; align-items: center; gap: 12px; color: rgba(232,237,242,0.85); text-decoration: none; font-size: 18px; letter-spacing: 0.08em;">
-      <svg width="26" height="26" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
       [RED WI-FI]
     </a>
     <a href="Settings.dc.html" aria-label="Ajustes" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: rgba(232,237,242,0.85);">
-      <svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
     </a>
     <a href="Themes.dc.html" aria-label="Temas" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: rgba(232,237,242,0.85);">
-      <svg width="28" height="28" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg>
     </a>
     <span style="font-family: 'Bebas Neue', sans-serif; font-size: 56px; line-height: 1; letter-spacing: 0.06em;">21:40</span>
   </div>
@@ -182,7 +145,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #ffffff;outline-offset:4p
   <span style="position: absolute; left: 80px; bottom: 44px; font-size: 18px; letter-spacing: 0.2em; color: rgba(232,237,242,0.7);">{{position}}</span>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -324,6 +287,5 @@ class Component extends DCLogic {
   }
 }
 </script>
-
-
-</body></html>
+</body>
+</html>

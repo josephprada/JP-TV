@@ -1,286 +1,15 @@
-<!DOCTYPE html>
-<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
-
-
+<!doctype html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
 <title>JP-TV — Ajustes rápidos</title>
-<script src="91958e3e-9234-4730-addd-cfa01be3e93e"></script>
+<script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<style>/* vietnamese */
-@font-face {
-  font-family: 'Anton';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/anton/v27/1Ptgg87LROyAm3K8-C8QSw.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Anton';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/anton/v27/1Ptgg87LROyAm3K9-C8QSw.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Anton';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("d4769c40-9e59-4330-90a6-eed7c20cdef7") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("ba321ad0-e4ba-4247-895c-383b07f4c4c3") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("2a2689f8-40c3-45e1-8886-1d7917017bd0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("a32c84eb-b202-467f-b383-6f94a3441b19") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("bce0fe4e-adf5-4249-b578-5ee39346ab57") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("a013e343-daf1-428e-b09c-31ba953ff51d") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("ba321ad0-e4ba-4247-895c-383b07f4c4c3") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("2a2689f8-40c3-45e1-8886-1d7917017bd0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("a32c84eb-b202-467f-b383-6f94a3441b19") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("bce0fe4e-adf5-4249-b578-5ee39346ab57") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("a013e343-daf1-428e-b09c-31ba953ff51d") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("ba321ad0-e4ba-4247-895c-383b07f4c4c3") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("2a2689f8-40c3-45e1-8886-1d7917017bd0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("a32c84eb-b202-467f-b383-6f94a3441b19") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("bce0fe4e-adf5-4249-b578-5ee39346ab57") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("a013e343-daf1-428e-b09c-31ba953ff51d") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrodmgPn.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrMdmgPn.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* symbols2 */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFg08vz7ehw.woff2) format('woff2');
-  unicode-range: U+2000-2001, U+2004-2008, U+200A, U+23B8-23BD, U+2500-259F;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrgdmgPn.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrkdmgPn.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("74dee92c-1fef-4cce-96e4-086176d180a5") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrodmgPn.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrMdmgPn.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* symbols2 */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFg08vz7ehw.woff2) format('woff2');
-  unicode-range: U+2000-2001, U+2004-2008, U+200A, U+23B8-23BD, U+2500-259F;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrgdmgPn.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrkdmgPn.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Geist Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("74dee92c-1fef-4cce-96e4-086176d180a5") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#0b0b0c}
 a{color:#f53d31}a:hover{color:#f2efe9}
@@ -318,7 +47,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="Network.dc.html" class="st-card" style="animation: jp-rise 0.7s 0.15s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0"></path><path d="M5.5 12a10 10 0 0 1 13 0"></path><path d="M9 15.5a5 5 0 0 1 6 0"></path><circle cx="12" cy="19" r="1"></circle></svg></span>
         </span>
         <span style="display: flex; align-items: flex-end; gap: 18px;">
           <span role="img" aria-label="Señal 3 de 4" style="display: flex; align-items: flex-end; gap: 6px; height: 34px;">
@@ -333,7 +62,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="#" class="st-card" style="animation: jp-rise 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 7.5l11 9-5.5 4.5v-18l5.5 4.5-11 9"></path></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 7.5l11 9-5.5 4.5v-18l5.5 4.5-11 9"></path></svg></span>
         </span>
         <span style="display: flex; align-items: center; gap: 18px;">
           <span aria-hidden="true" style="position: relative; width: 64px; height: 36px; border-radius: 18px; background: rgba(242,239,233,0.16); flex-shrink: 0;"><span style="position: absolute; left: 4px; top: 4px; width: 28px; height: 28px; border-radius: 50%; background: #f2efe9;"></span></span>
@@ -343,7 +72,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="#" class="st-card" style="animation: jp-rise 0.7s 0.25s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg></span>
         </span>
         <span style="display: flex; gap: 10px; flex-wrap: wrap;">
           <span class="st-chip">720P</span><span class="st-chip">60 HZ</span>
@@ -353,7 +82,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="#" class="st-card" style="animation: jp-rise 0.7s 0.3s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4V5z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4V5z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg></span>
         </span>
         <span style="display: flex; align-items: center; gap: 16px;">
           <span aria-hidden="true" style="position: relative; flex-grow: 1; height: 12px; border-radius: 6px; background: rgba(242,239,233,0.14);"><span style="position: absolute; left: 0; top: 0; bottom: 0; width: 60%; border-radius: 6px; background: #e63329; box-shadow: 0 0 18px rgba(230,51,41,0.5);"></span><span style="position: absolute; left: 60%; top: -7px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: #f2efe9;"></span></span>
@@ -363,7 +92,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="Edit.dc.html" class="st-card" style="animation: jp-rise 0.7s 0.35s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"></rect></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"></rect></svg></span>
         </span>
         <span aria-hidden="true" style="display: flex; align-items: center; gap: 10px;">
           <span style="width: 38px; height: 38px; border-radius: 12px; background: #dc2626;"></span>
@@ -377,7 +106,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="#" class="st-card" style="animation: jp-rise 0.7s 0.4s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l2.4-8A2 2 0 0 1 8.3 5.5h7.4a2 2 0 0 1 1.9 1.5L20 15"></path><rect x="4" y="15" width="16" height="5" rx="2"></rect><circle cx="16.5" cy="17.5" r="0.7"></circle></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l2.4-8A2 2 0 0 1 8.3 5.5h7.4a2 2 0 0 1 1.9 1.5L20 15"></path><rect x="4" y="15" width="16" height="5" rx="2"></rect><circle cx="16.5" cy="17.5" r="0.7"></circle></svg></span>
         </span>
         <span style="display: flex; flex-direction: column; gap: 12px;">
           <span aria-hidden="true" style="display: block; height: 14px; border-radius: 7px; background: rgba(242,239,233,0.14); overflow: hidden;"><span style="display: block; width: 68%; height: 100%; border-radius: 7px; background: linear-gradient(90deg, #e63329, #ff8a1f);"></span></span>
@@ -387,7 +116,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="#" class="st-card" style="animation: jp-rise 0.7s 0.45s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
         </span>
         <span style="display: flex; align-items: baseline; gap: 16px;">
           <span style="font-family: 'Anton', sans-serif; font-size: 52px; line-height: 1; letter-spacing: -0.01em;">21:40</span>
@@ -397,7 +126,7 @@ a{color:#f53d31}a:hover{color:#f2efe9}
 
       <a href="Customize.dc.html" class="st-card" style="animation: jp-rise 0.7s 0.5s cubic-bezier(0.16,1,0.3,1) both;">
         <span style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="st-ico"><svg width="30" height="30" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg></span>
+          <span class="st-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"></circle><circle cx="17.5" cy="10.5" r="1.5"></circle><circle cx="8.5" cy="7.5" r="1.5"></circle><circle cx="6.5" cy="12.5" r="1.5"></circle><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3A4.7 4.7 0 0 0 22 10.7C22 5.9 17.5 2 12 2z"></path></svg></span>
         </span>
         <span aria-hidden="true" style="display: flex; align-items: center; gap: 14px;">
           <span style="width: 40px; height: 40px; border-radius: 50%; background: #e63329; box-shadow: 0 0 0 3px #0b0b0c, 0 0 0 5px #f2efe9;"></span>
@@ -416,13 +145,12 @@ a{color:#f53d31}a:hover{color:#f2efe9}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;JP-TV&quot;},&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
 class Component extends DCLogic {
   renderVals() {
     return { brand: this.props.brand ?? 'JP-TV' };
   }
 }
 </script>
-
-
-</body></html>
+</body>
+</html>

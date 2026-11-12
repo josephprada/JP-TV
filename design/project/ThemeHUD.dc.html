@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="es"><head><style data-dc-design-system-vars="">@layer{:root{--ink:#0b0b0c;--ink-band:#121214;--ink-raised:#1a1a1d;--paper:#f2efe9;--paper-band:#e7e3db;--paper-raised:#f8f6f2;--accent:#e63329;--accent-dim:#a8231c;--accent-lift:#f53d31;--bg:#0b0b0c;--bg-band:#121214;--bg-raised:#1a1a1d;--fg:#f2efe9;--muted:#f2efe9c7;--faint:#f2efe980;--line:#f2efe924;--line-strong:#f2efe966;--accent-text:#f53d31;--accent-solid-bg:#e63329;--accent-solid-fg:#0b0b0c;--shell-gutter:20px;--shell-gutter-md:40px;--shell-max:1344px;--btn-pad-y:15px;--btn-pad-x:24px;--btn-gap:10px;--field-pad-y:10px;--focus-offset:3px;--radius-none:0;--border-hairline:1px;--border-focus:2px;--grain-opacity:0.17;--disabled-opacity:0.5;--font-display:"Anton", "Arial Narrow", sans-serif;--font-sans:"Geist Variable", ui-sans-serif, system-ui, sans-serif;--font-mono:"Geist Mono Variable", ui-monospace, monospace;--text-hero:400 120px/1.02 var(--font-display);--text-section-title:400 84px/1.12 var(--font-display);--text-figure:400 60px/1.12 var(--font-display);--text-plan:400 48px/1.12 var(--font-display);--text-card-title:400 38px/1.12 var(--font-display);--text-step-title:400 32px/1.12 var(--font-display);--text-lead:400 18px/1.65 var(--font-sans);--text-list-item:500 19px/1.4 var(--font-sans);--text-field:400 17px/1.5 var(--font-sans);--text-body:400 15px/1.65 var(--font-sans);--text-small:400 13px/1.5 var(--font-sans);--text-label:400 12px/1.4 var(--font-mono);--text-eyebrow:400 12px/1.4 var(--font-mono);--text-micro:400 11px/1.4 var(--font-mono);}}</style>
-
-
+<!doctype html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
 <title>JP-TV — Tema HUD</title>
-<script src="3ff2f9a0-735b-4437-93bd-20d572ac8122"></script>
+<script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
@@ -45,7 +44,7 @@ a{color:#4de8ff}a:hover{color:#ffffff}
 
   <!-- App wheel -->
   <sc-for list="{{nodes}}" as="n" hint-placeholder-count="8">
-    <button sc-camel-on-click="{{n.pick}}" style="{{n.style}}">{{n.name}}</button>
+    <button onClick="{{n.pick}}" style="{{n.style}}">{{n.name}}</button>
   </sc-for>
   <div style="position: absolute; left: 960px; top: 92px; transform: translateX(-50%); font-family: 'Orbitron', sans-serif; font-size: 16px; letter-spacing: 0.4em; color: #ffb547;">▼ OBJETIVO: {{selected}}</div>
 
@@ -67,7 +66,7 @@ a{color:#4de8ff}a:hover{color:#ffffff}
   </a>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;JP-TV&quot;},&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}">
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"text","default":"JP-TV"},"$preview":{"width":1920,"height":1080}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -94,6 +93,5 @@ class Component extends DCLogic {
   }
 }
 </script>
-
-
-</body></html>
+</body>
+</html>
