@@ -1,0 +1,47 @@
+# Hand-written baseline profile (no device available to run the generator).
+# It keeps the classes and methods of the cold-start path precompiled: process start -> home drawn.
+# Compose, lifecycle, DataStore and coroutines ship their own profiles through profileinstaller.
+# Regenerate with a Macrobenchmark BaselineProfileRule once the TV is reachable.
+
+# Entry points
+HSPLco/jp/tv/JpTvApp;->**(**)**
+HSPLco/jp/tv/AppContainer;->**(**)**
+HSPLco/jp/tv/MainActivity**;->**(**)**
+Lco/jp/tv/JpTvApp;
+Lco/jp/tv/AppContainer**;
+Lco/jp/tv/MainActivity**;
+
+# Core design: tokens, fonts, glass, entrance motion
+HSPLco/jp/tv/core/**;->**(**)**
+Lco/jp/tv/core/**;
+
+# State: view model, apps, preferences, network
+HSPLco/jp/tv/home/**;->**(**)**
+Lco/jp/tv/home/**;
+HSPLco/jp/tv/apps/**;->**(**)**
+Lco/jp/tv/apps/**;
+HSPLco/jp/tv/preferences/**;->**(**)**
+Lco/jp/tv/preferences/**;
+HSPLco/jp/tv/network/**;->**(**)**
+Lco/jp/tv/network/**;
+
+# Default theme and what it shares with every theme
+HSPLco/jp/tv/themes/ThemeRegistry**;->**(**)**
+Lco/jp/tv/themes/ThemeRegistry**;
+Lco/jp/tv/themes/LauncherTheme;
+HSPLco/jp/tv/themes/shared/**;->**(**)**
+Lco/jp/tv/themes/shared/**;
+HSPLco/jp/tv/themes/jptv/**;->**(**)**
+Lco/jp/tv/themes/jptv/**;
+
+# Wallpapers drawn on the first frame (galaxy is the default, embers the other cheap one)
+HSPLco/jp/tv/wallpaper/*;->**(**)**
+Lco/jp/tv/wallpaper/*;
+HSPLco/jp/tv/wallpaper/galaxy/**;->**(**)**
+Lco/jp/tv/wallpaper/galaxy/**;
+HSPLco/jp/tv/wallpaper/embers/**;->**(**)**
+Lco/jp/tv/wallpaper/embers/**;
+
+# Panels opened right after start (Settings / Network are the common first taps)
+HSPLco/jp/tv/settings/**;->**(**)**
+Lco/jp/tv/settings/**;
