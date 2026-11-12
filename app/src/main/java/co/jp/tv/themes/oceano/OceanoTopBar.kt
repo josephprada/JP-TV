@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -23,6 +24,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkName
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
@@ -78,7 +81,7 @@ internal fun OceanoTopRight(
         horizontalArrangement = Arrangement.spacedBy(OceanoDesign.dp(32f)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        NetworkLink(state.network, shadow, actions::openNetwork)
+        NetworkLink(state.network, shadow, actions::openNetwork, focus)
         IconButton(
             icon = JpIcons.Settings,
             description = stringResource(R.string.cd_settings),
@@ -105,19 +108,17 @@ internal fun OceanoTopRight(
 }
 
 @Composable
-private fun NetworkLink(network: NetworkStatus, shadow: Shadow, onClick: () -> Unit) {
-    val label = when {
-        network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline)
-        network.ssid != null -> network.ssid
-        network.transport == NetworkStatus.Transport.WIFI -> stringResource(R.string.network_wifi)
-        network.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.network_ethernet)
-        else -> stringResource(R.string.network_generic)
-    }
+private fun NetworkLink(network: NetworkStatus, shadow: Shadow, onClick: () -> Unit, focus: ThemeControlFocus) {
+    val label = networkName(network)
     val description = stringResource(R.string.cd_network)
     Row(
         Modifier
             .height(OceanoDesign.dp(48f))
             .semantics { contentDescription = description }
+            .networkControlTarget(focus)
+            .background(if (focus.onNetwork) OceanoPalette.ControlFocus else Color.Transparent)
+            .border(OceanoDesign.dp(3f), if (focus.onNetwork) OceanoPalette.White else Color.Transparent)
+            .padding(horizontal = OceanoDesign.dp(8f))
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },

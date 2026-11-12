@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.core.design.bakeToBitmap
 import kotlin.math.ceil
 import co.jp.tv.R
@@ -127,8 +128,8 @@ object ViniloTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionUp },
                     toList = { it == Key.DirectionDown },
-                    toThemes = { it == Key.DirectionRight },
-                    fromThemes = { it == Key.DirectionLeft },
+                    forward = { it == Key.DirectionRight },
+                    backward = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
@@ -281,14 +282,11 @@ private fun ViniloHeader(
         )
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
             val ms = network.routerLatencyMs ?: network.internetLatencyMs
-            BasicText(
-                "${networkName(network).uppercase()}${ms?.let { " · ${it} MS" }.orEmpty()}",
-                modifier = Modifier.clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = actions::openNetwork,
-                ),
-                style = TextStyle(color = ViniloPalette.Cream, fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.16.em),
+            HeaderPill(
+                text = "${networkName(network).uppercase()}${ms?.let { " · ${it} MS" }.orEmpty()}",
+                focused = focus.onNetwork,
+                onClick = actions::openNetwork,
+                modifier = Modifier.networkControlTarget(focus),
             )
             WeatherBadge(
                 weather = weather,

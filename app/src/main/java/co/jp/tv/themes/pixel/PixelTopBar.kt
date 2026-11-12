@@ -29,6 +29,8 @@ import co.jp.tv.R
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.network.domain.NetworkStatus
+import co.jp.tv.themes.shared.controlOutline
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
@@ -67,7 +69,7 @@ internal fun PixelTopBar(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        NetworkPill(network, actions)
+        NetworkPill(network, actions, focus)
         PixelRoundButton(
             PixelIconKind.Gear,
             Modifier
@@ -113,16 +115,24 @@ internal fun PixelTopBar(
 }
 
 @Composable
-private fun NetworkPill(network: NetworkStatus, actions: HomeActions) {
+private fun NetworkPill(network: NetworkStatus, actions: HomeActions, focus: ThemeControlFocus) {
     val name = networkName(network).uppercase()
     val ms = network.routerLatencyMs ?: network.internetLatencyMs
     val text = if (ms != null) "$name · $ms MS" else name
+    val description = stringResource(R.string.cd_network)
     Row(
         Modifier
             .height(32.dp)
+            .semantics { contentDescription = description }
+            .networkControlTarget(focus)
+            .controlOutline(focus.onNetwork, PixelPalette.Gold, corner = 16.dp, outset = 2.dp)
             .background(PixelPalette.Chip, CircleShape)
             .border(1.dp, PixelPalette.ChipBorder, CircleShape)
-            .pixelTap(actions::openNetwork)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = actions::openNetwork,
+            )
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,

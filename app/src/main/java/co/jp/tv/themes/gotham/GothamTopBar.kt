@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.network.domain.NetworkStatus
@@ -64,7 +65,13 @@ internal fun GothamTopBar(
             Modifier
                 .heightIn(min = 24.dp)
                 .semantics { contentDescription = networkDescription }
-                .pointerOnlyClick(actions::openNetwork),
+                .focusOutline(visible = focus.onNetwork)
+                .networkControlTarget(focus)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = actions::openNetwork,
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {

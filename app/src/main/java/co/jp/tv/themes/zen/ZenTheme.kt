@@ -79,6 +79,8 @@ import co.jp.tv.weather.ui.WeatherBadge
 import co.jp.tv.themes.jptv.JpIcon
 import co.jp.tv.themes.jptv.JpIconView
 import co.jp.tv.themes.jptv.JpIcons
+import co.jp.tv.themes.shared.controlOutline
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.rememberAppIcon
@@ -140,8 +142,8 @@ object ZenTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionRight || (it == Key.DirectionUp && state.focusedIndex <= 0) },
                     toList = { it == Key.DirectionDown || it == Key.DirectionLeft },
-                    toThemes = { it == Key.DirectionRight },
-                    fromThemes = { it == Key.DirectionLeft },
+                    forward = { it == Key.DirectionRight },
+                    backward = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
@@ -364,6 +366,8 @@ private fun ZenTopRight(
             Modifier
                 .height(24.dp)
                 .semantics { contentDescription = networkLabel }
+                .networkControlTarget(focus)
+                .controlOutline(focus.onNetwork, ZenPalette.FocusRing, corner = 6.dp, outset = 4.dp, width = 1.dp)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },

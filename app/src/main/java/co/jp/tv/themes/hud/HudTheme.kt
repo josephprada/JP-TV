@@ -60,8 +60,13 @@ object HudTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionUp },
                     toList = { it == Key.DirectionLeft || it == Key.DirectionDown },
-                    toThemes = { it == Key.DirectionDown },
-                    fromThemes = { it == Key.DirectionUp },
+                    // Telemetry (top left) -> unit/settings (top right) -> themes (under it).
+                    forward = {
+                        (focus.onNetwork && it == Key.DirectionRight) || (focus.onControl && it == Key.DirectionDown)
+                    },
+                    backward = {
+                        (focus.onControl && it == Key.DirectionLeft) || (focus.onThemes && it == Key.DirectionUp)
+                    },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
@@ -79,7 +84,7 @@ object HudTheme : LauncherTheme {
                     .padding(top = 46.dp),
                 style = TextStyle(color = HudPalette.Amber, fontSize = 8.sp, fontFamily = JpFonts.Orbitron, letterSpacing = 0.4.em),
             )
-            HudTelemetryPanel(state.network, actions, Modifier.align(Alignment.TopStart).padding(28.dp))
+            HudTelemetryPanel(state.network, actions, focus, Modifier.align(Alignment.TopStart).padding(28.dp))
             HudUnitPanel(
                 state.brand,
                 state.apps.size,

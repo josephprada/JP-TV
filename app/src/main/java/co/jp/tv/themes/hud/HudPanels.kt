@@ -32,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.network.domain.NetworkStatus
@@ -95,14 +96,19 @@ private fun HudRow(label: String, value: String, color: Color = HudPalette.Text)
 
 /** Top-left panel: signal, ping and IP. Tapping it opens the network details. */
 @Composable
-internal fun HudTelemetryPanel(network: NetworkStatus, actions: HomeActions, modifier: Modifier = Modifier) {
+internal fun HudTelemetryPanel(
+    network: NetworkStatus,
+    actions: HomeActions,
+    focus: ThemeControlFocus,
+    modifier: Modifier = Modifier,
+) {
     val signal = network.signalLevel.coerceIn(0, 4) * 25
     val ms = network.routerLatencyMs ?: network.internetLatencyMs
     HudPanelFrame(
         shape = TelemetryShape,
-        borderColor = HudPalette.PanelBorder,
+        borderColor = if (focus.onNetwork) HudPalette.Cyan else HudPalette.PanelBorder,
         modifier = modifier
-            .focusProperties { canFocus = false }
+            .networkControlTarget(focus)
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },

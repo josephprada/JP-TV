@@ -37,6 +37,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
@@ -93,8 +94,8 @@ object TerminalTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionLeft || (it == Key.DirectionUp && state.focusedIndex <= 0) },
                     toList = { it == Key.DirectionDown },
-                    toThemes = { it == Key.DirectionRight },
-                    fromThemes = { it == Key.DirectionLeft },
+                    forward = { it == Key.DirectionRight },
+                    backward = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
@@ -153,7 +154,18 @@ private fun TerminalStatusBar(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             BasicText("[${brand.lowercase()}] 0:apps* 1:", style = bar)
-            BasicText("red", modifier = Modifier.terminalTap(actions::openNetwork), style = bar)
+            BasicText(
+                "red",
+                modifier = Modifier
+                    .networkControlTarget(focus)
+                    .background(if (focus.onNetwork) TerminalPalette.BarFg else TerminalPalette.Green)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = actions::openNetwork,
+                    ),
+                style = bar.copy(color = if (focus.onNetwork) TerminalPalette.Green else TerminalPalette.BarFg),
+            )
             BasicText(" 2:", style = bar)
             BasicText(
                 stringResource(R.string.cd_settings).lowercase(),

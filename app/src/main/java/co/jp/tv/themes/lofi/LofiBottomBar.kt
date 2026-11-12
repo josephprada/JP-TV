@@ -19,6 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkName
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.network.domain.NetworkRules
@@ -37,7 +39,7 @@ internal fun LofiBottomBar(
     modifier: Modifier = Modifier,
 ) {
     val ms = NetworkRules.formatLatency(network.routerLatencyMs ?: network.internetLatencyMs)
-    val net = (network.ssid ?: stringResource(R.string.network_wifi)).uppercase()
+    val net = networkName(network).uppercase()
     val style = TextStyle(
         color = LofiPalette.Paper,
         fontSize = 10.sp,
@@ -51,7 +53,13 @@ internal fun LofiBottomBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        BasicText(stringResource(R.string.theme_lofi_status_line, net, ms), style = style)
+        LofiPill(
+            text = stringResource(R.string.theme_lofi_status_line, net, ms),
+            focused = focus.onNetwork,
+            onClick = actions::openNetwork,
+            style = style,
+            modifier = Modifier.networkControlTarget(focus),
+        )
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             LofiPill(
                 text = stringResource(R.string.cd_settings).lowercase(),

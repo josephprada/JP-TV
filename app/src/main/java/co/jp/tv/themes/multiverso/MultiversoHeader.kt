@@ -27,6 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.themes.shared.networkName
+import co.jp.tv.themes.shared.controlOutline
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
@@ -78,7 +81,7 @@ internal fun MultiversoHeader(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            NetworkLink(state.network, actions)
+            NetworkLink(state.network, actions, focus)
             HeaderIcon(
                 icon = SettingsIcon,
                 description = stringResource(R.string.cd_settings),
@@ -118,19 +121,15 @@ internal fun MultiversoHeader(
 
 /** Wi-Fi glyph and the network name; the artboard's "[RED WI-FI]" placeholder shows the real name. */
 @Composable
-private fun NetworkLink(network: NetworkStatus, actions: HomeActions) {
-    val name = when {
-        network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline)
-        network.ssid != null -> network.ssid
-        network.transport == NetworkStatus.Transport.WIFI -> stringResource(R.string.network_wifi)
-        network.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.network_ethernet)
-        else -> stringResource(R.string.network_generic)
-    }
+private fun NetworkLink(network: NetworkStatus, actions: HomeActions, focus: ThemeControlFocus) {
+    val name = networkName(network)
     val description = stringResource(R.string.cd_network)
     Row(
         modifier = Modifier
             .heightIn(min = 24.dp)
             .semantics { contentDescription = description }
+            .networkControlTarget(focus)
+            .controlOutline(focus.onNetwork, MultiversoPalette.White, corner = 6.dp, outset = 4.dp, width = 1.dp)
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },

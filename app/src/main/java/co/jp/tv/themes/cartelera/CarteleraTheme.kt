@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
@@ -137,8 +138,8 @@ object CarteleraTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionDown },
                     toList = { it == Key.DirectionUp },
-                    toThemes = { it == Key.DirectionRight },
-                    fromThemes = { it == Key.DirectionLeft },
+                    forward = { it == Key.DirectionRight },
+                    backward = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
@@ -689,14 +690,15 @@ private fun CarteleraFooter(
                 stringResource(R.string.cartelera_box_office, networkName(network).uppercase())
             },
             modifier = Modifier
-                .dashedPill { false }
+                .networkControlTarget(focus)
+                .dashedPill { focus.onNetwork }
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = actions::openNetwork,
                 )
                 .padding(horizontal = 12.dp, vertical = 7.dp),
-            style = ticket,
+            style = ticket.copy(color = if (focus.onNetwork) CarteleraPalette.BulbOn else CarteleraPalette.Gold),
         )
         BasicText(
             stringResource(R.string.cartelera_now_showing, nowShowing.uppercase()),

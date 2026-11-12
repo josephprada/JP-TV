@@ -69,8 +69,8 @@ object CyberpunkTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionUp },
                     toList = { it == Key.DirectionDown },
-                    toThemes = { it == Key.DirectionRight },
-                    fromThemes = { it == Key.DirectionLeft },
+                    forward = { it == Key.DirectionRight },
+                    backward = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {

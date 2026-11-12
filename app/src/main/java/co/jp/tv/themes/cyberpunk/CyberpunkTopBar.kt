@@ -36,6 +36,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import co.jp.tv.themes.shared.networkName
+import co.jp.tv.themes.shared.controlOutline
+import co.jp.tv.themes.shared.networkControlTarget
 import co.jp.tv.R
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.util.ClockFormat
@@ -71,7 +74,7 @@ internal fun CyberpunkTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dpx),
     ) {
-        NetworkPill(state.network, actions::openNetwork)
+        NetworkPill(state.network, actions::openNetwork, focus)
         RoundControl(
             icon = JpIcons.Settings,
             description = stringResource(R.string.cd_settings),
@@ -119,23 +122,19 @@ internal fun CyberpunkTopBar(
 }
 
 @Composable
-private fun NetworkPill(network: NetworkStatus, onClick: () -> Unit) {
-    val title = when {
-        network.state == NetworkStatus.State.DISCONNECTED -> stringResource(R.string.network_offline)
-        network.ssid != null -> network.ssid
-        network.transport == NetworkStatus.Transport.WIFI -> stringResource(R.string.network_wifi)
-        network.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.network_ethernet)
-        else -> stringResource(R.string.network_generic)
-    }
+private fun NetworkPill(network: NetworkStatus, onClick: () -> Unit, focus: ThemeControlFocus) {
+    val title = networkName(network)
     val description = stringResource(R.string.cd_network)
     val shape = RoundedCornerShape(26.dpx)
     Row(
         Modifier
             .height(52.dpx)
+            .controlOutline(focus.onNetwork, CyberpunkPalette.Cyan, corner = 26.dpx, outset = 6.dpx, width = 2.dpx)
             .clip(shape)
             .background(CyberpunkPalette.PillFill)
             .border(1.dpx, CyberpunkPalette.Cyan.copy(alpha = 0.45f), shape)
             .semantics { contentDescription = description }
+            .networkControlTarget(focus)
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
