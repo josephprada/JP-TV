@@ -43,23 +43,7 @@ internal fun MultiversoTrack(
         label = "multiversoTrack",
     )
     val center by remember { derivedStateOf { position.value.roundToInt() } }
-    Box(
-        modifier
-            .fillMaxSize()
-            .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-            .drawWithCache {
-                val mask = Brush.horizontalGradient(
-                    0f to Color.Transparent,
-                    0.1f to Color.Black,
-                    0.9f to Color.Black,
-                    1f to Color.Transparent,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(mask, blendMode = BlendMode.DstIn)
-                }
-            },
-    ) {
+    Box(modifier.fillMaxSize()) {
         val first = (center - VisibleReach).coerceAtLeast(0)
         val last = (center + VisibleReach).coerceAtMost(apps.lastIndex)
         for (i in first..last) {
@@ -71,9 +55,14 @@ internal fun MultiversoTrack(
                     neighbor = abs(i - focusedIndex) == 1,
                     frame = frame,
                     // Node box left edge: screen center (480 dp) minus half the box (175 dp).
-                    modifier = Modifier.offset {
-                        IntOffset((305f + (i - position.value) * 150f).dp.roundToPx(), 0)
-                    },
+                    modifier = Modifier
+                        .offset { IntOffset((305f + (i - position.value) * 150f).dp.roundToPx(), 0) }
+                        // The artboard masks the outer 10 % of the screen; an offscreen mask layer is too costly
+                        // on the TV, so each node fades by how close its centre is to the edge instead.
+                        .graphicsLayer {
+                            val centre = 960f + (i - position.value) * 300f
+                            alpha = (minOf(centre, 1920f - centre) / EdgeFadePx).coerceIn(0f, 1f)
+                        },
                 )
             }
         }
@@ -81,4 +70,7 @@ internal fun MultiversoTrack(
 }
 
 /** Nodes composed on each side of the track position; a node and its streak reach about 4.4 slots. */
-private const val VisibleReach = 5
+private const val VisibleReach = 4
+
+/** Width of the edge fade on each side: 10 % of the 1920 px artboard. */
+private const val EdgeFadePx = 192f

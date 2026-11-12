@@ -73,12 +73,20 @@ internal fun MultiversoNode(
     val initial = remember(label) { firstGlyph(label) }
 
     Box(modifier.size(350.dp, 540.dp)) {
-        Canvas(Modifier.fillMaxSize()) {
+        // Two layers: the branch and the orb only change on focus, so a clock tick re-records just the
+        // light motion (flow, ripples, spinning ring) instead of every path and gradient of the node.
+        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
+            val p = on.value
+            scale(density / 2f, pivot = Offset.Zero) {
+                drawBranch(branch, res, p, coreAlpha.value, selected)
+                drawNexus(res, tint, p, selected)
+            }
+        }
+        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val p = on.value
             val t = frame.longValue
             scale(density / 2f, pivot = Offset.Zero) {
-                drawBranch(branch, res, p, coreAlpha.value, selected, t)
-                drawNexus(res, tint, p, selected, t)
+                drawMotion(branch, tint, p, selected, t)
             }
         }
         Box(
@@ -151,7 +159,6 @@ private fun DrawScope.drawBranch(
     p: Float,
     coreAlpha: Float,
     selected: Boolean,
-    t: Long,
 ) {
     val tint = res.tint
     NodeShared.halo26.draw(this, branch.up, tint, 0.55f * p)
@@ -168,13 +175,32 @@ private fun DrawScope.drawBranch(
     translate(2f, 2f) {
         NodeShared.twigFringe.draw(this, branch.twigs, MultiversoPalette.Fringe, 0.55f * p)
     }
+}
+
+/** The moving light: the pulse along the branch, two ripples and the spinning dashed ring. */
+private fun DrawScope.drawMotion(branch: MultiversoGeometry.Branch, tint: Color, p: Float, selected: Boolean, t: Long) {
     if (p > 0.004f) {
         NodeShared.flow.at(t, MultiversoMotion.BranchFlowMs).draw(this, branch.up, MultiversoPalette.White, p)
+    }
+    val c = MultiversoGeometry.NodeCenter
+    if (selected) {
+        drawRipple(tint, loopProgress(t, MultiversoMotion.RippleMs))
+        drawRipple(MultiversoPalette.RippleWhite, loopProgress(t, MultiversoMotion.RippleMs, MultiversoMotion.RippleDelayMs))
+    }
+    val spinMs = if (selected) MultiversoMotion.RingSpinOnMs else MultiversoMotion.RingSpinOffMs
+    rotate(360f * loopProgress(t, spinMs), pivot = c) {
+        drawCircle(
+            MultiversoPalette.White,
+            radius = lerp(74f, 196f, p) / 2f,
+            center = c,
+            alpha = if (selected) 0.5f else 0.22f,
+            style = NodeShared.ring,
+        )
     }
 }
 
 /** Button layers: bloom, soft streak, streak, two ripples, dashed ring, orb. */
-private fun DrawScope.drawNexus(res: NodeResources, tint: Color, p: Float, selected: Boolean, t: Long) {
+private fun DrawScope.drawNexus(res: NodeResources, tint: Color, p: Float, selected: Boolean) {
     val c = MultiversoGeometry.NodeCenter
     drawEllipseGradient(res.bloom, c, BloomRadius, BloomRadius, alpha = p)
 
@@ -189,22 +215,6 @@ private fun DrawScope.drawNexus(res: NodeResources, tint: Color, p: Float, selec
             )
         }
         drawRect(res.streak, topLeft = Offset(c.x - 650f, c.y - 1f), size = Size(1300f, 2f), alpha = 0.9f * p)
-    }
-
-    if (selected) {
-        drawRipple(tint, loopProgress(t, MultiversoMotion.RippleMs))
-        drawRipple(MultiversoPalette.RippleWhite, loopProgress(t, MultiversoMotion.RippleMs, MultiversoMotion.RippleDelayMs))
-    }
-
-    val spinMs = if (selected) MultiversoMotion.RingSpinOnMs else MultiversoMotion.RingSpinOffMs
-    rotate(360f * loopProgress(t, spinMs), pivot = c) {
-        drawCircle(
-            MultiversoPalette.White,
-            radius = lerp(74f, 196f, p) / 2f,
-            center = c,
-            alpha = if (selected) 0.5f else 0.22f,
-            style = NodeShared.ring,
-        )
     }
 
     val r = lerp(52f, 132f, p) / 2f

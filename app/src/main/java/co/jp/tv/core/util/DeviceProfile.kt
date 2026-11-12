@@ -2,6 +2,9 @@ package co.jp.tv.core.util
 
 import android.app.ActivityManager
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 
 /** Detects weak hardware so effects can scale down (frame cap, particle counts). */
 object DeviceProfile {
@@ -22,4 +25,11 @@ object DeviceProfile {
 
     /** Soft orb glow under the galaxy; skipped on low-end to save fill rate. */
     fun galaxyOrbsEnabled(context: Context): Boolean = !isLowEnd(context)
+}
+
+/** True on low-end boxes; themes use it to drop effects that cost fill rate. Computed once per composition. */
+@Composable
+fun rememberLowEnd(): Boolean {
+    val context = LocalContext.current
+    return remember { DeviceProfile.isLowEnd(context) }
 }

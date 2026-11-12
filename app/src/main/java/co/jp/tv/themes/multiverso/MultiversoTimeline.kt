@@ -1,6 +1,8 @@
 package co.jp.tv.themes.multiverso
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -22,7 +24,8 @@ internal fun MultiversoTimeline(frame: LongState, modifier: Modifier = Modifier)
     val strands = remember { MultiversoGeometry.strands() }
     val res = remember { TimelineResources() }
     Box(modifier.fillMaxSize()) {
-        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
+        // Static: baked once into a band around y = 600 (haze, glow and strands all stay within +-270 design px).
+        Spacer(Modifier.fillMaxSize().bakedLayer(topFraction = 330f / 1080f, bottomFraction = 870f / 1080f) {
             scale(density / 2f, pivot = Offset.Zero) {
                 drawEllipseGradient(res.haze, Offset(960f, 600f), 1160f * Sqrt2, 130f * Sqrt2)
                 val trunk = strands[0]
@@ -36,7 +39,7 @@ internal fun MultiversoTimeline(frame: LongState, modifier: Modifier = Modifier)
                     res.strands[k].draw(this, strands[k], MultiversoPalette.White, MultiversoGeometry.StrandAlphas[k])
                 }
             }
-        }
+        })
         Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val t = frame.longValue
             scale(density / 2f, pivot = Offset.Zero) {
