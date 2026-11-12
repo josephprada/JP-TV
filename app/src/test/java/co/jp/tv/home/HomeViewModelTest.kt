@@ -9,6 +9,11 @@ import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.preferences.domain.ConfigStore
 import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.weather.domain.PlaceSearch
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.domain.WeatherCondition
+import co.jp.tv.weather.domain.WeatherPlace
+import co.jp.tv.weather.domain.WeatherRepository
 import java.time.LocalDateTime
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -78,7 +83,12 @@ class HomeViewModelTest {
         ticks: Flow<LocalDateTime> = flowOf(t0),
         monitor: FakeMonitor = FakeMonitor(),
         store: FakeConfigStore = FakeConfigStore(),
-    ) = HomeViewModel(catalog, ticks, ownPackage = own, monitor = monitor, initialNow = t0, configStore = store)
+        weather: WeatherRepository = WeatherRepository.None,
+        places: PlaceSearch = PlaceSearch.None,
+    ) = HomeViewModel(
+        catalog, ticks, ownPackage = own, monitor = monitor, initialNow = t0, configStore = store,
+        weatherRepository = weather, placeSearch = places,
+    )
 
     @Test
     fun `state exposes arranged apps without our own package`() = runTest {
@@ -397,5 +407,146 @@ class HomeViewModelTest {
         assertEquals(Screen.Home, vm.screen.value)
         vm.openEditApps(null)
         assertEquals(null, vm.editFocusPackage)
+    }
+
+    private class FakeWeather : WeatherRepository {
+        val asked = mutableListOf<WeatherPlace>()
+        val saved = mutableMapOf<WeatherPlace, Weather>()
+        var live: Weather? = null
+        override suspend fun cached(place: WeatherPlace): Weather? = saved[place]
+        override suspend fun current(place: WeatherPlace, now: LocalDateTime): Weather? {
+            asked += place
+            return live?.copy(placeName = place.name) ?: saved[place]
+        }
+    }
+
+    private fun reading(at: LocalDateTime = t0, condition: WeatherCondition = WeatherCondition.Rain) =
+        Weather(condition, 24, isDay = false, updatedAt = at, placeName = "Bucaramanga")
+
+    @Test
+    fun `state has no weather until the repository answers`() = runTest {
+        vm(FakeCatalog(apps)).state.test {
+            assertEquals(null, expectMostRecentItem().weather)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `state carries the weather for the saved place`() = runTest {
+        val giron = WeatherPlace.QuickPicks.first { it.name == "Girón" }
+        val weather = FakeWeather().apply { live = reading() }
+        val store = FakeConfigStore(LauncherConfig(weatherPlace = giron))
+        vm(FakeCatalog(apps), store = store, weather = weather).state.test {
+            val s = expectMostRecentItem().let { if (it.weather == null) awaitItem() else it }
+            assertEquals(WeatherCondition.Rain, s.weather?.condition)
+            assertEquals("Girón", s.weather?.placeName)
+            assertEquals(listOf(giron), weather.asked)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `with nothing saved the weather is read for Bucaramanga`() = runTest {
+        val weather = FakeWeather().apply { live = reading() }
+        vm(FakeCatalog(apps), weather = weather).state.test {
+            expectMostRecentItem()
+            assertEquals(listOf(WeatherPlace.Default), weather.asked)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `choosing another place switches the reading`() = runTest {
+        val giron = WeatherPlace.QuickPicks.first { it.name == "Girón" }
+        val weather = FakeWeather().apply { live = reading() }
+        val store = FakeConfigStore()
+        val vm = vm(FakeCatalog(apps), store = store, weather = weather)
+        vm.state.test {
+            expectMostRecentItem()
+            vm.applyAppearance { it.copy(weatherPlace = giron) }
+            assertEquals("Girón", expectMostRecentItem().weather?.placeName)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `the old place reading is not shown for the new place while it loads`() = runTest {
+        val giron = WeatherPlace.QuickPicks.first { it.name == "Girón" }
+        val weather = FakeWeather().apply { saved[WeatherPlace.Default] = reading() }
+        val store = FakeConfigStore()
+        val vm = vm(FakeCatalog(apps), store = store, weather = weather)
+        vm.state.test {
+            assertEquals("Bucaramanga", expectMostRecentItem().weather?.placeName)
+            vm.applyAppearance { it.copy(weatherPlace = giron) }
+            assertEquals(null, expectMostRecentItem().weather)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `weather refresh stops while inactive, keeps the last reading and resumes`() = runTest {
+        val ticks = MutableSharedFlow<LocalDateTime>(replay = 1).apply { tryEmit(t0) }
+        val weather = FakeWeather().apply { live = reading() }
+        val vm = vm(FakeCatalog(apps), ticks, weather = weather)
+        vm.state.test {
+            expectMostRecentItem()
+            assertEquals(1, weather.asked.size)
+            vm.setActive(false)
+            ticks.emit(t0.plusMinutes(31))
+            assertEquals(1, weather.asked.size)
+            assertEquals(WeatherCondition.Rain, vm.state.value.weather?.condition)
+            vm.setActive(true)
+            ticks.emit(t0.plusMinutes(32))
+            assertEquals(true, weather.asked.size >= 2)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `the weather is asked once per minute, not once per clock tick`() = runTest {
+        val ticks = MutableSharedFlow<LocalDateTime>(replay = 1).apply { tryEmit(t0) }
+        val weather = FakeWeather().apply { live = reading() }
+        vm(FakeCatalog(apps), ticks, weather = weather).state.test {
+            expectMostRecentItem()
+            ticks.emit(t0.plusSeconds(1))
+            ticks.emit(t0.plusSeconds(2))
+            assertEquals(1, weather.asked.size)
+            ticks.emit(t0.plusMinutes(1))
+            assertEquals(2, weather.asked.size)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `a reading older than three hours reaches the state marked stale`() = runTest {
+        val ticks = MutableSharedFlow<LocalDateTime>(replay = 1).apply { tryEmit(t0) }
+        val weather = FakeWeather().apply { saved[WeatherPlace.Default] = reading(at = t0.minusHours(2)) }
+        vm(FakeCatalog(apps), ticks, weather = weather).state.test {
+            assertEquals(false, expectMostRecentItem().weather?.stale)
+            ticks.emit(t0.plusHours(2))
+            assertEquals(true, expectMostRecentItem().weather?.stale)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `applying customize persists the weather place`() = runTest {
+        val giron = WeatherPlace.QuickPicks.first { it.name == "Girón" }
+        val store = FakeConfigStore(LauncherConfig(appOrder = listOf("a.yt")))
+        val vm = vm(FakeCatalog(apps), store = store)
+        vm.applyCustomize(LauncherConfig(weatherPlace = giron))
+        advanceUntilIdle()
+        assertEquals(giron, store.source.value?.weatherPlace)
+    }
+
+    @Test
+    fun `place search is delegated to the port`() = runTest {
+        val found = listOf(WeatherPlace("Girón", "Santander", 7.0, -73.0))
+        val places = object : PlaceSearch {
+            override suspend fun search(query: String) = if (query == "gir") found else emptyList()
+        }
+        val vm = vm(FakeCatalog(apps), places = places)
+        assertEquals(found, vm.searchPlaces("gir"))
+        assertEquals(emptyList<WeatherPlace>(), vm.searchPlaces("zz"))
     }
 }

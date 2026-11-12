@@ -13,7 +13,13 @@ import co.jp.tv.preferences.domain.ConfigStore
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.weather.domain.PlaceSearch
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.domain.WeatherPlace
+import co.jp.tv.weather.domain.WeatherRepository
+import co.jp.tv.weather.domain.WeatherRules
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
@@ -21,8 +27,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -42,6 +50,8 @@ class HomeViewModel(
     private val monitor: NetworkMonitor,
     initialNow: LocalDateTime = LocalDateTime.now(),
     private val configStore: ConfigStore,
+    private val weatherRepository: WeatherRepository = WeatherRepository.None,
+    private val placeSearch: PlaceSearch = PlaceSearch.None,
 ) : ViewModel(), HomeActions {
 
     /** Visible and hidden apps resolved against the saved arrangement, plus the saved config. */
@@ -84,6 +94,9 @@ class HomeViewModel(
         Layout(AppLayout.resolve(apps, orderingOf(saved, packages)), saved ?: LauncherConfig.Default)
     }
 
+    // Last reading for the chosen place; kept while inactive, cleared when the place changes.
+    private val weather = MutableStateFlow<Weather?>(null)
+
     private val appEdits = Channel<(AppOrdering) -> AppOrdering>(Channel.UNLIMITED)
 
     init {
@@ -98,6 +111,20 @@ class HomeViewModel(
                     saved
                 }
             }
+        }
+        // Weather follows the chosen place and the clock (at most one ask a minute; the repository decides
+        // whether that means the network). Nothing runs while the activity is stopped.
+        viewModelScope.launch {
+            val places = configStore.config.map { (it ?: LauncherConfig.Default).weatherPlace }.distinctUntilChanged()
+            combine(active, places) { isActive, place -> isActive to place }
+                .distinctUntilChanged()
+                .collectLatest { (isActive, place) ->
+                    if (!isActive) return@collectLatest
+                    weather.value = weatherRepository.cached(place)
+                    ticks
+                        .distinctUntilChanged { a, b -> a.truncatedTo(ChronoUnit.MINUTES) == b.truncatedTo(ChronoUnit.MINUTES) }
+                        .collect { now -> weather.value = weatherRepository.current(place, now) }
+                }
         }
         // Edits are applied one at a time so rapid key repeats never interleave.
         viewModelScope.launch {
@@ -121,7 +148,8 @@ class HomeViewModel(
         ticks,
         requestedFocus,
         network,
-    ) { layout, now, focus, net ->
+        weather,
+    ) { layout, now, focus, net, reading ->
         HomeState(
             brand = layout.config.brand,
             apps = layout.apps.visible,
@@ -129,6 +157,7 @@ class HomeViewModel(
             network = net,
             now = now,
             config = layout.config,
+            weather = WeatherRules.withStaleness(reading, now),
         )
     }.stateIn(
         scope = viewModelScope,
@@ -211,10 +240,14 @@ class HomeViewModel(
                 titleFontId = config.titleFontId,
                 wallpaperId = config.wallpaperId,
                 hourFormat = config.hourFormat,
+                weatherPlace = config.weatherPlace,
             )
         }
         back()
     }
+
+    /** Town search for the weather picker; empty when nothing matches or the network is down. */
+    suspend fun searchPlaces(query: String): List<WeatherPlace> = placeSearch.search(query)
 
     fun setWallpaper(id: String) = applyAppearance { it.copy(wallpaperId = id) }
 
