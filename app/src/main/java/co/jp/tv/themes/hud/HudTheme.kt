@@ -37,6 +37,8 @@ import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeKeyNavigation
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 import java.time.LocalDateTime
 
 object HudTheme : LauncherTheme {
@@ -67,7 +69,7 @@ object HudTheme : LauncherTheme {
             // The reticle, the clock and the wheel share one centre, 20px above the screen centre.
             Box(Modifier.fillMaxSize().offset(y = (-10).dp), contentAlignment = Alignment.Center) {
                 HudRings()
-                HudClock(state.now, state.config.hourFormat)
+                HudClock(state.now, state.config.hourFormat, state.weather)
                 HudWheel(state.apps, state.focusedIndex, onPick = actions::focus, modifier = Modifier.fillMaxSize())
             }
             BasicText(
@@ -91,7 +93,7 @@ object HudTheme : LauncherTheme {
 }
 
 @Composable
-private fun HudClock(now: LocalDateTime, hourFormat: ClockFormat.HourFormat) {
+private fun HudClock(now: LocalDateTime, hourFormat: ClockFormat.HourFormat, weather: Weather?) {
     val density = LocalDensity.current
     val glow = Shadow(HudPalette.ClockGlow, Offset.Zero, with(density) { 12.dp.toPx() })
     val parts = ClockFormat.parts(now, hourFormat)
@@ -133,6 +135,7 @@ private fun HudClock(now: LocalDateTime, hourFormat: ClockFormat.HourFormat) {
             BasicText("●", modifier = Modifier.graphicsLayer { alpha = blink.value }, style = sub)
             BasicText(" ${stringResource(R.string.theme_hud_rec)}", style = sub)
         }
+        WeatherBadge(weather, color = HudPalette.Cyan, textStyle = sub, iconSize = 12.dp, gap = 4.dp)
     }
 }
 

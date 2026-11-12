@@ -70,6 +70,8 @@ import co.jp.tv.core.design.launchOrigin
 import co.jp.tv.core.design.returnStagger
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.themes.LauncherTheme
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 import co.jp.tv.themes.jptv.JpIcon
 import co.jp.tv.themes.jptv.JpIconView
 import co.jp.tv.themes.jptv.JpIcons
@@ -157,6 +159,7 @@ object ZenTheme : LauncherTheme {
                 network = state.network,
                 now = state.now,
                 hourFormat = state.config.hourFormat,
+                weather = state.weather,
                 actions = actions,
                 focus = focus,
                 modifier = Modifier.align(Alignment.TopEnd).padding(end = 48.dp, top = 24.dp),
@@ -341,6 +344,7 @@ private fun ZenTopRight(
     actions: HomeActions,
     focus: ThemeControlFocus,
     modifier: Modifier = Modifier,
+    weather: Weather? = null,
 ) {
     val rise = rememberRise(150)
     val networkLabel = stringResource(R.string.cd_network)
@@ -395,15 +399,24 @@ private fun ZenTopRight(
                     letterSpacing = (-0.02).em,
                 ),
             )
-            BasicText(
-                ClockFormat.date(now),
-                style = TextStyle(
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                WeatherBadge(
+                    weather = weather,
                     color = ZenPalette.PaperMuted,
-                    fontSize = 6.5.sp,
-                    fontFamily = JpFonts.Mono,
-                    letterSpacing = 0.2.em,
-                ),
-            )
+                    textStyle = TextStyle(fontSize = 7.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.1.em),
+                    iconSize = 10.dp,
+                    gap = 3.dp,
+                )
+                BasicText(
+                    ClockFormat.date(now),
+                    style = TextStyle(
+                        color = ZenPalette.PaperMuted,
+                        fontSize = 6.5.sp,
+                        fontFamily = JpFonts.Mono,
+                        letterSpacing = 0.2.em,
+                    ),
+                )
+            }
         }
     }
 }

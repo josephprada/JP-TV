@@ -73,6 +73,8 @@ import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.HomeState
@@ -135,6 +137,7 @@ object ViniloTheme : LauncherTheme {
                 network = state.network,
                 now = state.now,
                 hourFormat = state.config.hourFormat,
+                weather = state.weather,
                 actions = actions,
                 focus = focus,
                 modifier = Modifier.align(Alignment.TopStart),
@@ -256,6 +259,7 @@ private fun ViniloHeader(
     actions: HomeActions,
     focus: ThemeControlFocus,
     modifier: Modifier = Modifier,
+    weather: Weather? = null,
 ) {
     val records = stringResource(R.string.vinilo_records)
     val title = remember(brand, records) {
@@ -285,6 +289,12 @@ private fun ViniloHeader(
                     onClick = actions::openNetwork,
                 ),
                 style = TextStyle(color = ViniloPalette.Cream, fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.16.em),
+            )
+            WeatherBadge(
+                weather = weather,
+                color = ViniloPalette.Cream,
+                textStyle = TextStyle(fontSize = 9.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.1.em),
+                iconSize = 15.dp,
             )
             BasicText(
                 ClockFormat.time(now, hourFormat),

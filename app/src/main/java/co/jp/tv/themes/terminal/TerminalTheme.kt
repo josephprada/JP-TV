@@ -55,6 +55,8 @@ import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themesControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.weatherLabel
 import java.time.LocalDateTime
 
 /** App rows shown at once; the window follows the focus (the design never scrolls: 8 apps). */
@@ -114,7 +116,7 @@ object TerminalTheme : LauncherTheme {
                     .fillMaxWidth()
                     .padding(start = 500.dp, top = 55.dp, end = 32.dp),
             )
-            TerminalStatusBar(state.brand, state.network, state.now, state.config.hourFormat, actions, focus)
+            TerminalStatusBar(state.brand, state.network, state.now, state.config.hourFormat, actions, focus, state.weather)
             TerminalCrtOverlay()
         }
     }
@@ -137,6 +139,7 @@ private fun TerminalStatusBar(
     hourFormat: ClockFormat.HourFormat,
     actions: HomeActions,
     focus: ThemeControlFocus,
+    weather: Weather? = null,
 ) {
     val bar = TextStyle(color = TerminalPalette.BarFg, fontSize = 15.sp, fontFamily = JpFonts.Vt323)
     Row(
@@ -189,7 +192,8 @@ private fun TerminalStatusBar(
         val days = stringArrayResource(R.array.theme_terminal_days)
         val months = stringArrayResource(R.array.theme_terminal_months)
         val date = "${days[now.dayOfWeek.value - 1]} ${"%02d".format(now.dayOfMonth)} ${months[now.monthValue - 1]}"
-        BasicText("$net$lat | ${ClockFormat.time(now, hourFormat)} $date", style = bar)
+        val wx = weather?.let { " | ${it.temperatureC}° ${weatherLabel(it.condition, it.isDay).uppercase()}${if (it.stale) "?" else ""}" }.orEmpty()
+        BasicText("$net$lat | ${ClockFormat.time(now, hourFormat)} $date$wx", style = bar)
     }
 }
 

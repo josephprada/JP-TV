@@ -34,6 +34,8 @@ import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themesControlTarget
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 import java.time.LocalDateTime
 
 /** Tap target that the D-pad skips: the theme's list and its one control own D-pad focus. */
@@ -55,6 +57,7 @@ internal fun PixelTopBar(
     actions: HomeActions,
     focus: ThemeControlFocus,
     modifier: Modifier = Modifier,
+    weather: Weather? = null,
 ) {
     val clockShadow = rememberPixelShadow(PixelPalette.ShadowClock, 2f)
     val settingsDescription = stringResource(R.string.cd_settings)
@@ -88,6 +91,13 @@ internal fun PixelTopBar(
                     onClick = actions::openThemes,
                 ),
             ringed = focus.onThemes,
+        )
+        WeatherBadge(
+            weather = weather,
+            color = PixelPalette.White,
+            textStyle = TextStyle(fontSize = 16.sp, fontFamily = JpFonts.Fredoka, shadow = clockShadow),
+            iconSize = 18.dp,
+            modifier = Modifier.padding(start = 4.dp),
         )
         BasicText(
             ClockFormat.time(now, hourFormat),

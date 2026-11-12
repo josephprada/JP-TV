@@ -72,6 +72,16 @@ class ThemeHomeScreens : ScreenshotTest() {
     @Test fun gothamFogDay() = home("gotham", "-fog-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Fog, night = false))
     @Test fun gothamRainDay() = home("gotham", "-rain-day", ScreenFixtures.dayNow, weather = w(WeatherCondition.Rain, night = false))
 
+    // The weather badge in every theme's header.
+    @Test fun badgePixel() = home("pixel", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun badgeTerminal() = home("terminal", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun badgeCartelera() = home("cartelera", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun badgeZen() = home("zen", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun badgeHud() = home("hud", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun badgeVinilo() = home("vinilo", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun badgeMultiverso() = home("multiverso", "-weather", weather = w(WeatherCondition.Rain))
+    @Test fun jptvStale() = home("jptv", "-weather-stale", weather = ScreenFixtures.weather(WeatherCondition.Storm, stale = true))
+
     @Test fun registryMatchesTests() {
         // Keeps this file honest when a theme is added to the registry.
         val covered = setOf(

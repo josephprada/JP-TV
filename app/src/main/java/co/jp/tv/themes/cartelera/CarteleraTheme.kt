@@ -70,6 +70,8 @@ import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
@@ -155,6 +157,7 @@ object CarteleraTheme : LauncherTheme {
                 brand = state.brand,
                 now = state.now,
                 hourFormat = state.config.hourFormat,
+                weather = state.weather,
                 clock = clock,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -263,6 +266,7 @@ private fun CarteleraMarquee(
     hourFormat: ClockFormat.HourFormat,
     clock: () -> Float,
     modifier: Modifier = Modifier,
+    weather: Weather? = null,
 ) {
     val entrance = rememberEntrance()
     val titleShadow = with(LocalDensity.current) { Shadow(CarteleraPalette.TitleGlow, blurRadius = 12.dp.toPx()) }
@@ -307,6 +311,14 @@ private fun CarteleraMarquee(
                     letterSpacing = 0.08.em,
                     shadow = titleShadow,
                 ),
+            )
+            WeatherBadge(
+                weather = weather,
+                color = CarteleraPalette.Gold,
+                textStyle = TextStyle(fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.1.em),
+                iconSize = 11.dp,
+                gap = 3.dp,
+                modifier = Modifier.alignByBaseline(),
             )
             BasicText(
                 stringResource(R.string.cartelera_showtime, ClockFormat.time(now, hourFormat)),

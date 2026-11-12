@@ -38,6 +38,7 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.weather.ui.WeatherBadge
 import co.jp.tv.themes.shared.themesControlTarget
 
 /**
@@ -91,6 +92,12 @@ internal fun MultiversoHeader(
                 focused = focus.onThemes,
                 onClick = actions::openThemes,
                 modifier = Modifier.themesControlTarget(focus),
+            )
+            WeatherBadge(
+                weather = state.weather,
+                color = MultiversoPalette.TextSoft,
+                textStyle = TextStyle(fontSize = 12.sp, fontFamily = MultiversoFonts.Geist),
+                iconSize = 14.dp,
             )
             BasicText(
                 ClockFormat.time(state.now, state.config.hourFormat),

@@ -87,6 +87,7 @@ object PixelTheme : LauncherTheme {
                 Modifier
                     .align(Alignment.TopEnd)
                     .padding(end = 40.dp, top = 22.dp),
+                weather = state.weather,
             )
             PixelShelf(
                 state.apps,
