@@ -87,7 +87,6 @@
     <string name="themes_breadcrumb">%1$d DISPONIBLES · ACTIVO: %2$s</string>
     <string name="themes_customize">PERSONALIZAR COLORES →</string>
     <string name="themes_active">ACTIVO</string>
-    <string name="themes_use">USAR</string>
 
     <string name="customize_title">Personalizar tema</string>
     <string name="customize_breadcrumb">AJUSTES / TEMA · JP-TV</string>
@@ -101,9 +100,6 @@
     <string name="customize_hour_format_12">12 h</string>
     <string name="customize_apply">APLICAR</string>
 
-    <string name="theme_pixel_launch">PULSA OK PARA JUGAR</string>
     <string name="theme_terminal_hint">↑↓ elegir · OK ejecutar · tab ajustes</string>
-    <string name="theme_zen_press_ok">PULSA OK</string>
-    <string name="theme_lofi_status">lo-fi beats para mirar · %1$s · %2$s</string>
     <string name="theme_hud_target">▼ OBJETIVO: %1$s</string>
 </resources>
