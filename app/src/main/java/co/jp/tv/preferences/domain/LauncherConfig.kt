@@ -1,6 +1,7 @@
 package co.jp.tv.preferences.domain
 
 import co.jp.tv.core.util.ClockFormat.HourFormat
+import co.jp.tv.weather.domain.WeatherPlace
 
 /** User-facing launcher configuration persisted in DataStore. */
 data class LauncherConfig(
@@ -20,6 +21,8 @@ data class LauncherConfig(
     val wallpaperDim: Int = 0,
     /** Idle the wallpaper (and its video) while another app is in front. */
     val pauseWallpaperInApps: Boolean = true,
+    /** Where the weather is read for. */
+    val weatherPlace: WeatherPlace = WeatherPlace.Default,
 ) {
     companion object {
         const val DEFAULT_BRAND = "JP-TV"

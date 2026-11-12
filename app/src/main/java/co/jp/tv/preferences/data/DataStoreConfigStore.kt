@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.domain.ConfigStore
+import co.jp.tv.weather.domain.WeatherPlaceCodec
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -33,6 +34,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
             prefs[HOUR_FORMAT] = next.hourFormat.name
             prefs[WALLPAPER_DIM] = next.wallpaperDim
             prefs[PAUSE_IN_APPS] = next.pauseWallpaperInApps
+            prefs[WEATHER_PLACE] = WeatherPlaceCodec.encode(next.weatherPlace)
         }
     }
 
@@ -51,6 +53,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
                 hourFormat = HourFormat.entries.firstOrNull { it.name == this[HOUR_FORMAT] } ?: HourFormat.H24,
                 wallpaperDim = this[WALLPAPER_DIM] ?: 0,
                 pauseWallpaperInApps = this[PAUSE_IN_APPS] ?: true,
+                weatherPlace = WeatherPlaceCodec.decode(this[WEATHER_PLACE]),
             )
         }
 
@@ -69,5 +72,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         val WALLPAPER_DIM = intPreferencesKey("wallpaper_dim")
         val PAUSE_IN_APPS = booleanPreferencesKey("pause_wallpaper_in_apps")
         val HOUR_FORMAT = stringPreferencesKey("hour_format")
+
+        /** Absent before the weather feature existed, or unreadable: reads as Bucaramanga. */
+        val WEATHER_PLACE = stringPreferencesKey("weather_place")
     }
 }

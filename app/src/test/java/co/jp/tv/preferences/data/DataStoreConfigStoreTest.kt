@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.weather.domain.WeatherPlace
 import java.io.File
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -102,5 +103,38 @@ class DataStoreConfigStoreTest {
         val read = DataStoreConfigStore(dataStore).config.first()
         assertEquals(0, read?.wallpaperDim)
         assertEquals(true, read?.pauseWallpaperInApps)
+    }
+
+    @Test
+    fun `the weather place round trips`() = runTest {
+        val store = store()
+        val giron = WeatherPlace.QuickPicks.first { it.name == "Girón" }
+        store.update { LauncherConfig.Default.copy(weatherPlace = giron) }
+        assertEquals(giron, store.config.first()?.weatherPlace)
+    }
+
+    @Test
+    fun `a saved config from before the weather feature reads as Bucaramanga`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "legacy3.preferences_pb") })
+        dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("saved")] = true
+            prefs[stringPreferencesKey("brand")] = "Casa"
+        }
+        val read = DataStoreConfigStore(dataStore).config.first()
+        assertEquals("Casa", read?.brand)
+        assertEquals(WeatherPlace.Default, read?.weatherPlace)
+    }
+
+    @Test
+    fun `a damaged weather place reads as Bucaramanga and keeps the rest of the config`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "damaged.preferences_pb") })
+        dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("saved")] = true
+            prefs[stringPreferencesKey("brand")] = "Casa"
+            prefs[stringPreferencesKey("weather_place")] = "not a place"
+        }
+        val read = DataStoreConfigStore(dataStore).config.first()
+        assertEquals("Casa", read?.brand)
+        assertEquals(WeatherPlace.Default, read?.weatherPlace)
     }
 }
