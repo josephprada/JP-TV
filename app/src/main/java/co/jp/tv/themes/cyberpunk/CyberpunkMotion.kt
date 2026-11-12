@@ -2,11 +2,12 @@ package co.jp.tv.themes.cyberpunk
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
+import co.jp.tv.core.design.JpMotion
 
 /** Motion values of the Cyberpunk artboard. */
 internal object CyberpunkMotion {
-    /** Design `ease`: cubic-bezier(0.32,0.72,0,1), used for focus, track and parallax. */
-    val Ease: Easing = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+    /** Launcher entrance curve for focus, track and parallax (the design's `ease` was slower). */
+    val Ease: Easing = JpMotion.Entrance
 
     /** CSS `ease-in-out`. */
     val CssEaseInOut: Easing = CubicBezierEasing(0.42f, 0f, 0.58f, 1f)
@@ -14,11 +15,11 @@ internal object CyberpunkMotion {
     /** CSS `ease-out`. */
     val CssEaseOut: Easing = CubicBezierEasing(0f, 0f, 0.58f, 1f)
 
-    /** Design `T`: 0.6s for sign focus, track and scrubber ticks. */
-    const val FocusMs = 600
+    /** Sign focus, track and scrubber ticks (the design's 0.6 s, shortened for the remote). */
+    const val FocusMs = JpMotion.NavMs
 
-    /** Parallax layers: 1.1s. */
-    const val ParallaxMs = 1100
+    /** Parallax layers (the design's 1.1 s, shortened). */
+    const val ParallaxMs = 600
 
     /** `cy-on` neon power-up of the focused sign. */
     const val SignOnMs = 1300

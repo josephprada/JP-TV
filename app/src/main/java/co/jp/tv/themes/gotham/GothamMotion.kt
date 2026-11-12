@@ -2,17 +2,18 @@ package co.jp.tv.themes.gotham
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
+import co.jp.tv.core.design.JpMotion
 
 /** Motion of the Gotham artboard. Times are milliseconds, distances design px (1920x1080). */
 internal object GothamMotion {
-    /** Card focus curve of the artboard: `cubic-bezier(0.32,0.72,0,1)`. */
-    val Focus: Easing = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+    /** Card focus curve: the launcher entrance curve (the artboard's was slower). */
+    val Focus: Easing = JpMotion.Entrance
 
     /** CSS `ease-in-out`, used by the sway, fog and mote loops. */
     val EaseInOut: Easing = CubicBezierEasing(0.42f, 0f, 0.58f, 1f)
 
-    const val FocusMs = 600
-    const val StampMs = 500
+    const val FocusMs = JpMotion.NavMs
+    const val StampMs = 260
     const val EntranceMs = 800
     const val TopBarDelayMs = 120
 

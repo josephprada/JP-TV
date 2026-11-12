@@ -65,6 +65,7 @@ import co.jp.tv.R
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
+import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.jptv.JpIcon
@@ -89,9 +90,11 @@ import kotlin.math.abs
 
 private const val SmallRowDp = 38f
 private const val BigRowDp = 72f
-private const val EaseMs = 600
+private const val EaseMs = JpMotion.NavMs
 private const val RiseMs = 800
 private val ZenEase = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+/** Selection moves use the launcher entrance curve: immediate start, ~220 ms. */
+private val FocusEase = JpMotion.Entrance
 /** Rows further than this from the focus are above or below the 540 dp list and fully masked out. */
 private const val LastVisibleAway = 7
 
@@ -198,7 +201,7 @@ private fun ZenBrand(brand: String, modifier: Modifier = Modifier) {
 @Composable
 private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
     val centre = 270f - (focusedIndex * SmallRowDp + BigRowDp / 2f)
-    val offsetY by animateDpAsState(centre.dp, tween(EaseMs, easing = ZenEase), label = "zenList")
+    val offsetY by animateDpAsState(centre.dp, tween(EaseMs, easing = FocusEase), label = "zenList")
     Box(
         Modifier
             .width(600.dp)
@@ -227,7 +230,7 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
 private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
     val away = abs(index - focusedIndex)
     val focused = away == 0
-    val ease = tween<Float>(EaseMs, easing = ZenEase)
+    val ease = tween<Float>(EaseMs, easing = FocusEase)
     val grow by animateFloatAsState(if (focused) 1f else 0f, ease, label = "zenGrow")
     val fade by animateFloatAsState(
         when (away) {

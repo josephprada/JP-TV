@@ -2,11 +2,12 @@ package co.jp.tv.themes.multiverso
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
+import co.jp.tv.core.design.JpMotion
 
 /** Motion values of the Multiverso artboard. Entrances use JpMotion.Entrance (same curve). */
 internal object MultiversoMotion {
-    /** The artboard's `ease` constant: cubic-bezier(0.32,0.72,0,1), used for focus and parallax. */
-    val Swift: Easing = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+    /** The launcher entrance curve; the artboard's slower `ease` was too sluggish for D-pad moves. */
+    val Swift: Easing = JpMotion.Entrance
 
     /** CSS `ease-in-out`, used by the nebula drift and the star twinkle. */
     val CssEaseInOut: Easing = CubicBezierEasing(0.42f, 0f, 0.58f, 1f)
@@ -14,11 +15,11 @@ internal object MultiversoMotion {
     /** CSS `ease-out`, used by the ripples. */
     val CssEaseOut: Easing = CubicBezierEasing(0f, 0f, 0.58f, 1f)
 
-    /** Focus transition `T = 0.7s ease`. */
-    const val FocusMs = 700
+    /** Focus transition (the artboard's 0.7 s, shortened for the remote). */
+    const val FocusMs = JpMotion.NavMs
 
-    /** Star and timeline parallax `transform 1.1s ease`. */
-    const val ParallaxMs = 1100
+    /** Star and timeline parallax (the artboard's 1.1 s, shortened). */
+    const val ParallaxMs = 600
 
     /** `mv-in 0.9s`. */
     const val EntranceMs = 900

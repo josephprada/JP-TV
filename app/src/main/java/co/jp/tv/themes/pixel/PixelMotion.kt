@@ -1,7 +1,6 @@
 package co.jp.tv.themes.pixel
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,8 +15,8 @@ import co.jp.tv.core.design.JpMotion
 import kotlinx.coroutines.delay
 
 /** The shelf's move and focus easing, cubic-bezier(0.32, 0.72, 0, 1), over 550 ms. */
-internal val PixelShelfEase = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
-internal const val PixelShelfMs = 550
+internal val PixelShelfEase = JpMotion.Entrance
+internal const val PixelShelfMs = JpMotion.NavMs
 
 /** The design's pk-in: fade in and rise 16px, over 0.7 s after [delayMs]. */
 @Composable

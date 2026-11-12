@@ -92,16 +92,17 @@ private fun HudNode(
     enterDelayMs: Int,
     onClick: () -> Unit,
 ) {
-    val position by animateOffsetAsState(target, tween(600, easing = JpMotion.Entrance), label = "hudNodePos")
+    val position by animateOffsetAsState(target, tween(JpMotion.NavMs, easing = JpMotion.Entrance), label = "hudNodePos")
     val background by animateColorAsState(
         if (focused) HudPalette.Cyan else HudPalette.NodeIdle,
-        tween(300),
+        tween(JpMotion.FocusMs),
         label = "hudNodeBg",
     )
     val enter = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         delay(enterDelayMs.toLong())
-        enter.animateTo(1f, tween(500, easing = JpMotion.Entrance))
+        // Nodes revealed by turning the wheel fade in quickly; the first-pass stagger keeps its slower reveal.
+        enter.animateTo(1f, tween(if (enterDelayMs == 0) JpMotion.NavMs else 500, easing = JpMotion.Entrance))
     }
     Box(
         modifier = Modifier

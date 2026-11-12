@@ -1,6 +1,5 @@
 package co.jp.tv.themes.cartelera
 
-import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -102,8 +101,8 @@ private const val LampSteps = LampLoopMs / LampStepMs
 
 /** Posters further than this many places from the focus are fully transparent, so they are not composed. */
 private const val PosterWindow = 4
-private const val CoverMs = 700
-private val CoverEase = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+private const val CoverMs = JpMotion.NavMs
+private val CoverEase = JpMotion.Entrance
 
 /** CSS perspective of the coverflow stage, in design px. */
 private const val PerspectivePx = 1800f

@@ -332,6 +332,12 @@ private fun ViniloShelf(
     spin: () -> Float,
     modifier: Modifier = Modifier,
 ) {
+    // Sleeves rise in only on the first pass; sleeves revealed by moving the focus appear at once.
+    var firstPass by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        delay(1_500)
+        firstPass = false
+    }
     var previousTop by remember { mutableStateOf(0) }
     val top = RailWindow.top(previousTop, focusedIndex, apps.size, ShelfSlots)
     SideEffect { previousTop = top }
@@ -350,6 +356,7 @@ private fun ViniloShelf(
                     focused = index == focusedIndex,
                     color = ViniloPalette.LabelColors[index % ViniloPalette.LabelColors.size],
                     slot = slot,
+                    rise = firstPass,
                     spin = spin,
                 )
             }
@@ -359,15 +366,16 @@ private fun ViniloShelf(
 
 /** An LP sleeve; the focused one grows and slides its record out to the right. */
 @Composable
-private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, spin: () -> Float) {
-    val spec = tween<Dp>(600, easing = JpMotion.Entrance)
+private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, rise: Boolean, spin: () -> Float) {
+    val spec = tween<Dp>(JpMotion.NavMs, easing = JpMotion.Entrance)
     val sleeve by animateDpAsState(if (focused) 150.dp else 85.dp, spec, label = "sleeve")
     val width by animateDpAsState(if (focused) 210.dp else 85.dp, spec, label = "coverWidth")
     val discLeft by animateDpAsState(if (focused) 65.dp else 10.dp, spec, label = "discLeft")
     val discTop = if (focused) 5.dp else 3.dp
     val lowEnd = rememberLowEnd()
-    val entrance = remember { Animatable(0f) }
+    val entrance = remember { Animatable(if (rise) 0f else 1f) }
     LaunchedEffect(Unit) {
+        if (!rise) return@LaunchedEffect
         delay(slot * 80L)
         entrance.animateTo(1f, tween(JpMotion.RiseMs, easing = JpMotion.Entrance))
     }
