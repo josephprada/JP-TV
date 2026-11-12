@@ -158,7 +158,7 @@ class ForegroundWatcherService : Service() {
         }
         val notification = Notification.Builder(this).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) setChannelId(CHANNEL_ID)
-            setSmallIcon(R.drawable.ic_launcher)
+            setSmallIcon(R.drawable.ic_jp_monogram)
             setContentTitle(getString(R.string.home_override_notification))
             setOngoing(true)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) setPriority(Notification.PRIORITY_MIN)

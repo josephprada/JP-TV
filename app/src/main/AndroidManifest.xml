@@ -58,8 +58,9 @@
         android:name=".JpTvApp"
         android:allowBackup="false"
         android:banner="@drawable/banner"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JpTv">
 
@@ -104,7 +105,7 @@
         <service
             android:name=".screensaver.data.JpScreensaverService"
             android:exported="true"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/screensaver_service_label"
             android:permission="android.permission.BIND_DREAM_SERVICE">
             <intent-filter>
