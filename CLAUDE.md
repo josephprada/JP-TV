@@ -73,6 +73,8 @@ The TV address comes from `local.properties` (`tv.host=…`). If the TV is unrea
 - Guards (`RedirectPolicy`, unit-tested, shared by both backends): the override stands down when the toggle is off, after 3 crashes or non-drawn redirects in 10 min, and for 10 min after "Abrir launcher original" in Settings. Stock windows are debounced 1.5 s and ignored for 15 s after boot.
 - Enable on the projector (manual, once): Ajustes de Android > Apps > Acceso especial > "Acceso a datos de uso" > JP-TV ON, and "Mostrar sobre otras apps" > JP-TV ON (JP-TV Ajustes has a button for each); then JP-TV > Ajustes > "Usar JP-TV como inicio" > ACTIVAR. The row shows ACTIVO and "DATOS DE USO" when both accesses are on. Escape hatch: DESACTIVAR, or turn either access off. Never `pm disable` anything to get this working.
 
+- HY320 home, the working method: the HOME key always starts the system app JmLauncher, which opens the package in the property `persist.sys.home.selectpkg` (default `com.htc.htclauncherhighenglishd08`). With `adb shell setprop persist.sys.home.selectpkg co.jp.tv`, Home and boot open JP-TV while every stock launcher stays enabled. Undo: set it back to `com.htc.htclauncherhighenglishd08`. The user runs this himself, because it is a system setting. Uninstalling JP-TV while the property points to it leaves Home on a black screen; reset the property over ADB to recover. There is no boot loop in that case.
+
 ## Verify before saying "done"
 
 `make test` passes, `make deploy` succeeds, and a `make shot` screenshot matches the design. Report what you checked and what you couldn't.
