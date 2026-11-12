@@ -1,5 +1,6 @@
 package co.jp.tv.themes.cyberpunk
 
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
@@ -107,6 +108,22 @@ object CyberpunkTheme : LauncherTheme {
                     .align(Alignment.BottomEnd)
                     .padding(end = 96.dpx, bottom = 96.dpx),
             )
+        }
+    }
+
+    /** The rainy city without signs, brand or controls: the screensaver's scene. The parallax stays still. */
+    @Composable
+    override fun Ambient(state: HomeState) {
+        val city = remember { CyberpunkCity.generate() }
+        val phase = if (DayPhase.of(state.now).isNight) CyberpunkPalette.Night else CyberpunkPalette.Day
+        val sky = remember(state.weather?.condition) { CyberpunkSky.of(state.weather?.condition) }
+        val time = rememberSceneTime()
+        val still = remember { mutableFloatStateOf(0f) }
+        Box(Modifier.fillMaxSize()) {
+            CyberpunkSkyline(city, phase, time, still, still)
+            CyberpunkHaze(phase, sky)
+            CyberpunkWeather(city, phase, time, sky)
+            CyberpunkAtmosphere(phase)
         }
     }
 }

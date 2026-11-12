@@ -101,4 +101,25 @@ object OceanoTheme : LauncherTheme {
             )
         }
     }
+
+    /** The reef under the sky with no jellies, nothing to focus and no text: the screensaver's scene. */
+    @Composable
+    override fun Ambient(state: HomeState) {
+        val clock = rememberOceanoClock()
+        val nightFade = animateFloatAsState(
+            if (DayPhase.of(state.now).isNight) 1f else 0f,
+            tween(OceanoMotion.PhaseFadeMs, easing = OceanoMotion.PhaseFade),
+            label = "oceanoAmbientNight",
+        )
+        OceanoPixelView(
+            clock = clock,
+            night = remember(nightFade) { { nightFade.value } },
+            scroll = NoScroll,
+            focusedIndex = 0,
+            apps = emptyList(),
+            weather = OceanoWeather.of(state.weather?.condition),
+        )
+    }
 }
+
+private val NoScroll: () -> Float = { 0f }

@@ -96,6 +96,28 @@ object LofiTheme : LauncherTheme {
         }
     }
 
+    /** The room and its window with no notebook, clock line or bar: the screensaver's scene. */
+    @Composable
+    override fun Ambient(state: HomeState) {
+        val night = DayPhase.of(state.now).isNight
+        val fade = animateFloatAsState(
+            targetValue = if (night) 1f else 0f,
+            animationSpec = tween(LofiMotion.PHASE_FADE_MS, easing = LofiMotion.Ease),
+            label = "lofiAmbientPhase",
+        )
+        val context = LocalContext.current
+        val lowEnd = remember { DeviceProfile.isLowEnd(context) }
+        val millis = rememberFrameMillis(paused = LocalPaused.current, maxFps = DeviceProfile.wallpaperMaxFps(context))
+        val scatter = remember { LofiScatter.create() }
+        val room = remember(night) { roomBrush(night) }
+        val sky = remember(state.weather?.condition) { LofiSky.of(state.weather?.condition) }
+        Box(Modifier.fillMaxSize().background(room)) {
+            LofiWindow(night, fade, millis, scatter, sky, lowEnd)
+            LofiRoom(night, fade, millis, sky.sunbeam)
+            LofiSteam(millis)
+        }
+    }
+
     private fun roomBrush(night: Boolean): Brush = if (night) {
         Brush.verticalGradient(
             0f to LofiPalette.NightRoomTop,

@@ -166,6 +166,28 @@ object GothamTheme : LauncherTheme {
             }
         }
     }
+
+    /** The rainy skyline and its searchlight with no case files or bars: the screensaver's scene. */
+    @Composable
+    override fun Ambient(state: HomeState) {
+        val cities = remember { GothamCities() }
+        val phase = DayPhase.of(state.now)
+        val sky = remember(state.weather?.condition) { GothamSky.of(state.weather?.condition) }
+        Box(Modifier.fillMaxSize().background(NightSky)) {
+            Crossfade(
+                targetState = phase,
+                animationSpec = tween(GothamMotion.PhaseFadeMs, easing = LinearEasing),
+                label = "gothamAmbientPhase",
+            ) { shown ->
+                val look = GothamLook.of(shown)
+                Box(Modifier.fillMaxSize().background(if (shown.isNight) NightSky else DaySky)) {
+                    GothamTimeline { time -> GothamScene(cities.of(shown), look, sky, time) }
+                }
+            }
+            val look = GothamLook.of(phase)
+            GothamTimeline { time -> GothamRain(cities.of(phase).rain, time, amount = sky.rain(phase.isNight), color = look.rain) }
+        }
+    }
 }
 
 private fun twoDigits(n: Int): String = n.toString().padStart(2, '0')
