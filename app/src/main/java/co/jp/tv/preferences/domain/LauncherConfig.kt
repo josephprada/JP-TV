@@ -2,6 +2,9 @@ package co.jp.tv.preferences.domain
 
 import co.jp.tv.core.sound.SoundVolume
 import co.jp.tv.core.util.ClockFormat.HourFormat
+import co.jp.tv.playlist.domain.MediaKind
+import co.jp.tv.playlist.domain.PlaylistSettings
+import co.jp.tv.screensaver.domain.ScreensaverSettings
 import co.jp.tv.weather.domain.WeatherPlace
 
 /** User-facing launcher configuration persisted in DataStore. */
@@ -29,7 +32,17 @@ data class LauncherConfig(
     val soundVolume: SoundVolume = SoundVolume.MEDIUM,
     /** Opt-in: take the screen from the stock launcher on devices whose firmware ignores the preferred home. */
     val homeOverrideEnabled: Boolean = false,
+    /** Files, rotation and order of the "Mi video" wallpaper. */
+    val videoPlaylist: PlaylistSettings = PlaylistSettings.Default,
+    /** Files, rotation and order of the "Imagen fija" wallpaper. */
+    val imagePlaylist: PlaylistSettings = PlaylistSettings.Default,
+    val screensaver: ScreensaverSettings = ScreensaverSettings.Default,
 ) {
+    fun playlist(kind: MediaKind): PlaylistSettings = if (kind == MediaKind.VIDEO) videoPlaylist else imagePlaylist
+
+    fun withPlaylist(kind: MediaKind, settings: PlaylistSettings): LauncherConfig =
+        if (kind == MediaKind.VIDEO) copy(videoPlaylist = settings) else copy(imagePlaylist = settings)
+
     companion object {
         const val DEFAULT_BRAND = "JP-TV"
         const val DEFAULT_WALLPAPER_ID = "galaxy"

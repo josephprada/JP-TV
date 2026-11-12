@@ -1,6 +1,10 @@
 package co.jp.tv.preferences.domain
 
 import co.jp.tv.core.sound.SoundVolume
+import co.jp.tv.playlist.domain.MediaKind
+import co.jp.tv.playlist.domain.PlaylistSettings
+import co.jp.tv.playlist.domain.RotationInterval
+import co.jp.tv.screensaver.domain.ScreensaverSettings
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -44,5 +48,27 @@ class LauncherConfigTest {
     @Test
     fun `using JP-TV as home is opt-in`() {
         assertEquals(false, LauncherConfig.Default.homeOverrideEnabled)
+    }
+
+    @Test
+    fun `playlists default to every file found rotating every fifteen minutes`() {
+        assertEquals(PlaylistSettings.Default, LauncherConfig.Default.videoPlaylist)
+        assertEquals(PlaylistSettings.Default, LauncherConfig.Default.imagePlaylist)
+    }
+
+    @Test
+    fun `the screensaver is the clock after ten idle minutes by default`() {
+        assertEquals(ScreensaverSettings.Default, LauncherConfig.Default.screensaver)
+    }
+
+    @Test
+    fun `the playlist settings of a kind are found by kind`() {
+        val config = LauncherConfig.Default.copy(
+            videoPlaylist = PlaylistSettings(interval = RotationInterval.MIN_5),
+            imagePlaylist = PlaylistSettings(interval = RotationInterval.NEVER),
+        )
+        assertEquals(RotationInterval.MIN_5, config.playlist(MediaKind.VIDEO).interval)
+        assertEquals(RotationInterval.NEVER, config.playlist(MediaKind.IMAGE).interval)
+        assertEquals(RotationInterval.NEVER, config.withPlaylist(MediaKind.IMAGE, PlaylistSettings(interval = RotationInterval.NEVER)).imagePlaylist.interval)
     }
 }
