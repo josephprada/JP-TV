@@ -15,6 +15,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.rotate
@@ -59,9 +60,11 @@ internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState) {
             },
     )
     // Light: the sunbeam by day and the flickering lamp glow at night, the only animated fills.
+    // Own layer: these two read the frame clock in draw, which would otherwise re-record the whole screen every frame.
     Spacer(
         Modifier
             .fillMaxSize()
+            .graphicsLayer()
             .drawWithCache {
                 val sunbeamBrush = Brush.verticalGradient(
                     0f to LofiPalette.SunbeamTop,
@@ -111,6 +114,7 @@ internal fun LofiRoom(night: Boolean, fade: State<Float>, millis: LongState) {
     Spacer(
         Modifier
             .fillMaxSize()
+            .graphicsLayer()
             .drawBehind {
                 inArtboardPx {
                     rotate(degrees = tailAngle(millis.longValue), pivot = TailPivot) {

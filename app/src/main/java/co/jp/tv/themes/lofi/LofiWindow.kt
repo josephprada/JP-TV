@@ -120,11 +120,11 @@ internal fun LofiWindow(night: Boolean, fade: State<Float>, millis: LongState, s
                             for (i in 0 until LofiScatter.RAIN_COUNT) {
                                 // lo-rain: translateY(-120px) -> translateY(520px), linear.
                                 val t = LofiMotion.loop(ms, scatter.rainPeriodMs[i], scatter.rainDelayMs[i])
-                                drawRoundRect(
+                                // 2 px wide: a plain rect reads the same as a 1 px radius and skips the rounded-rect op.
+                                drawRect(
                                     LofiPalette.RainDrop,
                                     topLeft = Offset(scatter.rainX[i], -120f + 640f * t),
                                     size = Size(2f, scatter.rainHeight[i]),
-                                    cornerRadius = CornerRadius(1f),
                                     alpha = nightAmount,
                                 )
                             }
