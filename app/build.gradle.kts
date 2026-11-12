@@ -85,6 +85,8 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
+    // The android.jar stub of org.json throws "not mocked" on the JVM; the weather parsers need the real one.
+    testImplementation("org.json:json:20240303")
     testRuntimeOnly(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.vintage.engine)
     testImplementation(libs.junit4)

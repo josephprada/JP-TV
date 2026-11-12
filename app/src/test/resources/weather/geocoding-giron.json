@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "id": 3680863,
+      "name": "Girón",
+      "latitude": 7.06833,
+      "longitude": -73.16973,
+      "elevation": 770.0,
+      "feature_code": "PPLA2",
+      "country_code": "CO",
+      "admin1_id": 3668605,
+      "admin2_id": 3680863,
+      "timezone": "America/Bogota",
+      "population": 160000,
+      "country_id": 3686110,
+      "country": "Colombia",
+      "admin1": "Santander",
+      "admin2": "Girón"
+    },
+    {
+      "id": 3689211,
+      "name": "Girón",
+      "latitude": -3.1667,
+      "longitude": -79.1333,
+      "elevation": 2200.0,
+      "feature_code": "PPL",
+      "country_code": "CO",
+      "timezone": "America/Bogota",
+      "country_id": 3686110,
+      "country": "Colombia",
+      "admin1": "Cundinamarca"
+    },
+    {
+      "id": 9000001,
+      "name": "Villa Girón",
+      "latitude": 6.5,
+      "longitude": -73.1,
+      "feature_code": "PPL",
+      "country_code": "CO",
+      "country": "Colombia"
+    }
+  ],
+  "generationtime_ms": 1.1
+}
