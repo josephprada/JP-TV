@@ -1,6 +1,16 @@
 package co.jp.tv.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import co.jp.tv.core.design.JpColors
+import co.jp.tv.preferences.ui.WeatherPlaceCard
+import co.jp.tv.weather.domain.WeatherPlace
 import androidx.compose.ui.input.key.Key
 import co.jp.tv.apps.domain.AppLayout
 import co.jp.tv.apps.domain.AppOrdering
@@ -43,6 +53,22 @@ class PanelScreens : ScreenshotTest() {
     @Test fun customizeFocusWallpaper() = customizeFocus("wallpaper", List(7) { Key.DirectionDown })
     @Test fun customizeFocusApply() = customizeFocus("apply", List(7) { Key.DirectionRight })
     @Test fun customizeFocusApplyFromFont() = customizeFocus("apply-from-font", listOf(Key.DirectionDown, Key.DirectionDown, Key.DirectionRight))
+
+    /** Down presses through the option cards until the weather town chips hold focus (the card sits below the fold). */
+    @Test fun customizeFocusWeather() = customizeFocus("weather", List(13) { Key.DirectionDown })
+
+    /** The town picker with a search typed: the matches appear as chips under the box. */
+    @Test fun customizeWeatherSearch() = shoot("customize-weather-search") {
+        Column(Modifier.background(JpColors.Ink).width(400.dp).padding(24.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+            WeatherPlaceCard(
+                selected = WeatherPlace.QuickPicks[2],
+                onSelect = {},
+                search = { listOf(WeatherPlace("Girón", "Santander", 7.07, -73.17), WeatherPlace("Girón", "Cundinamarca", 5.0, -74.0)) },
+                accent = accent,
+                initialQuery = "gir",
+            )
+        }
+    }
 
     @Test fun settings() = shoot("settings") {
         val info = QuickSettingsInfo(

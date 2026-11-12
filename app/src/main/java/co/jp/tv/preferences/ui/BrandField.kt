@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -53,6 +54,32 @@ internal fun BrandField(
     titleFont: FontFamily,
     modifier: Modifier = Modifier,
 ) {
+    TextEntryField(
+        value = value,
+        onValueChange = { onValueChange(it.take(LauncherConfig.MAX_BRAND)) },
+        accent = accent,
+        label = stringResource(R.string.customize_brand),
+        textStyle = TextStyle(color = accent, fontSize = 19.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
+        modifier = modifier,
+    )
+}
+
+/**
+ * Single-line text box for a remote, shared by the name and the town search. The box takes D-pad focus like
+ * any control, OK starts editing (and raises the on-screen keyboard), keyboard Done or Back stops editing and
+ * gives focus back to the box so the D-pad keeps working. [placeholder] shows while the box is empty.
+ */
+@Composable
+internal fun TextEntryField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    accent: Color,
+    label: String,
+    textStyle: TextStyle,
+    modifier: Modifier = Modifier,
+    placeholder: String? = null,
+    placeholderStyle: TextStyle = textStyle,
+) {
     var editing by remember { mutableStateOf(false) }
     var boxFocused by remember { mutableStateOf(false) }
     // The input held focus at some point of this edit: ending the edit then hands focus back to the box.
@@ -60,7 +87,6 @@ internal fun BrandField(
     val boxFocus = remember { FocusRequester() }
     val inputFocus = remember { FocusRequester() }
     val keyboard = LocalSoftwareKeyboardController.current
-    val label = stringResource(R.string.customize_brand)
     val shape = RoundedCornerShape(11.dp)
 
     fun stopEditing() {
@@ -94,10 +120,10 @@ internal fun BrandField(
     ) {
         BasicTextField(
             value = value,
-            onValueChange = { onValueChange(it.take(LauncherConfig.MAX_BRAND)) },
+            onValueChange = onValueChange,
             enabled = editing,
             singleLine = true,
-            textStyle = TextStyle(color = accent, fontSize = 19.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
+            textStyle = textStyle,
             cursorBrush = SolidColor(accent),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { stopEditing() }),
@@ -105,6 +131,12 @@ internal fun BrandField(
                 .fillMaxWidth()
                 .focusRequester(inputFocus)
                 .onFocusChanged { if (it.isFocused) inputHadFocus = true },
+            decorationBox = { inner ->
+                Box(contentAlignment = Alignment.CenterStart) {
+                    if (value.isEmpty() && placeholder != null) BasicText(placeholder, style = placeholderStyle)
+                    inner()
+                }
+            },
         )
     }
 }

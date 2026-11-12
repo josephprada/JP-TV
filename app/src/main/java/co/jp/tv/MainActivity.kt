@@ -192,6 +192,7 @@ class MainActivity : ComponentActivity() {
                         CustomizeScreen(
                             initial = state.config,
                             onApply = viewModel::applyCustomize,
+                            searchPlaces = viewModel::searchPlaces,
                         )
                     }
                     if (networkOpen) {

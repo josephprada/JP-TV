@@ -59,6 +59,7 @@ import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.domain.TitleFont
 import co.jp.tv.preferences.domain.TitleFonts
 import co.jp.tv.wallpaper.WallpaperRegistry
+import co.jp.tv.weather.domain.WeatherPlace
 import java.time.LocalDateTime
 
 /** Fixed sample instant the preview clock shows, so only the chosen format changes. */
@@ -79,6 +80,7 @@ fun CustomizeScreen(
     initial: LauncherConfig,
     onApply: (LauncherConfig) -> Unit,
     modifier: Modifier = Modifier,
+    searchPlaces: suspend (String) -> List<WeatherPlace> = { emptyList() },
 ) {
     var draft by remember(initial) { mutableStateOf(initial) }
     var permissionRevision by remember { mutableIntStateOf(0) }
@@ -180,6 +182,14 @@ fun CustomizeScreen(
                         }
                     }
                 }
+                OptionsCard(stringResource(R.string.customize_weather), delayMs = 200) {
+                    WeatherPlaceCard(
+                        selected = draft.weatherPlace,
+                        onSelect = { draft = draft.copy(weatherPlace = it) },
+                        search = searchPlaces,
+                        accent = accent,
+                    )
+                }
             }
 
             Box(
@@ -269,7 +279,7 @@ private fun FontRow(font: TitleFont, selected: Boolean, accent: Color, onClick: 
 }
 
 @Composable
-private fun Chip(
+internal fun Chip(
     label: String,
     selected: Boolean,
     accent: Color,

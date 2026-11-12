@@ -16,5 +16,4 @@
     <string name="customize_weather_search_hint">Escribe el nombre de la ciudad</string>
     <string name="customize_weather_searching">Buscando…</string>
     <string name="customize_weather_no_results">Sin resultados</string>
-    <string name="customize_weather_selected">%1$s</string>
 </resources>
