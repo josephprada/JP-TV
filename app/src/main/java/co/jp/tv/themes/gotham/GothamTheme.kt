@@ -62,6 +62,8 @@ object GothamTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionUp },
                     toList = { it == Key.DirectionDown },
+                    toThemes = { it == Key.DirectionRight },
+                    fromThemes = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(apps, focused, actions, ThemeNavAxis.Horizontal),
         ) {

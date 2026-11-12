@@ -52,6 +52,7 @@ import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import java.time.LocalDateTime
 
@@ -88,7 +89,9 @@ object TerminalTheme : LauncherTheme {
                 .themeControlRouting(
                     focus,
                     toControl = { it == Key.DirectionLeft || (it == Key.DirectionUp && state.focusedIndex <= 0) },
-                    toList = { it == Key.DirectionDown || it == Key.DirectionRight },
+                    toList = { it == Key.DirectionDown },
+                    toThemes = { it == Key.DirectionRight },
+                    fromThemes = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
@@ -149,7 +152,7 @@ private fun TerminalStatusBar(
             BasicText("red", modifier = Modifier.terminalTap(actions::openNetwork), style = bar)
             BasicText(" 2:", style = bar)
             BasicText(
-                "ajustes",
+                stringResource(R.string.cd_settings).lowercase(),
                 modifier = Modifier
                     .themeControlTarget(focus)
                     .background(if (focus.onControl) TerminalPalette.BarFg else TerminalPalette.Green)
@@ -159,6 +162,20 @@ private fun TerminalStatusBar(
                         onClick = actions::openSettings,
                     ),
                 style = bar.copy(color = if (focus.onControl) TerminalPalette.Green else TerminalPalette.BarFg),
+            )
+            // Not in the artboard: a third tmux window so the Themes screen is one D-pad step from Settings.
+            BasicText(" 3:", style = bar)
+            BasicText(
+                stringResource(R.string.cd_themes).lowercase(),
+                modifier = Modifier
+                    .themesControlTarget(focus)
+                    .background(if (focus.onThemes) TerminalPalette.BarFg else TerminalPalette.Green)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = actions::openThemes,
+                    ),
+                style = bar.copy(color = if (focus.onThemes) TerminalPalette.Green else TerminalPalette.BarFg),
             )
         }
         val latency = network.routerLatencyMs ?: network.internetLatencyMs

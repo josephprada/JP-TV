@@ -26,6 +26,7 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 
 /** Bottom bar at 120 px sides, 56 px bottom: status line and the "ajustes" pill; 20 px mono, 0.12 em. */
 @Composable
@@ -51,17 +52,37 @@ internal fun LofiBottomBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicText(stringResource(R.string.theme_lofi_status_line, net, ms), style = style)
-        val shape = RoundedCornerShape(13.dp)
-        BasicText(
-            stringResource(R.string.cd_settings).lowercase(),
-            modifier = Modifier
-                .themeControlTarget(focus)
-                .clip(shape)
-                .background(if (focus.onControl) LofiPalette.PillFocused else LofiPalette.PillIdle)
-                .border(1.5.dp, if (focus.onControl) LofiPalette.Accent else Color.Transparent, shape)
-                .clickable(onClick = actions::openSettings)
-                .padding(horizontal = 13.dp, vertical = 7.dp),
-            style = style,
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            LofiPill(
+                text = stringResource(R.string.cd_settings).lowercase(),
+                focused = focus.onControl,
+                onClick = actions::openSettings,
+                style = style,
+                modifier = Modifier.themeControlTarget(focus),
+            )
+            // Not in the artboard: a second pill so the Themes screen is one D-pad step from Settings.
+            LofiPill(
+                text = stringResource(R.string.cd_themes).lowercase(),
+                focused = focus.onThemes,
+                onClick = actions::openThemes,
+                style = style,
+                modifier = Modifier.themesControlTarget(focus),
+            )
+        }
     }
+}
+
+@Composable
+private fun LofiPill(text: String, focused: Boolean, onClick: () -> Unit, style: TextStyle, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(13.dp)
+    BasicText(
+        text,
+        modifier = modifier
+            .clip(shape)
+            .background(if (focused) LofiPalette.PillFocused else LofiPalette.PillIdle)
+            .border(1.5.dp, if (focused) LofiPalette.Accent else Color.Transparent, shape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 13.dp, vertical = 7.dp),
+        style = style,
+    )
 }

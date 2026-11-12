@@ -47,6 +47,7 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 
 /**
  * Top-right cluster: network pill, settings (the theme's D-pad control), themes, clock.
@@ -84,8 +85,9 @@ internal fun CyberpunkTopBar(
             description = stringResource(R.string.cd_themes),
             border = CyberpunkPalette.Pink.copy(alpha = 0.55f),
             iconColor = CyberpunkPalette.PinkSoft,
-            focused = false,
+            focused = focus.onThemes,
             onClick = actions::openThemes,
+            modifier = Modifier.themesControlTarget(focus),
         )
         CyberpunkGlowText(
             ClockFormat.time(state.now, state.config.hourFormat),

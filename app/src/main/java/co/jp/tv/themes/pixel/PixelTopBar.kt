@@ -20,6 +20,8 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +33,7 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 import java.time.LocalDateTime
 
 /** Tap target that the D-pad skips: the theme's list and its one control own D-pad focus. */
@@ -54,6 +57,8 @@ internal fun PixelTopBar(
     modifier: Modifier = Modifier,
 ) {
     val clockShadow = rememberPixelShadow(PixelPalette.ShadowClock, 2f)
+    val settingsDescription = stringResource(R.string.cd_settings)
+    val themesDescription = stringResource(R.string.cd_themes)
     Row(
         modifier.pixelEntrance(100),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -63,6 +68,7 @@ internal fun PixelTopBar(
         PixelRoundButton(
             PixelIconKind.Gear,
             Modifier
+                .semantics { contentDescription = settingsDescription }
                 .themeControlTarget(focus)
                 .clickable(
                     indication = null,
@@ -71,7 +77,18 @@ internal fun PixelTopBar(
                 ),
             ringed = focus.onControl,
         )
-        PixelRoundButton(PixelIconKind.Palette, Modifier.pixelTap(actions::openThemes), ringed = false)
+        PixelRoundButton(
+            PixelIconKind.Palette,
+            Modifier
+                .semantics { contentDescription = themesDescription }
+                .themesControlTarget(focus)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = actions::openThemes,
+                ),
+            ringed = focus.onThemes,
+        )
         BasicText(
             ClockFormat.time(now, hourFormat),
             modifier = Modifier.padding(start = 6.dp),

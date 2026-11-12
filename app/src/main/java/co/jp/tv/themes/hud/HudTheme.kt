@@ -57,7 +57,9 @@ object HudTheme : LauncherTheme {
                 .themeControlRouting(
                     focus,
                     toControl = { it == Key.DirectionUp },
-                    toList = { it == Key.DirectionDown },
+                    toList = { it == Key.DirectionLeft || it == Key.DirectionDown },
+                    toThemes = { it == Key.DirectionDown },
+                    fromThemes = { it == Key.DirectionUp },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {

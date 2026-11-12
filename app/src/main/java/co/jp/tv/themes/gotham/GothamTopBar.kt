@@ -32,12 +32,13 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 
 private const val ChromeAlpha = 0.85f
 
 /**
  * Top-right cluster: network link, Settings (the theme's D-pad control), Themes and the clock.
- * Network and Themes are pointer-only, as in the other fixed themes.
+ * Settings and Themes are D-pad controls; Network is pointer-only, as in the other fixed themes.
  */
 @Composable
 internal fun GothamTopBar(
@@ -90,7 +91,13 @@ internal fun GothamTopBar(
             Modifier
                 .size(24.dp)
                 .semantics { contentDescription = themesDescription }
-                .pointerOnlyClick(actions::openThemes),
+                .focusOutline(visible = focus.onThemes)
+                .themesControlTarget(focus)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = actions::openThemes,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             GothamIcon(GothamGlyph.Palette, size = 14.dp, color = chrome)

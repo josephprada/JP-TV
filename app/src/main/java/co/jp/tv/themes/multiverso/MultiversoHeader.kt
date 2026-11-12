@@ -38,6 +38,7 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 
 /**
  * Brand at the top left; network link, Settings (the D-pad control), Themes and the clock at the
@@ -87,8 +88,9 @@ internal fun MultiversoHeader(
             HeaderIcon(
                 icon = ThemesIcon,
                 description = stringResource(R.string.cd_themes),
-                focused = false,
+                focused = focus.onThemes,
                 onClick = actions::openThemes,
+                modifier = Modifier.themesControlTarget(focus),
             )
             BasicText(
                 ClockFormat.time(state.now, state.config.hourFormat),

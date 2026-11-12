@@ -76,6 +76,7 @@ import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import java.time.LocalDateTime
 import co.jp.tv.core.design.bakeToBitmap
@@ -133,6 +134,8 @@ object CarteleraTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionDown },
                     toList = { it == Key.DirectionUp },
+                    toThemes = { it == Key.DirectionRight },
+                    fromThemes = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
@@ -685,19 +688,35 @@ private fun CarteleraFooter(
             stringResource(R.string.cartelera_now_showing, nowShowing.uppercase()),
             style = ticket,
         )
-        BasicText(
-            stringResource(R.string.cd_settings).uppercase(),
-            modifier = Modifier
-                .themeControlTarget(focus)
-                .dashedPill { focus.onControl }
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = actions::openSettings,
-                )
-                .padding(horizontal = 12.dp, vertical = 7.dp),
-            style = ticket.copy(color = if (focus.onControl) CarteleraPalette.BulbOn else CarteleraPalette.Gold),
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            BasicText(
+                stringResource(R.string.cd_settings).uppercase(),
+                modifier = Modifier
+                    .themeControlTarget(focus)
+                    .dashedPill { focus.onControl }
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = actions::openSettings,
+                    )
+                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                style = ticket.copy(color = if (focus.onControl) CarteleraPalette.BulbOn else CarteleraPalette.Gold),
+            )
+            // Not in the artboard: a second ticket pill so the Themes screen is one D-pad step from Settings.
+            BasicText(
+                stringResource(R.string.cd_themes).uppercase(),
+                modifier = Modifier
+                    .themesControlTarget(focus)
+                    .dashedPill { focus.onThemes }
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = actions::openThemes,
+                    )
+                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                style = ticket.copy(color = if (focus.onThemes) CarteleraPalette.BulbOn else CarteleraPalette.Gold),
+            )
+        }
     }
 }
 

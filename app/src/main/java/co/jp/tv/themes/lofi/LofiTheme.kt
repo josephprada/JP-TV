@@ -79,6 +79,8 @@ object LofiTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionRight || (it == Key.DirectionDown && state.focusedIndex >= state.apps.lastIndex) },
                     toList = { it == Key.DirectionUp || it == Key.DirectionLeft },
+                    toThemes = { it == Key.DirectionRight },
+                    fromThemes = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {

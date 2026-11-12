@@ -38,6 +38,7 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 
 /** polygon(0 0, 92% 0, 100% 14%, 100% 100%, 8% 100%, 0 86%) */
 private val TelemetryShape: Shape = GenericShape { size, _ ->
@@ -131,7 +132,7 @@ internal fun HudTelemetryPanel(network: NetworkStatus, actions: HomeActions, mod
     }
 }
 
-/** Top-right panel and the theme's one D-pad control: it opens Settings. */
+/** Top-right panel (opens Settings) with a small Themes panel under it: the theme's two D-pad controls. */
 @Composable
 internal fun HudUnitPanel(
     brand: String,
@@ -142,24 +143,44 @@ internal fun HudUnitPanel(
     modifier: Modifier = Modifier,
 ) {
     val focused = focus.onControl
-    HudPanelFrame(
-        shape = UnitShape,
-        borderColor = if (focused) HudPalette.Cyan else HudPalette.PanelBorder,
-        modifier = modifier
-            .themeControlTarget(focus)
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = actions::openSettings,
-            ),
-    ) {
-        BasicText(stringResource(R.string.theme_hud_unit, brand), style = Title.copy(color = HudPalette.Cyan))
-        HudRow(stringResource(R.string.theme_hud_apps), appCount.toString())
-        HudRow(stringResource(R.string.theme_hud_dns), network.dns.firstOrNull() ?: "—")
-        HudRow(
-            stringResource(R.string.theme_hud_settings),
-            "▶",
-            color = if (focused) HudPalette.White else HudPalette.Amber,
-        )
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HudPanelFrame(
+            shape = UnitShape,
+            borderColor = if (focused) HudPalette.Cyan else HudPalette.PanelBorder,
+            modifier = Modifier
+                .themeControlTarget(focus)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = actions::openSettings,
+                ),
+        ) {
+            BasicText(stringResource(R.string.theme_hud_unit, brand), style = Title.copy(color = HudPalette.Cyan))
+            HudRow(stringResource(R.string.theme_hud_apps), appCount.toString())
+            HudRow(stringResource(R.string.theme_hud_dns), network.dns.firstOrNull() ?: "—")
+            HudRow(
+                stringResource(R.string.theme_hud_settings),
+                "▶",
+                color = if (focused) HudPalette.White else HudPalette.Amber,
+            )
+        }
+        // Not in the artboard: a one-line panel so the Themes screen is one D-pad step from Settings.
+        HudPanelFrame(
+            shape = UnitShape,
+            borderColor = if (focus.onThemes) HudPalette.Cyan else HudPalette.PanelBorder,
+            modifier = Modifier
+                .themesControlTarget(focus)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = actions::openThemes,
+                ),
+        ) {
+            HudRow(
+                stringResource(R.string.cd_themes).uppercase(),
+                "▶",
+                color = if (focus.onThemes) HudPalette.White else HudPalette.Amber,
+            )
+        }
     }
 }

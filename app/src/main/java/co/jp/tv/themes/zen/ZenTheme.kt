@@ -80,6 +80,7 @@ import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import co.jp.tv.wallpaper.cssGradientLine
 import java.time.LocalDateTime
@@ -132,6 +133,8 @@ object ZenTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionRight || (it == Key.DirectionUp && state.focusedIndex <= 0) },
                     toList = { it == Key.DirectionDown || it == Key.DirectionLeft },
+                    toThemes = { it == Key.DirectionRight },
+                    fromThemes = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Vertical),
         ) {
@@ -373,8 +376,9 @@ private fun ZenTopRight(
         ZenIconButton(
             icon = JpIcons.Palette,
             description = stringResource(R.string.cd_themes),
-            highlighted = false,
+            highlighted = focus.onThemes,
             onClick = actions::openThemes,
+            modifier = Modifier.themesControlTarget(focus),
         )
         Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(1.dp)) {
             BasicText(

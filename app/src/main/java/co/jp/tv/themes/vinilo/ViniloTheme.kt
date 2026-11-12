@@ -81,6 +81,7 @@ import co.jp.tv.themes.shared.ThemeNavAxis
 import co.jp.tv.themes.shared.rememberThemeControlFocus
 import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
+import co.jp.tv.themes.shared.themesControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
 import co.jp.tv.core.util.rememberLowEnd
 import co.jp.tv.wallpaper.cssGradientLine
@@ -123,6 +124,8 @@ object ViniloTheme : LauncherTheme {
                     focus,
                     toControl = { it == Key.DirectionUp },
                     toList = { it == Key.DirectionDown },
+                    toThemes = { it == Key.DirectionRight },
+                    fromThemes = { it == Key.DirectionLeft },
                 )
                 .themeKeyNavigation(state.apps, state.focusedIndex, actions, ThemeNavAxis.Horizontal),
         ) {
@@ -286,23 +289,40 @@ private fun ViniloHeader(
                 ClockFormat.time(now, hourFormat),
                 style = TextStyle(color = ViniloPalette.Cream, fontSize = 22.sp, fontFamily = JpFonts.Righteous),
             )
-            BasicText(
-                stringResource(R.string.cd_settings).uppercase(),
-                modifier = Modifier
-                    .themeControlTarget(focus)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(if (focus.onControl) ViniloPalette.Gold.copy(alpha = 0.25f) else Color.Transparent)
-                    .border(if (focus.onControl) 2.dp else 1.dp, ViniloPalette.Gold, RoundedCornerShape(12.dp))
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = actions::openSettings,
-                    )
-                    .padding(horizontal = 11.dp, vertical = 6.dp),
-                style = TextStyle(color = ViniloPalette.Gold, fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.16.em),
+            HeaderPill(
+                text = stringResource(R.string.cd_settings).uppercase(),
+                focused = focus.onControl,
+                onClick = actions::openSettings,
+                modifier = Modifier.themeControlTarget(focus),
+            )
+            // Not in the artboard: a second pill so the Themes screen is one D-pad step from Settings.
+            HeaderPill(
+                text = stringResource(R.string.cd_themes).uppercase(),
+                focused = focus.onThemes,
+                onClick = actions::openThemes,
+                modifier = Modifier.themesControlTarget(focus),
             )
         }
     }
+}
+
+/** Gold outlined pill in the header; [focused] thickens the outline and tints the fill. */
+@Composable
+private fun HeaderPill(text: String, focused: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    BasicText(
+        text,
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (focused) ViniloPalette.Gold.copy(alpha = 0.25f) else Color.Transparent)
+            .border(if (focused) 2.dp else 1.dp, ViniloPalette.Gold, RoundedCornerShape(12.dp))
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick,
+            )
+            .padding(horizontal = 11.dp, vertical = 6.dp),
+        style = TextStyle(color = ViniloPalette.Gold, fontSize = 8.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.16.em),
+    )
 }
 
 /** Wooden shelf under the sleeves. */
