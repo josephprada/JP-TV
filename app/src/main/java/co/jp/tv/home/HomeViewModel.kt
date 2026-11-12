@@ -13,6 +13,7 @@ import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.preferences.domain.ConfigStore
 import co.jp.tv.preferences.domain.LauncherConfig
+import co.jp.tv.screensaver.domain.ScreensaverSettings
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.weather.domain.PlaceSearch
@@ -243,6 +244,12 @@ class HomeViewModel(
     override fun openThemes() = push(Screen.Themes)
 
     override fun openCustomize() = push(Screen.Customize)
+
+    fun openScreensaver() = push(Screen.Screensaver)
+
+    /** Saves a screensaver choice right away (the settings screen has no draft). */
+    fun setScreensaver(transform: (ScreensaverSettings) -> ScreensaverSettings) =
+        applyAppearance { it.copy(screensaver = transform(it.screensaver)) }
 
     /** Persists appearance fields from the Customize / Themes screens. */
     fun applyAppearance(transform: (LauncherConfig) -> LauncherConfig) {

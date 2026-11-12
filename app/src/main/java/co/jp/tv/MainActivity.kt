@@ -2,6 +2,8 @@ package co.jp.tv
 
 import android.Manifest
 import android.content.Intent
+import android.os.SystemClock
+import android.view.KeyEvent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -55,6 +57,13 @@ import co.jp.tv.playlist.ui.LocalPlaylistStateStore
 import co.jp.tv.playlist.ui.LocalWallpaperMedia
 import co.jp.tv.playlist.domain.WallpaperMedia
 import co.jp.tv.preferences.ui.CustomizeScreen
+import co.jp.tv.preferences.ui.rememberMediaPermissionRequester
+import co.jp.tv.screensaver.domain.IdleRules
+import co.jp.tv.screensaver.domain.SaverKeyGate
+import co.jp.tv.screensaver.domain.ScreensaverMode
+import co.jp.tv.screensaver.domain.ScreensaverState
+import co.jp.tv.screensaver.ui.ScreensaverHost
+import co.jp.tv.screensaver.ui.ScreensaverSettingsScreen
 import co.jp.tv.settings.domain.SettingsShortcut
 import co.jp.tv.settings.domain.SettingsShortcuts
 import co.jp.tv.settings.domain.ShortcutTarget
@@ -64,12 +73,21 @@ import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.ThemeRegistry
 import co.jp.tv.themes.ui.ThemesScreen
 import co.jp.tv.wallpaper.WallpaperRegistry
+import co.jp.tv.wallpaper.image.StaticImageWallpaper
+import co.jp.tv.wallpaper.video.VideoWallpaper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val container get() = (application as JpTvApp).container
     private val viewModel: HomeViewModel by viewModels { container.homeViewModelFactory }
     private var locationAsked = false
+
+    // In-app screensaver: shown after the idle time on the home, ended (and the key swallowed) by any key.
+    private val saverShowing = mutableStateOf(false)
+    private val keyGate = SaverKeyGate()
+
+    @Volatile private var lastInputMs = SystemClock.elapsedRealtime()
 
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,6 +124,8 @@ class MainActivity : ComponentActivity() {
             val editOpen = top == Screen.EditApps
             val themesOpen = top == Screen.Themes
             val customizeOpen = top == Screen.Customize
+            val screensaverOpen = top == Screen.Screensaver
+            val showingSaver = saverShowing.value
             LaunchedEffect(state.apps.isNotEmpty()) {
                 if (state.apps.isNotEmpty()) {
                     StartupTrace.mark("home drawn with ${state.apps.size} apps")
@@ -135,9 +155,28 @@ class MainActivity : ComponentActivity() {
                     askForLocation()
                 }
             }
+            // The saver ends when the launcher goes to the background (an app, or the system's own screensaver, took over).
+            LaunchedEffect(paused) { if (paused) saverShowing.value = false }
+            // Idle on the home with nothing open: after the chosen minutes without a key, start the saver.
+            val homeIdle = !paused && screens.isEmpty() && state.apps.isNotEmpty()
+            val idleMinutes = state.config.screensaver.idleMinutes
+            LaunchedEffect(homeIdle, idleMinutes, showingSaver) {
+                if (!homeIdle || showingSaver) return@LaunchedEffect
+                // Arriving at the home counts as activity.
+                lastInputMs = SystemClock.elapsedRealtime()
+                while (true) {
+                    val now = SystemClock.elapsedRealtime()
+                    val wait = IdleRules.msUntilStart(lastInputMs, now, idleMinutes) ?: return@LaunchedEffect
+                    if (IdleRules.shouldStart(lastInputMs, now, idleMinutes, homeVisible = true, saverShowing = false)) {
+                        saverShowing.value = true
+                        return@LaunchedEffect
+                    }
+                    delay(wait)
+                }
+            }
             val editState by viewModel.editState.collectAsStateWithLifecycle()
             val overlayOpen = screens.isNotEmpty()
-            val hideHome = settingsOpen || editOpen || themesOpen || customizeOpen
+            val hideHome = settingsOpen || editOpen || themesOpen || customizeOpen || screensaverOpen
 
             val homeFocus = remember { FocusRequester() }
 
@@ -145,6 +184,7 @@ class MainActivity : ComponentActivity() {
             val lowEnd = rememberLowEnd()
             val transition = remember { HomeTransition(lowEnd) }
             val scope = rememberCoroutineScope()
+            val requestMedia = rememberMediaPermissionRequester { scope.launch { container.mediaCatalog.refresh() } }
             val view = LocalView.current
             val pausedNow by rememberUpdatedState(paused)
             val homeActions = remember(transition, sounds) {
@@ -170,7 +210,8 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(
                 LocalAppIcons provides container.appIconLoader,
-                LocalPaused provides paused,
+                // While the saver covers the home, the home's own animations stand still.
+                LocalPaused provides (paused || showingSaver),
                 LocalUiSounds provides sounds,
                 LocalWallpaperMedia provides wallpaperMedia,
                 LocalPlaylistStateStore provides container.playlistStateStore,
@@ -196,7 +237,8 @@ class MainActivity : ComponentActivity() {
                             false
                         },
                 ) {
-                    if (!customizeOpen) {
+                    // Under the saver the wallpaper is not composed at all: its video player must not hold a second decoder.
+                    if (!customizeOpen && !screensaverOpen && !showingSaver) {
                         WallpaperRegistry.byId(state.config.wallpaperId)
                             .Render(accent, (paused && state.config.pauseWallpaperInApps) || overlayOpen, Modifier.fillMaxSize())
                         if (state.config.wallpaperDim > 0) {
@@ -210,7 +252,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    if (settingsOpen && !editOpen && !themesOpen && !customizeOpen) {
+                    if (settingsOpen && !editOpen && !themesOpen && !customizeOpen && !screensaverOpen) {
                         // Read-only check, refreshed whenever the user comes back from the Accessibility screen.
                         var serviceEnabled by remember { mutableStateOf(false) }
                         LaunchedEffect(paused) { if (!paused) serviceEnabled = container.accessibilityStatus.isServiceEnabled() }
@@ -245,6 +287,8 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onOpenStockLauncher = { container.stockLauncherOpener.open() },
                             ),
+                            screensaver = state.config.screensaver,
+                            onOpenScreensaver = viewModel::openScreensaver,
                             onAllSettings = {
                                 container.settingsLauncher.open(
                                     SettingsShortcuts.ALL_SETTINGS_ACTION,
@@ -286,6 +330,24 @@ class MainActivity : ComponentActivity() {
                             onRescan = { scope.launch { container.mediaCatalog.refresh() } },
                         )
                     }
+                    if (screensaverOpen) {
+                        LaunchedEffect(Unit) { container.mediaCatalog.refresh() }
+                        ScreensaverSettingsScreen(
+                            settings = state.config.screensaver,
+                            accent = accent,
+                            titleFontId = state.config.titleFontId,
+                            onChange = { next -> viewModel.setScreensaver { next } },
+                            onPreview = { saverShowing.value = true },
+                            onOpenSystemSettings = { container.settingsLauncher.openScreensaverSettings() },
+                            onModeChosen = { mode ->
+                                when (mode) {
+                                    ScreensaverMode.PHOTOS -> requestMedia(StaticImageWallpaper.ID)
+                                    ScreensaverMode.LIVE -> requestMedia(VideoWallpaper.ID)
+                                    else -> Unit
+                                }
+                            },
+                        )
+                    }
                     if (networkOpen) {
                         NetworkPanel(
                             status = state.network,
@@ -306,15 +368,44 @@ class MainActivity : ComponentActivity() {
                             },
                         )
                     }
+                    if (showingSaver) {
+                        // Collected only while it shows; starts from what the home already knows so the mode never flashes.
+                        val first = remember { ScreensaverState.of(state.now, state.config, state.weather, library) }
+                        val saverState by remember { container.screensaverStates() }.collectAsStateWithLifecycle(initialValue = first)
+                        // The saver's own animations follow the lifecycle, not the home's "covered" pause.
+                        CompositionLocalProvider(LocalPaused provides paused) {
+                            ScreensaverHost(saverState, Modifier.fillMaxSize())
+                        }
+                    }
                 }
             }
         }
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean =
+        when (keyGate.verdict(saverShowing.value, event.action == KeyEvent.ACTION_DOWN, event.keyCode, event.repeatCount)) {
+            SaverKeyGate.Verdict.PASS -> {
+                lastInputMs = SystemClock.elapsedRealtime()
+                super.dispatchKeyEvent(event)
+            }
+            SaverKeyGate.Verdict.CONSUME -> true
+            SaverKeyGate.Verdict.DISMISS -> {
+                lastInputMs = SystemClock.elapsedRealtime()
+                saverShowing.value = false
+                true
+            }
+        }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        lastInputMs = SystemClock.elapsedRealtime()
     }
 
     /** The Home key re-delivers the HOME intent to this singleTask activity: close every panel and show the theme home. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (intent.hasCategory(Intent.CATEGORY_HOME)) {
+            saverShowing.value = false
             viewModel.closeAll()
             // Already in front, so no lifecycle change will report it: tell the home override guards.
             container.redirectPolicy.onHomeDrawn()

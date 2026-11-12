@@ -30,6 +30,21 @@ class SaverKeyGateTest {
     }
 
     @Test
+    fun `the auto-repeat of the dismissing key does not reach the app`() {
+        val gate = SaverKeyGate()
+        gate.verdict(showing = true, isDown = true, keyCode = 23, repeat = 0)
+        assertEquals(SaverKeyGate.Verdict.CONSUME, gate.verdict(showing = false, isDown = true, keyCode = 23, repeat = 2))
+    }
+
+    @Test
+    fun `a new press forgets a release that never came`() {
+        val gate = SaverKeyGate()
+        gate.verdict(showing = true, isDown = true, keyCode = 23, repeat = 0)
+        assertEquals(SaverKeyGate.Verdict.PASS, gate.verdict(showing = false, isDown = true, keyCode = 23, repeat = 0))
+        assertEquals(SaverKeyGate.Verdict.PASS, gate.verdict(showing = false, isDown = false, keyCode = 23, repeat = 0))
+    }
+
+    @Test
     fun `the release of an older key is not swallowed`() {
         val gate = SaverKeyGate()
         gate.verdict(showing = true, isDown = true, keyCode = 23, repeat = 0)

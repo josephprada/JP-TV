@@ -34,9 +34,12 @@ fun rememberPlaylistCursor(
     val scheduler = remember { PlaylistScheduler() }
     val size = ids.size
     var position by remember(kind, ids) {
-        mutableStateOf(scheduler.resume(store?.load(kind), size, interval, order, System.currentTimeMillis()))
+        // An empty list (the scan has not finished) must neither resume nor overwrite the saved slot.
+        mutableStateOf(
+            if (size == 0) PlaylistPosition() else scheduler.resume(store?.load(kind), size, interval, order, System.currentTimeMillis()),
+        )
     }
-    LaunchedEffect(position) { store?.save(kind, position) }
+    LaunchedEffect(position) { if (size > 0) store?.save(kind, position) }
 
     val stopped = LocalPaused.current
     var wasStopped by remember { mutableStateOf(stopped) }

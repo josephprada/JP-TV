@@ -290,7 +290,7 @@ fun CustomizeScreen(
 }
 
 @Composable
-private fun OptionsCard(title: String, delayMs: Int, content: @Composable () -> Unit) {
+internal fun OptionsCard(title: String, delayMs: Int, content: @Composable () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()

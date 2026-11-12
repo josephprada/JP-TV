@@ -81,6 +81,29 @@
                 android:resource="@xml/home_override_service" />
         </service>
 
+        <!-- Shows up in Android Settings > Screensaver; the user picks it there (JP-TV never changes that setting). -->
+        <service
+            android:name=".screensaver.data.JpScreensaverService"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/screensaver_service_label"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/jp_screensaver" />
+        </service>
+
+        <!-- The gear of the screensaver picker opens this screen: the same settings as Settings > Protector de pantalla. -->
+        <activity
+            android:name=".screensaver.data.ScreensaverSettingsActivity"
+            android:exported="true"
+            android:label="@string/screensaver_title"
+            android:screenOrientation="landscape" />
+
         <!-- Regular BOOT_COMPLETED only: nothing here is direct-boot aware. -->
         <receiver
             android:name=".homeoverride.data.BootReceiver"

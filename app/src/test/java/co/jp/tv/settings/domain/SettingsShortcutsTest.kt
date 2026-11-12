@@ -54,4 +54,10 @@ class SettingsShortcutsTest {
         assertEquals("11.0", SettingsShortcuts.formatGb(11_811_160_064L))
         assertEquals("0.0", SettingsShortcuts.formatGb(0L))
     }
+
+    @Test
+    fun `the screensaver shortcut opens Android's own daydream picker with display as the fallback`() {
+        assertEquals("android.settings.DREAM_SETTINGS", SettingsShortcuts.DREAM_SETTINGS_ACTION)
+        assertEquals("android.settings.DISPLAY_SETTINGS", SettingsShortcuts.DISPLAY_SETTINGS_ACTION)
+    }
 }

@@ -41,7 +41,7 @@ private const val FIRST_FRAME_TIMEOUT_MS = 2_000L
  * never two decoders, which a 2 GB box would not survive. A single file loops forever; with several, the
  * [PlaylistSelection]'s interval and order decide when to move on.
  *
- * While [paused] it stops playing; if the launcher is also stopped ([LocalPaused]) the player is released
+ * While [paused] it stops playing; if the launcher is stopped ([LocalPaused]) the player is released
  * and rebuilt when it comes back, so a hidden launcher never holds a hardware decoder.
  */
 @Composable
@@ -52,7 +52,7 @@ fun PlaylistVideoPlayer(selection: PlaylistSelection, paused: Boolean, modifier:
     val cursor = rememberPlaylistCursor(MediaKind.VIDEO, ids, selection.interval, selection.order, active = !paused)
     val current = items.getOrNull(cursor.index)
 
-    val release = paused && LocalPaused.current
+    val release = LocalPaused.current
     val player = remember(release) {
         if (release) {
             null
@@ -114,6 +114,8 @@ fun PlaylistVideoPlayer(selection: PlaylistSelection, paused: Boolean, modifier:
             withTimeoutOrNull(FIRST_FRAME_TIMEOUT_MS) { rendered.await() }
         } finally {
             exo.removeListener(frameListener)
+            // A swap cut short while black must not leave the wallpaper black.
+            if (first) fade.snapTo(0f)
         }
         if (!first) fade.animateTo(0f, tween(FADE_MS))
     }

@@ -11,6 +11,10 @@ object SettingsShortcuts {
     const val WIFI_SETTINGS_ACTION = "android.settings.WIFI_SETTINGS"
     const val LOCATION_SETTINGS_ACTION = "android.settings.LOCATION_SOURCE_SETTINGS"
 
+    /** Android's own screensaver (Daydream) picker; the user chooses JP-TV there. */
+    const val DREAM_SETTINGS_ACTION = "android.settings.DREAM_SETTINGS"
+    const val DISPLAY_SETTINGS_ACTION = "android.settings.DISPLAY_SETTINGS"
+
     private fun native(id: SettingsShortcut.Id, action: String) =
         SettingsShortcut(id, ShortcutTarget.Native(action, ALL_SETTINGS_ACTION))
 

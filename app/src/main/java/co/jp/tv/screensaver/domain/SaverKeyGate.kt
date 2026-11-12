@@ -17,10 +17,13 @@ class SaverKeyGate {
             }
             return Verdict.CONSUME
         }
+        if (isDown && repeat > 0 && swallowReleaseOf == keyCode) return Verdict.CONSUME
         if (!isDown && swallowReleaseOf == keyCode) {
             swallowReleaseOf = null
             return Verdict.CONSUME
         }
+        // A fresh press of any key means the old release will not come (focus was lost): forget it.
+        if (isDown && repeat == 0) swallowReleaseOf = null
         return Verdict.PASS
     }
 }

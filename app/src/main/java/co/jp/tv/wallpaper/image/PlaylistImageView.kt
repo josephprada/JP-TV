@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -35,7 +37,8 @@ fun PlaylistImageView(selection: PlaylistSelection, paused: Boolean, modifier: M
     val ids = remember(items) { items.map { it.id } }
     val cursor = rememberPlaylistCursor(MediaKind.IMAGE, ids, selection.interval, selection.order, active = !paused)
     val current = items.getOrNull(cursor.index)
-    val skip = cursor.skip
+    val skip by rememberUpdatedState(cursor.skip)
+    var failures by remember { mutableIntStateOf(0) }
     val imageSource = LocalImageSource.current
 
     var shown by remember { mutableStateOf<ImageBitmap?>(null) }
@@ -45,9 +48,11 @@ fun PlaylistImageView(selection: PlaylistSelection, paused: Boolean, modifier: M
         val item = current ?: return@LaunchedEffect
         val next = imageSource.load(item, MAX_WIDTH, MAX_HEIGHT)
         if (next == null) {
-            if (items.size > 1) skip()
+            // Give up once every file has failed in a row, instead of spinning on a list of broken ones.
+            if (++failures < items.size) skip()
             return@LaunchedEffect
         }
+        failures = 0
         leaving = shown
         shown = next
         progress.snapTo(0f)

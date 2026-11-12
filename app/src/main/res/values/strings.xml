@@ -148,4 +148,33 @@
 
     <string name="theme_terminal_hint">↑↓ elegir · OK ejecutar · tab ajustes</string>
     <string name="theme_hud_target">▼ OBJETIVO: %1$s</string>
+
+    <!-- Screensaver -->
+    <string name="screensaver_title">Protector de pantalla</string>
+    <string name="screensaver_breadcrumb">AJUSTES / PROTECTOR</string>
+    <string name="screensaver_service_label">JP-TV</string>
+    <string name="screensaver_mode_label">MODO</string>
+    <string name="screensaver_idle_label">CUÁNDO EMPIEZA SI NO TOCÁS NADA</string>
+    <string name="screensaver_message_label">MENSAJE DEL RELOJ</string>
+    <string name="screensaver_message_hint">JP-TV</string>
+    <string name="screensaver_mode_photos">Fotos</string>
+    <string name="screensaver_mode_clock">Reloj y mensaje</string>
+    <string name="screensaver_mode_live">Live</string>
+    <string name="screensaver_mode_ambient">Ambiente del tema</string>
+    <string name="screensaver_mode_random">Aleatorio</string>
+    <string name="screensaver_desc_photos">Tus fotos con zoom lento y reloj chico. Usa /sdcard/JPTV/protector, o tu lista de imágenes si esa carpeta no existe.</string>
+    <string name="screensaver_desc_clock">Reloj grande, fecha, clima y tu mensaje. Se corre de lugar cada minuto para cuidar la pantalla.</string>
+    <string name="screensaver_desc_live">Tus videos de /sdcard/JPTV/fondos a pantalla completa, con reloj chico.</string>
+    <string name="screensaver_desc_ambient">La escena del tema activo sin apps, con reloj chico.</string>
+    <string name="screensaver_desc_random">Cambia de modo cada 10 minutos.</string>
+    <string name="screensaver_idle_never">Nunca</string>
+    <string name="screensaver_idle_minutes">%1$d min</string>
+    <string name="screensaver_preview">VISTA PREVIA</string>
+    <string name="screensaver_open_system">ABRIR AJUSTES DEL SISTEMA</string>
+    <string name="screensaver_system_hint">Elegí JP-TV como protector del sistema</string>
+    <string name="screensaver_system_note">Con esa opción el protector también aparece cuando Android lo inicia. JP-TV nunca cambia ese ajuste por su cuenta.</string>
+    <string name="screensaver_row_title">Protector de pantalla</string>
+    <string name="screensaver_row_status">%1$s · %2$s</string>
+    <string name="screensaver_row_hint">Se muestra solo si no tocás nada en el inicio.</string>
+    <string name="screensaver_row_open">CONFIGURAR →</string>
 </resources>

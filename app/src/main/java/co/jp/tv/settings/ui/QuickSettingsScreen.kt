@@ -64,6 +64,8 @@ import co.jp.tv.homeoverride.ui.HomeOverrideRow
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.network.ui.SignalBars
+import co.jp.tv.screensaver.domain.ScreensaverSettings
+import co.jp.tv.screensaver.ui.ScreensaverRow
 import co.jp.tv.settings.data.DeviceInfo
 import co.jp.tv.settings.domain.SettingsShortcut
 import co.jp.tv.settings.domain.SettingsShortcuts
@@ -134,6 +136,8 @@ fun QuickSettingsScreen(
     onAllSettings: () -> Unit,
     onEditApps: () -> Unit,
     homeOverride: HomeOverrideUi,
+    screensaver: ScreensaverSettings,
+    onOpenScreensaver: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val tiles = SettingsShortcuts.tiles
@@ -172,6 +176,7 @@ fun QuickSettingsScreen(
             }
         }
         HomeOverrideRow(homeOverride, accent, Modifier.riseIn(delayMs = 500, durationMs = JpMotion.RiseMs, distanceDp = 8f))
+        ScreensaverRow(screensaver, accent, onOpenScreensaver, Modifier.riseIn(delayMs = 550, durationMs = JpMotion.RiseMs, distanceDp = 8f))
         Spacer(Modifier.weight(1f))
         Footer(accent, onAllSettings)
     }

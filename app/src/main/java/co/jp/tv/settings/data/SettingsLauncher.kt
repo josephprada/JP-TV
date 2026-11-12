@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import co.jp.tv.settings.domain.SettingsShortcuts
 import co.jp.tv.settings.domain.ShortcutTarget
 
 /** Opens native Android settings screens, falling back to the main settings screen when a handler is missing. */
@@ -14,6 +15,11 @@ class SettingsLauncher(context: Context) {
 
     fun open(action: String, fallbackAction: String): Boolean =
         start(action) || start(fallbackAction)
+
+    /** Android's screensaver settings, else Display, else the main settings. Only opens screens: it never changes a setting. */
+    fun openScreensaverSettings(): Boolean =
+        open(SettingsShortcuts.DREAM_SETTINGS_ACTION, SettingsShortcuts.DISPLAY_SETTINGS_ACTION) ||
+            open(SettingsShortcuts.ALL_SETTINGS_ACTION, SettingsShortcuts.ALL_SETTINGS_ACTION)
 
     private fun start(action: String): Boolean = try {
         appContext.startActivity(Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
