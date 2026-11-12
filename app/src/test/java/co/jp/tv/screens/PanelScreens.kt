@@ -29,7 +29,8 @@ import co.jp.tv.preferences.ui.OptionsCard
 import co.jp.tv.preferences.ui.PlaylistSection
 import co.jp.tv.screensaver.domain.ScreensaverSettings
 import co.jp.tv.core.util.ClockFormat
-import co.jp.tv.homeoverride.domain.HomeOverrideStatus
+import co.jp.tv.homeoverride.domain.HomeOverrideState
+import co.jp.tv.homeoverride.ui.HomeOverrideRow
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.settings.data.DeviceInfo
 import co.jp.tv.settings.ui.QuickSettingsInfo
@@ -117,6 +118,18 @@ class PanelScreens : ScreenshotTest() {
         }
     }
 
+    private fun overrideRow(name: String, state: HomeOverrideState) = shoot(name) {
+        Column(Modifier.background(JpColors.Ink).width(620.dp).padding(24.dp)) {
+            HomeOverrideRow(HomeOverrideUi(state, {}, {}, {}, {}), accent)
+        }
+    }
+
+    @Test fun homeOverrideDisabled() = overrideRow("home-override-disabled", HomeOverrideState.of(false, false, false, false))
+    @Test fun homeOverrideMissingBoth() = overrideRow("home-override-missing-both", HomeOverrideState.of(true, false, false, false))
+    @Test fun homeOverrideMissingOverlay() = overrideRow("home-override-missing-overlay", HomeOverrideState.of(true, false, true, false))
+    @Test fun homeOverrideActiveUsage() = overrideRow("home-override-active-usage", HomeOverrideState.of(true, false, true, true))
+    @Test fun homeOverrideActiveAccessibility() = overrideRow("home-override-active-accessibility", HomeOverrideState.of(true, true, false, false))
+
     @Test fun settings() = shoot("settings") {
         val info = QuickSettingsInfo(
             launcherName = "JP-TV",
@@ -139,7 +152,7 @@ class PanelScreens : ScreenshotTest() {
             onShortcut = {},
             onAllSettings = {},
             onEditApps = {},
-            homeOverride = HomeOverrideUi(HomeOverrideStatus.NEEDS_PERMISSION, {}, {}, {}),
+            homeOverride = HomeOverrideUi(HomeOverrideState.of(true, false, false, false), {}, {}, {}, {}),
             screensaver = ScreensaverSettings.Default,
             onOpenScreensaver = {},
         )

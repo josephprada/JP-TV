@@ -22,33 +22,47 @@ import co.jp.tv.core.design.GlassButton
 import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.glass
+import co.jp.tv.homeoverride.domain.DetectionMethod
+import co.jp.tv.homeoverride.domain.HomeOverrideState
 import co.jp.tv.homeoverride.domain.HomeOverrideStatus
+import co.jp.tv.homeoverride.domain.MissingPermission
 
 /** What the settings row shows and what its buttons do. */
 data class HomeOverrideUi(
-    val status: HomeOverrideStatus,
+    val state: HomeOverrideState,
     val onToggle: () -> Unit,
-    val onGrantPermission: () -> Unit,
+    val onGrantUsageAccess: () -> Unit,
+    val onGrantOverlay: () -> Unit,
     val onOpenStockLauncher: () -> Unit,
 )
 
 private val Amber = Color(0xFFFF8A1F)
 
-/** "Usar JP-TV como inicio": state, a one-line explanation and the buttons to opt in or to reach the stock launcher. */
+/** "Usar JP-TV como inicio": status, the active method, what is missing, and the buttons to opt in or to reach the stock launcher. */
 @Composable
 fun HomeOverrideRow(ui: HomeOverrideUi, accent: Color, modifier: Modifier = Modifier) {
-    val (statusText, statusColor, hint) = when (ui.status) {
-        HomeOverrideStatus.ACTIVE -> Triple(R.string.home_override_status_active, accent, R.string.home_override_hint_active)
-        HomeOverrideStatus.DISABLED -> Triple(R.string.home_override_status_off, JpColors.Muted, R.string.home_override_hint_off)
-        HomeOverrideStatus.NEEDS_PERMISSION -> Triple(R.string.home_override_status_needs_permission, Amber, R.string.home_override_hint_needs_permission)
+    val state = ui.state
+    val (statusText, statusColor) = when (state.status) {
+        HomeOverrideStatus.ACTIVE -> R.string.home_override_status_active to accent
+        HomeOverrideStatus.DISABLED -> R.string.home_override_status_off to JpColors.Muted
+        HomeOverrideStatus.NEEDS_PERMISSION -> R.string.home_override_status_needs_permission to Amber
+    }
+    val hint = when (state.status) {
+        HomeOverrideStatus.ACTIVE -> stringResource(R.string.home_override_hint_active)
+        HomeOverrideStatus.DISABLED -> stringResource(R.string.home_override_hint_off)
+        HomeOverrideStatus.NEEDS_PERMISSION -> {
+            val names = state.missing.map {
+                stringResource(if (it == MissingPermission.USAGE_ACCESS) R.string.home_override_permission_usage else R.string.home_override_permission_overlay)
+            }
+            stringResource(R.string.home_override_hint_needs_permission, names.joinToString(stringResource(R.string.home_override_permission_separator)))
+        }
     }
     val shape = RoundedCornerShape(13.dp)
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth().glass(shape).padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 BasicText(
                     stringResource(R.string.home_override_title),
@@ -58,18 +72,29 @@ fun HomeOverrideRow(ui: HomeOverrideUi, accent: Color, modifier: Modifier = Modi
                     stringResource(statusText),
                     style = TextStyle(statusColor, 7.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
                 )
+                state.method?.let { method ->
+                    BasicText(
+                        stringResource(if (method == DetectionMethod.ACCESSIBILITY) R.string.home_override_method_accessibility else R.string.home_override_method_usage),
+                        style = TextStyle(JpColors.Muted, 7.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
+                    )
+                }
             }
-            BasicText(stringResource(hint), style = TextStyle(JpColors.Muted, 8.sp, fontFamily = JpFonts.Body))
+            BasicText(hint, style = TextStyle(JpColors.Muted, 8.sp, fontFamily = JpFonts.Body))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (ui.status == HomeOverrideStatus.NEEDS_PERMISSION) {
-                GlassButton(stringResource(R.string.home_override_grant), accent, ui.onGrantPermission, primary = true)
+            if (state.status == HomeOverrideStatus.NEEDS_PERMISSION) {
+                if (MissingPermission.USAGE_ACCESS in state.missing) {
+                    GlassButton(stringResource(R.string.home_override_grant_usage), accent, ui.onGrantUsageAccess, primary = true)
+                }
+                if (MissingPermission.OVERLAY in state.missing) {
+                    GlassButton(stringResource(R.string.home_override_grant_overlay), accent, ui.onGrantOverlay, primary = true)
+                }
             }
             GlassButton(
-                stringResource(if (ui.status == HomeOverrideStatus.DISABLED) R.string.home_override_turn_on else R.string.home_override_turn_off),
+                stringResource(if (state.status == HomeOverrideStatus.DISABLED) R.string.home_override_turn_on else R.string.home_override_turn_off),
                 accent,
                 ui.onToggle,
-                primary = ui.status == HomeOverrideStatus.DISABLED,
+                primary = state.status == HomeOverrideStatus.DISABLED,
             )
             GlassButton(stringResource(R.string.home_override_open_stock), accent, ui.onOpenStockLauncher)
         }

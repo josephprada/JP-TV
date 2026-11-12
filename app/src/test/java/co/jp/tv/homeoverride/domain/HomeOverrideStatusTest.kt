@@ -6,22 +6,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class HomeOverrideStatusTest {
-    @Test
-    fun `active needs the toggle and the service`() {
-        assertEquals(HomeOverrideStatus.ACTIVE, HomeOverrideStatus.of(toggleOn = true, serviceEnabled = true))
-    }
-
-    @Test
-    fun `toggle on without the service asks for permission`() {
-        assertEquals(HomeOverrideStatus.NEEDS_PERMISSION, HomeOverrideStatus.of(toggleOn = true, serviceEnabled = false))
-    }
-
-    @Test
-    fun `toggle off is disabled whatever the service says`() {
-        assertEquals(HomeOverrideStatus.DISABLED, HomeOverrideStatus.of(toggleOn = false, serviceEnabled = true))
-        assertEquals(HomeOverrideStatus.DISABLED, HomeOverrideStatus.of(toggleOn = false, serviceEnabled = false))
-    }
-
     private val service = "co.jp.tv/co.jp.tv.homeoverride.data.HomeOverrideService"
 
     @Test

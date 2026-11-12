@@ -5,15 +5,6 @@ enum class HomeOverrideStatus {
     ACTIVE,
     DISABLED,
     NEEDS_PERMISSION,
-    ;
-
-    companion object {
-        fun of(toggleOn: Boolean, serviceEnabled: Boolean) = when {
-            !toggleOn -> DISABLED
-            serviceEnabled -> ACTIVE
-            else -> NEEDS_PERMISSION
-        }
-    }
 }
 
 /** Reads the value of Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES (components joined by ':'). */

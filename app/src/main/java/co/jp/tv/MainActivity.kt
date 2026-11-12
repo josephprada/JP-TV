@@ -49,7 +49,7 @@ import co.jp.tv.core.util.rememberLowEnd
 import co.jp.tv.core.util.rememberPausedByLifecycle
 import co.jp.tv.home.HomeViewModel
 import co.jp.tv.home.Screen
-import co.jp.tv.homeoverride.domain.HomeOverrideStatus
+import co.jp.tv.homeoverride.domain.HomeOverrideState
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.network.ui.NetworkPanel
 import co.jp.tv.playlist.ui.LocalMediaThumbnails
@@ -136,6 +136,9 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(paused, state.apps.isNotEmpty()) {
                 if (!paused && state.apps.isNotEmpty()) container.redirectPolicy.onHomeDrawn()
             }
+            // Usage-stats backend of the home override: runs while the toggle and both special accesses are on.
+            val homeOverrideEnabled = state.config.homeOverrideEnabled
+            LaunchedEffect(paused, homeOverrideEnabled) { if (!paused) container.foregroundWatcher.sync(homeOverrideEnabled) }
             // Look for wallpaper media whenever the home comes to the front (a USB drive may have been plugged in).
             LaunchedEffect(paused) { if (!paused) container.mediaCatalog.refresh() }
             val wallpaperMedia = remember(library, state.config.videoPlaylist, state.config.imagePlaylist) {
@@ -253,9 +256,17 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     if (settingsOpen && !editOpen && !themesOpen && !customizeOpen && !screensaverOpen) {
-                        // Read-only check, refreshed whenever the user comes back from the Accessibility screen.
-                        var serviceEnabled by remember { mutableStateOf(false) }
-                        LaunchedEffect(paused) { if (!paused) serviceEnabled = container.accessibilityStatus.isServiceEnabled() }
+                        // Read-only checks, refreshed whenever the user comes back from an Android settings screen.
+                        var accessibilityOn by remember { mutableStateOf(false) }
+                        var usageAccess by remember { mutableStateOf(false) }
+                        var overlay by remember { mutableStateOf(false) }
+                        LaunchedEffect(paused) {
+                            if (!paused) {
+                                accessibilityOn = container.accessibilityStatus.isServiceEnabled()
+                                usageAccess = container.watcherPermissions.usageAccess()
+                                overlay = container.watcherPermissions.overlay()
+                            }
+                        }
                         val homeOverrideOn = state.config.homeOverrideEnabled
                         QuickSettingsScreen(
                             info = QuickSettingsInfo(
@@ -277,11 +288,17 @@ class MainActivity : ComponentActivity() {
                             onShortcut = { openShortcut(it) },
                             onEditApps = { viewModel.openEditApps(null) },
                             homeOverride = HomeOverrideUi(
-                                status = HomeOverrideStatus.of(homeOverrideOn, serviceEnabled),
+                                state = HomeOverrideState.of(homeOverrideOn, accessibilityOn, usageAccess, overlay),
                                 onToggle = { viewModel.setHomeOverride(!homeOverrideOn) },
-                                onGrantPermission = {
-                                    container.settingsLauncher.open(
-                                        android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS,
+                                onGrantUsageAccess = {
+                                    container.settingsLauncher.openForThisApp(
+                                        android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS,
+                                        android.provider.Settings.ACTION_SETTINGS,
+                                    )
+                                },
+                                onGrantOverlay = {
+                                    container.settingsLauncher.openForThisApp(
+                                        android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                                         android.provider.Settings.ACTION_SETTINGS,
                                     )
                                 },

@@ -69,13 +69,21 @@
     <string name="home_override_title">Usar JP-TV como inicio</string>
     <string name="home_override_status_active">ACTIVO</string>
     <string name="home_override_status_off">DESACTIVADO</string>
-    <string name="home_override_status_needs_permission">NECESITA PERMISO</string>
+    <string name="home_override_status_needs_permission">FALTA PERMISO</string>
     <string name="home_override_hint_off">Si el botón Inicio abre otro launcher, JP-TV puede abrirse en su lugar. No se desactiva ni se cambia nada del sistema.</string>
-    <string name="home_override_hint_needs_permission">Falta activar el servicio JP-TV en Accesibilidad. Solo detecta el botón Inicio y el launcher original; no lee contenido.</string>
+    <string name="home_override_hint_needs_permission">Falta permitir: %1$s. JP-TV solo detecta qué launcher está al frente; no lee contenido.</string>
+    <string name="home_override_method_accessibility">ACCESIBILIDAD</string>
+    <string name="home_override_method_usage">DATOS DE USO</string>
+    <string name="home_override_permission_usage">acceso a datos de uso</string>
+    <string name="home_override_permission_overlay">mostrar sobre otras apps</string>
+    <string name="home_override_permission_separator">" y "</string>
+    <string name="home_override_grant_usage">DAR ACCESO A DATOS DE USO →</string>
+    <string name="home_override_grant_overlay">PERMITIR MOSTRAR SOBRE OTRAS APPS →</string>
+    <string name="home_override_channel">JP-TV inicio</string>
+    <string name="home_override_notification">JP-TV está atento al launcher original</string>
     <string name="home_override_hint_active">JP-TV se abre al pulsar Inicio. Si falla varias veces seguidas, vuelve solo el launcher original.</string>
     <string name="home_override_turn_on">ACTIVAR</string>
     <string name="home_override_turn_off">DESACTIVAR</string>
-    <string name="home_override_grant">DAR PERMISO →</string>
     <string name="home_override_open_stock">ABRIR LAUNCHER ORIGINAL →</string>
 
     <string name="settings_edit_apps">EDITAR APPS →</string>
