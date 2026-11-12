@@ -50,11 +50,10 @@ import co.jp.tv.home.Screen
 import co.jp.tv.homeoverride.domain.HomeOverrideStatus
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
 import co.jp.tv.network.ui.NetworkPanel
-import co.jp.tv.playlist.domain.PlaylistSelection
 import co.jp.tv.playlist.ui.LocalMediaThumbnails
 import co.jp.tv.playlist.ui.LocalPlaylistStateStore
 import co.jp.tv.playlist.ui.LocalWallpaperMedia
-import co.jp.tv.playlist.ui.WallpaperMedia
+import co.jp.tv.playlist.domain.WallpaperMedia
 import co.jp.tv.preferences.ui.CustomizeScreen
 import co.jp.tv.settings.domain.SettingsShortcut
 import co.jp.tv.settings.domain.SettingsShortcuts
@@ -120,11 +119,7 @@ class MainActivity : ComponentActivity() {
             // Look for wallpaper media whenever the home comes to the front (a USB drive may have been plugged in).
             LaunchedEffect(paused) { if (!paused) container.mediaCatalog.refresh() }
             val wallpaperMedia = remember(library, state.config.videoPlaylist, state.config.imagePlaylist) {
-                WallpaperMedia(
-                    video = PlaylistSelection.of(library.videos, state.config.videoPlaylist),
-                    image = PlaylistSelection.of(library.images, state.config.imagePlaylist),
-                    loaded = library.loaded,
-                )
+                WallpaperMedia.of(library, state.config.videoPlaylist, state.config.imagePlaylist)
             }
             val locationRequest = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
                 viewModel.refreshNetworkAccess()

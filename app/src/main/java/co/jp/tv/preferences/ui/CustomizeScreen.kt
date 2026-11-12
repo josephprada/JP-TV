@@ -57,10 +57,9 @@ import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.playlist.domain.MediaKind
 import co.jp.tv.playlist.domain.MediaLibraryState
-import co.jp.tv.playlist.domain.PlaylistSelection
 import co.jp.tv.playlist.ui.LocalPlaylistStateStore
 import co.jp.tv.playlist.ui.LocalWallpaperMedia
-import co.jp.tv.playlist.ui.WallpaperMedia
+import co.jp.tv.playlist.domain.WallpaperMedia
 import co.jp.tv.preferences.domain.AccentPreset
 import co.jp.tv.preferences.domain.AccentPresets
 import co.jp.tv.preferences.domain.LauncherConfig
@@ -110,11 +109,7 @@ fun CustomizeScreen(
     // The folders may have changed since the last look: scan again every time Customize opens.
     LaunchedEffect(Unit) { onRescan() }
     val wallpaperMedia = remember(media, draft.videoPlaylist, draft.imagePlaylist) {
-        WallpaperMedia(
-            video = PlaylistSelection.of(media.videos, draft.videoPlaylist),
-            image = PlaylistSelection.of(media.images, draft.imagePlaylist),
-            loaded = media.loaded,
-        )
+        WallpaperMedia.of(media, draft.videoPlaylist, draft.imagePlaylist)
     }
     val accent = Color(draft.accent)
     val titleFont = rememberTitleFont(draft.titleFontId)

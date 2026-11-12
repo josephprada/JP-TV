@@ -13,15 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import co.jp.tv.playlist.data.BoundedBitmaps
 import co.jp.tv.playlist.domain.MediaKind
 import co.jp.tv.playlist.domain.PlaylistSelection
+import co.jp.tv.playlist.ui.LocalImageSource
 import co.jp.tv.playlist.ui.rememberPlaylistCursor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 private const val MAX_WIDTH = 1920
 private const val MAX_HEIGHT = 1080
@@ -39,13 +36,14 @@ fun PlaylistImageView(selection: PlaylistSelection, paused: Boolean, modifier: M
     val cursor = rememberPlaylistCursor(MediaKind.IMAGE, ids, selection.interval, selection.order, active = !paused)
     val current = items.getOrNull(cursor.index)
     val skip = cursor.skip
+    val imageSource = LocalImageSource.current
 
     var shown by remember { mutableStateOf<ImageBitmap?>(null) }
     var leaving by remember { mutableStateOf<ImageBitmap?>(null) }
     val progress = remember { Animatable(1f) }
     LaunchedEffect(current?.id) {
         val item = current ?: return@LaunchedEffect
-        val next = withContext(Dispatchers.IO) { BoundedBitmaps.decode(item.id, MAX_WIDTH, MAX_HEIGHT)?.asImageBitmap() }
+        val next = imageSource.load(item, MAX_WIDTH, MAX_HEIGHT)
         if (next == null) {
             if (items.size > 1) skip()
             return@LaunchedEffect

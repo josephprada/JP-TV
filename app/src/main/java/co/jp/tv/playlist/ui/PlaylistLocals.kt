@@ -3,8 +3,12 @@ package co.jp.tv.playlist.ui
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import co.jp.tv.playlist.data.BoundedBitmaps
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import co.jp.tv.playlist.domain.MediaItem
-import co.jp.tv.playlist.domain.PlaylistSelection
+import co.jp.tv.playlist.domain.WallpaperMedia
 import co.jp.tv.playlist.domain.PlaylistStateStore
 
 /** Lazy preview source for the UI; Customize reads it from [LocalMediaThumbnails] and never decodes files itself. */
@@ -14,14 +18,14 @@ fun interface MediaThumbnails {
 
 val LocalMediaThumbnails = staticCompositionLocalOf<MediaThumbnails> { MediaThumbnails { null } }
 
-/** What the playlist wallpapers play: the resolved files of both kinds. [loaded] is false until the first scan ends. */
-data class WallpaperMedia(
-    val video: PlaylistSelection = PlaylistSelection.Empty,
-    val image: PlaylistSelection = PlaylistSelection.Empty,
-    val loaded: Boolean = false,
-) {
-    companion object {
-        val Empty = WallpaperMedia()
+/** Reads a picture of a file bounded to the screen; the default decodes off the main thread, tests plug in fixtures. */
+fun interface ImageSource {
+    suspend fun load(item: MediaItem, maxWidth: Int, maxHeight: Int): ImageBitmap?
+}
+
+val LocalImageSource = staticCompositionLocalOf<ImageSource> {
+    ImageSource { item, maxWidth, maxHeight ->
+        withContext(Dispatchers.IO) { BoundedBitmaps.decode(item.id, maxWidth, maxHeight)?.asImageBitmap() }
     }
 }
 
