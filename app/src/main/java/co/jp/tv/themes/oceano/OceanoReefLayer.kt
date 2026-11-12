@@ -1,6 +1,6 @@
 package co.jp.tv.themes.oceano
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,7 +9,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
+import co.jp.tv.core.design.bakedLayer
 
 /** Which static reef band a [OceanoReefLayer] draws. */
 internal enum class OceanoReefBand { Far, Mid, Fore }
@@ -17,20 +17,22 @@ internal enum class OceanoReefBand { Far, Mid, Fore }
 private val RippleStroke = Stroke(width = 1.8f)
 
 /**
- * One static band of the reef. It never reads animated state, and its own graphics layer keeps
- * the looping layers around it from re-recording it.
+ * One static band of the reef, drawn once into a bitmap and blitted afterwards, so the looping
+ * layers around it never pay for its paths again.
  */
 @Composable
 internal fun OceanoReefLayer(scenery: OceanoReefScenery, band: OceanoReefBand, modifier: Modifier = Modifier) {
-    Canvas(modifier.fillMaxSize().graphicsLayer()) {
-        inDesignSpace {
-            when (band) {
-                OceanoReefBand.Far -> drawFar(scenery)
-                OceanoReefBand.Mid -> drawMid(scenery)
-                OceanoReefBand.Fore -> drawFore(scenery)
+    Spacer(
+        modifier.fillMaxSize().bakedLayer {
+            inDesignSpace {
+                when (band) {
+                    OceanoReefBand.Far -> drawFar(scenery)
+                    OceanoReefBand.Mid -> drawMid(scenery)
+                    OceanoReefBand.Fore -> drawFore(scenery)
+                }
             }
-        }
-    }
+        },
+    )
 }
 
 private fun DrawScope.drawFar(s: OceanoReefScenery) {

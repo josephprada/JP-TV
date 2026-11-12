@@ -19,8 +19,11 @@ import androidx.compose.ui.platform.LocalDensity
 import co.jp.tv.apps.domain.TvApp
 import kotlin.math.abs
 
-/** Cells farther than this from the focused one are off screen (960 px / 280 px) and not composed. */
-private const val VISIBLE_RADIUS = 5
+/**
+ * Cells farther than this from the focused one are invisible (a jelly 4 cells out sits past the screen edge,
+ * where the edge fade is already 0) and not composed.
+ */
+private const val VISIBLE_RADIUS = 3
 
 /** Where the jelly box sits inside its 280 px cell, and its top on the artboard (design px). */
 private const val CELL_INSET = 40f
@@ -28,6 +31,9 @@ private const val JELLY_TOP = 230f
 
 /** Offset from the cell's left edge to the centre of the jelly's glow, so the focused one centres. */
 private const val CELL_CENTER = 140f
+
+/** Width of the edge fade on each side: 10 % of the 1920 px artboard. */
+private const val EDGE_FADE = 192f
 
 /**
  * The row of moon jellies, one per app. [scroll] is the animated index of the focused app: the
@@ -44,23 +50,7 @@ internal fun OceanoJellyTrack(
     modifier: Modifier = Modifier,
 ) {
     val art = remember { OceanoJellyArt.build() }
-    val edgeFade = remember {
-        Brush.horizontalGradient(
-            0f to Color.Transparent,
-            0.1f to Color.Black,
-            0.9f to Color.Black,
-            1f to Color.Transparent,
-        )
-    }
-    Box(
-        modifier
-            .fillMaxSize()
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-            .drawWithContent {
-                drawContent()
-                drawRect(edgeFade, blendMode = BlendMode.DstIn)
-            },
-    ) {
+    Box(modifier.fillMaxSize()) {
         for (i in apps.indices) {
             if (abs(i - focusedIndex) > VISIBLE_RADIUS) continue
             key(apps[i].packageName) {
@@ -99,7 +89,11 @@ private fun OceanoJellyCell(
             val cellLeft = OceanoDesign.WIDTH / 2f - (scroll.value * OceanoMotion.StepPx + CELL_CENTER) + index * OceanoMotion.StepPx
             translationX = (cellLeft + CELL_INSET) * designToPx
             translationY = JELLY_TOP * designToPx
-            alpha = dim.value
+            // The artboard masks the outer 10 % of the screen; an offscreen mask layer is too costly on
+            // the TV, so each jelly fades by how close its centre is to the edge instead.
+            val centre = OceanoDesign.WIDTH / 2f + (index - scroll.value) * OceanoMotion.StepPx
+            val edge = minOf(centre, OceanoDesign.WIDTH - centre)
+            alpha = dim.value * (edge / EDGE_FADE).coerceIn(0f, 1f)
             compositingStrategy = CompositingStrategy.ModulateAlpha
         },
     ) {

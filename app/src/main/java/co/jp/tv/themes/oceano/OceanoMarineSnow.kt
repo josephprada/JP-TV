@@ -26,10 +26,11 @@ internal fun OceanoMarineSnow(clock: OceanoClock, modifier: Modifier = Modifier)
             }
         }
     }
+    val count = if (clock.lite) SPECKS / 2 else SPECKS
     Canvas(modifier.fillMaxSize().graphicsLayer()) {
         val t = clock.seconds
         inDesignSpace {
-            for (i in 0 until SPECKS) {
+            for (i in 0 until count) {
                 val p = OceanoMotion.alternate(t, specks[i * 6 + 4], specks[i * 6 + 5])
                 drawCircle(
                     OceanoPalette.Snow,

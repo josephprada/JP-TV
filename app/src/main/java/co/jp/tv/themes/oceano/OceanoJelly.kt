@@ -65,8 +65,10 @@ internal fun OceanoJelly(
                 translationY = OceanoMotion.lerp(-14f, 14f, OceanoMotion.alternate(clock.seconds, bobPeriod, bobDelay)) * designToPx
             },
     ) {
-        Canvas(Modifier.fillMaxSize()) {
+        // Its own layer: the per-frame redraw re-records only the drawing, not the text around it.
+        Canvas(Modifier.fillMaxSize().graphicsLayer()) {
             val on = focus()
+            val lite = clock.lite
             val t = clock.seconds
             val k = size.width / OceanoJellyArt.BOX_WIDTH
             scale(k, k, Offset.Zero) {
@@ -74,10 +76,10 @@ internal fun OceanoJelly(
                 drawCircle(brushes.glow, radius = 260f, center = OceanoJellyArt.GlowCenter, alpha = glowAlpha.coerceIn(0f, 1f))
                 val inner = OceanoMotion.lerp(0.8f, 1.3f, on)
                 scale(inner, inner, OceanoJellyArt.GlowCenter) {
-                    drawTentacles(art, tint, on, t)
+                    drawTentacles(art, tint, on, t, lite)
                     val p = OceanoMotion.pulse(t, pulsePeriod, pulseDelay)
                     scale(OceanoMotion.lerp(1f, 1.07f, p), OceanoMotion.lerp(1f, 0.9f, p), OceanoJellyArt.BellCenter) {
-                        drawBell(art, brushes, tint, on)
+                        drawBell(art, brushes, tint, on, lite)
                     }
                 }
             }
@@ -120,15 +122,18 @@ internal fun OceanoJelly(
                 )
             }
         }
-        OceanoJellyLabel(label, focus, designToPx)
+        OceanoJellyLabel(label, focus, designToPx, clock.lite)
     }
 }
 
 @Composable
-private fun OceanoJellyLabel(label: String, focus: () -> Float, designToPx: Float) {
+private fun OceanoJellyLabel(label: String, focus: () -> Float, designToPx: Float, lite: Boolean) {
     val on = focus()
-    val shadow = remember(on > 0.5f, designToPx) {
-        if (on > 0.5f) {
+    val shadow = remember(on > 0.5f, designToPx, lite) {
+        if (lite && on <= 0.5f) {
+            // A blurred text shadow is re-rasterised every frame; unfocused labels go without on low-end boxes.
+            null
+        } else if (on > 0.5f) {
             Shadow(OceanoPalette.LabelShadow, Offset(0f, 2f * designToPx), blurRadius = 22f * designToPx)
         } else {
             Shadow(OceanoPalette.LabelShadowSoft, Offset(0f, designToPx), blurRadius = 10f * designToPx)
@@ -155,9 +160,11 @@ private fun OceanoJellyLabel(label: String, focus: () -> Float, designToPx: Floa
 }
 
 /** Nine thin tentacles (7 segments) and three striped oral arms (5 segments), each curling. */
-private fun DrawScope.drawTentacles(art: OceanoJellyArt, tint: Color, on: Float, t: Float) {
+private fun DrawScope.drawTentacles(art: OceanoJellyArt, tint: Color, on: Float, t: Float, lite: Boolean) {
     val thinAlpha = OceanoMotion.lerp(0.7f, 0.95f, on)
-    for (i in art.thinX.indices) {
+    // Low-end boxes: unfocused jellies keep every other thin tentacle and lose the faint striped arms.
+    val thinStep = if (lite && on < 0.5f) 2 else 1
+    for (i in art.thinX.indices step thinStep) {
         val swing = if (art.thinKind[i] == 1) 7f else -9f
         chain(
             x = art.thinX[i],
@@ -174,6 +181,7 @@ private fun DrawScope.drawTentacles(art: OceanoJellyArt, tint: Color, on: Float,
     }
     val armAlpha = OceanoMotion.lerp(0.38f, 0.6f, on)
     for (i in art.armX.indices) {
+        if (lite && on < 0.5f) break
         chain(
             x = art.armX[i],
             length = 46f,
@@ -232,9 +240,10 @@ private fun DrawScope.chain(
 }
 
 /** Bell halo, body, border, gonads, rim and nothing else: the initial is a text overlay. */
-private fun DrawScope.drawBell(art: OceanoJellyArt, brushes: OceanoJellyArt.TintBrushes, tint: Color, on: Float) {
+private fun DrawScope.drawBell(art: OceanoJellyArt, brushes: OceanoJellyArt.TintBrushes, tint: Color, on: Float, lite: Boolean) {
     val haloAlpha = OceanoMotion.lerp(0.5f, 0.95f, on)
     for (i in art.haloIdle.indices) {
+        if (lite && i > 0 && on < 0.5f) break
         val weight = when (i) {
             0 -> 0.3f
             1 -> 0.14f

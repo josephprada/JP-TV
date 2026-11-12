@@ -1,6 +1,10 @@
 package co.jp.tv.themes.oceano
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import co.jp.tv.core.design.bakeToBitmap
+import kotlin.math.ceil
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -12,7 +16,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -25,28 +28,53 @@ import kotlin.random.Random
 @Composable
 internal fun OceanoCoralGarden(clock: OceanoClock, modifier: Modifier = Modifier) {
     val pieces = remember { buildGarden() }
-    Canvas(modifier.fillMaxSize().graphicsLayer()) {
-        val t = clock.seconds
-        inDesignSpace {
-            for (i in pieces.indices) {
-                val piece = pieces[i]
-                val sway = OceanoMotion.lerp(-2.4f, 2.4f, OceanoMotion.alternate(t, piece.periodS, piece.delayS))
-                withTransform({
-                    translate(piece.left, piece.top)
-                    rotate(sway, piece.pivot)
-                }) {
-                    if (piece.under != null) drawPath(piece.under, piece.underColor)
-                    for (s in piece.strokes.indices) {
-                        drawPath(piece.strokes[s], piece.strokeColors[s], alpha = piece.strokeAlphas[s], style = piece.strokeStyles[s])
+    Spacer(
+        modifier
+            .fillMaxSize()
+            .drawWithCache {
+                // The branching is static, only its rotation loops: bake each piece once and rotate the bitmap.
+                val k = size.width / OceanoDesign.WIDTH
+                val baked = pieces.map { piece ->
+                    bakeToBitmap(ceil((piece.width + 2 * PAD) * k).toInt(), ceil((piece.height + 2 * PAD) * k).toInt()) {
+                        withTransform({
+                            scale(k, k, Offset.Zero)
+                            translate(PAD, PAD)
+                        }) { drawPiece(piece) }
                     }
-                    if (piece.over != null) drawPath(piece.over, piece.overColor)
                 }
-            }
-        }
+                onDrawBehind {
+                    val t = clock.seconds
+                    for (i in pieces.indices) {
+                        val piece = pieces[i]
+                        val sway = OceanoMotion.lerp(-2.4f, 2.4f, OceanoMotion.alternate(t, piece.periodS, piece.delayS))
+                        withTransform({
+                            scale(k, k, Offset.Zero)
+                            translate(piece.left - PAD, piece.top - PAD)
+                            rotate(sway, Offset(piece.pivot.x + PAD, piece.pivot.y + PAD))
+                            scale(1f / k, 1f / k, Offset.Zero)
+                        }) {
+                            drawImage(baked[i])
+                        }
+                    }
+                }
+            },
+    )
+}
+
+/** Design px of margin around a piece's box, for strokes and tips that poke out of it. */
+private const val PAD = 14f
+
+private fun DrawScope.drawPiece(piece: GardenPiece) {
+    if (piece.under != null) drawPath(piece.under, piece.underColor)
+    for (s in piece.strokes.indices) {
+        drawPath(piece.strokes[s], piece.strokeColors[s], alpha = piece.strokeAlphas[s], style = piece.strokeStyles[s])
     }
+    if (piece.over != null) drawPath(piece.over, piece.overColor)
 }
 
 private class GardenPiece(
+    val width: Float,
+    val height: Float,
     val left: Float,
     val top: Float,
     val pivot: Offset,
@@ -114,7 +142,7 @@ private fun fan(random: Random, left: Float, top: Float, w: Float, h: Float, per
     val colors = List(levels.size) { color } + mesh
     val alphas = FloatArray(strokes.size) { if (it < levels.size) 1f else 0.45f }
     val styles = widths.map { Stroke(width = it * k, cap = StrokeCap.Round) } + Stroke(width = 0.8f * k)
-    return GardenPiece(left, top, Offset(w / 2f, h), period, delay, strokes, colors, alphas, styles)
+    return GardenPiece(w, h, left, top, Offset(w / 2f, h), period, delay, strokes, colors, alphas, styles)
 }
 
 /** An anemone: 36 curled tentacles with bright tips over a round base. */
@@ -152,7 +180,7 @@ private fun anemone(
         addOval(Rect(w / 2f - w / 8f, h * 0.92f - h * 0.12f, w / 2f + w / 8f, h * 0.92f + h * 0.12f))
     }
     return GardenPiece(
-        left, top, Offset(w / 2f, h), period, delay,
+        w, h, left, top, Offset(w / 2f, h), period, delay,
         strokes = listOf(tentacles),
         strokeColors = listOf(color),
         strokeAlphas = floatArrayOf(1f),
@@ -177,7 +205,7 @@ private fun seagrass(random: Random, left: Float, top: Float, period: Float, del
         styles += Stroke(width = 2.3f + random.nextFloat(), cap = StrokeCap.Round)
     }
     return GardenPiece(
-        left, top, Offset(60f, 110f), period, delay,
+        120f, 110f, left, top, Offset(60f, 110f), period, delay,
         strokes = blades,
         strokeColors = List(9) { OceanoPalette.Seagrass },
         strokeAlphas = FloatArray(9) { 1f },

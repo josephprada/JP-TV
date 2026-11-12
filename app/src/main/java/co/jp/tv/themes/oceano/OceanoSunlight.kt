@@ -36,6 +36,9 @@ internal fun OceanoSunlight(clock: OceanoClock, night: () -> Float, modifier: Mo
             endY = RAY_LENGTH,
         )
     }
+    // Low-end boxes: every other ray, one pass instead of a soft pass under a core (half the gradient fill).
+    val lite = clock.lite
+    val rays = remember(lite) { if (lite) Rays.filterIndexed { i, _ -> i % 2 == 0 } else Rays }
     Canvas(modifier.fillMaxSize().graphicsLayer()) {
         val t = clock.seconds
         val n = night()
@@ -53,14 +56,23 @@ internal fun OceanoSunlight(clock: OceanoClock, night: () -> Float, modifier: Mo
             val raysAlpha = OceanoMotion.lerp(OceanoPalette.RaysAlphaDay, OceanoPalette.RaysAlphaNight, n)
             val sway = OceanoMotion.lerp(-3.5f, 3.5f, OceanoMotion.alternate(t, 19f))
             withTransform({ rotate(sway, RayOrigin) }) {
-                for (r in Rays.indices) {
-                    val ray = Rays[r]
+                for (r in rays.indices) {
+                    val ray = rays[r]
                     val beat = 0.35f + 0.55f * OceanoMotion.pulse(t, ray.periodS, ray.delayS)
                     val alpha = (ray.alpha * beat * raysAlpha).coerceIn(0f, 1f)
                     withTransform({
                         translate(RayOrigin.x, RayOrigin.y)
                         rotate(ray.angle, Offset.Zero)
                     }) {
+                        if (lite) {
+                            drawRect(
+                                rayBrush,
+                                topLeft = Offset(-ray.width / 2f - 8f, 0f),
+                                size = Size(ray.width + 16f, RAY_LENGTH),
+                                alpha = (alpha * 0.8f).coerceAtMost(1f),
+                            )
+                            return@withTransform
+                        }
                         drawRect(
                             rayBrush,
                             topLeft = Offset(-ray.width / 2f - 16f, 0f),

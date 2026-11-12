@@ -1,6 +1,6 @@
 package co.jp.tv.themes.oceano
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -8,9 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
+import co.jp.tv.core.design.bakeToBitmap
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.random.Random
 
 /**
@@ -45,38 +50,71 @@ internal fun OceanoCaustics(
     val fields = remember(top, bottom, cellWidth, fadeDown) {
         listOf(cells(17, top, bottom, cellWidth, fadeDown), cells(29, top, bottom, cellWidth, fadeDown))
     }
-    Canvas(modifier.fillMaxSize().graphicsLayer()) {
-        val t = clock.seconds
-        val bandAlpha = alpha()
-        if (bandAlpha <= 0.001f) return@Canvas
-        inDesignSpace {
-            clipRect(0f, top, OceanoDesign.WIDTH, bottom) {
-                for (f in fields.indices) {
-                    val field = fields[f]
-                    // sw-fadeA: 0.9 -> 0.1 -> 0.9; sw-fadeB is its mirror.
-                    val beat = OceanoMotion.pulse(t, fadePeriodS)
-                    val fieldAlpha = if (f == 0) 0.9f - 0.8f * beat else 0.1f + 0.8f * beat
-                    val drift = when {
-                        driftPeriodsS == null -> 0f
-                        f == 0 -> -160f * OceanoMotion.alternate(t, driftPeriodsS.first)
-                        else -> -160f * (1f - OceanoMotion.alternate(t, driftPeriodsS.second))
-                    }
-                    var i = 0
-                    while (i + 3 < field.size) {
-                        val a = (field[i + 3] * fieldAlpha * bandAlpha).coerceIn(0f, 1f)
+    Spacer(
+        modifier
+            .fillMaxSize()
+            .drawWithCache {
+                // Each field is a static scatter of cells: bake it once at half resolution (the light is
+                // soft anyway) and per frame only crossfade and drift two textured quads.
+                val k = size.width / OceanoDesign.WIDTH
+                val bakeScale = k * BAKE_RES
+                val bitmaps = fields.map { field ->
+                    bakeToBitmap(
+                        ceil(BAKE_WIDTH * bakeScale).toInt(),
+                        ceil((bottom - top) * bakeScale).toInt(),
+                    ) {
                         withTransform({
-                            translate(field[i] + drift, field[i + 1])
-                            scale(field[i + 2], field[i + 2] * 0.38f, Offset.Zero)
+                            scale(bakeScale, bakeScale, Offset.Zero)
+                            translate(-BAKE_LEFT, -top)
                         }) {
-                            drawCircle(cellBrush, radius = 1f, center = Offset.Zero, alpha = a)
+                            var i = 0
+                            while (i + 3 < field.size) {
+                                withTransform({
+                                    translate(field[i], field[i + 1])
+                                    scale(field[i + 2], field[i + 2] * 0.38f, Offset.Zero)
+                                }) {
+                                    drawCircle(cellBrush, radius = 1f, center = Offset.Zero, alpha = field[i + 3].coerceIn(0f, 1f))
+                                }
+                                i += 4
+                            }
                         }
-                        i += 4
                     }
                 }
-            }
-        }
-    }
+                val dstSize = IntSize(ceil(BAKE_WIDTH * k).toInt(), ceil((bottom - top) * k).toInt())
+                onDrawBehind {
+                    val bandAlpha = alpha()
+                    if (bandAlpha <= 0.001f) return@onDrawBehind
+                    val t = clock.seconds
+                    // sw-fadeA: 0.9 -> 0.1 -> 0.9; sw-fadeB is its mirror.
+                    val beat = OceanoMotion.pulse(t, fadePeriodS)
+                    for (f in bitmaps.indices) {
+                        val fieldAlpha = if (f == 0) 0.9f - 0.8f * beat else 0.1f + 0.8f * beat
+                        val drift = when {
+                            driftPeriodsS == null -> 0f
+                            f == 0 -> -160f * OceanoMotion.alternate(t, driftPeriodsS.first)
+                            else -> -160f * (1f - OceanoMotion.alternate(t, driftPeriodsS.second))
+                        }
+                        drawImage(
+                            bitmaps[f],
+                            srcOffset = IntOffset.Zero,
+                            srcSize = IntSize(bitmaps[f].width, bitmaps[f].height),
+                            dstOffset = IntOffset(((BAKE_LEFT + drift) * k).roundToInt(), (top * k).roundToInt()),
+                            dstSize = dstSize,
+                            alpha = (fieldAlpha * bandAlpha).coerceIn(0f, 1f),
+                            filterQuality = FilterQuality.Low,
+                        )
+                    }
+                }
+            },
+    )
 }
+
+/** Baked at this fraction of device resolution. */
+private const val BAKE_RES = 0.5f
+
+/** Design px covered by a baked field: from [BAKE_LEFT] (cells start off screen) past the right edge plus the drift. */
+private const val BAKE_LEFT = -260f
+private const val BAKE_WIDTH = OceanoDesign.WIDTH + 160f + 260f
 
 /** Light cells packed as x, y, half-width, alpha (alpha already includes the band's fade). */
 private fun cells(seed: Int, top: Float, bottom: Float, cellWidth: Float, fadeDown: Boolean): FloatArray {

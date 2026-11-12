@@ -35,7 +35,7 @@ internal fun OceanoNightGlow(
                 val twinkle = 0.25f + 0.75f * OceanoMotion.pulse(t, lights[i + 4], lights[i + 5])
                 val center = Offset(lights[i], lights[i + 1])
                 val r = lights[i + 2]
-                drawCircle(color, radius = r + 5f, center = center, alpha = 0.18f * twinkle * n)
+                if (!clock.lite) drawCircle(color, radius = r + 5f, center = center, alpha = 0.18f * twinkle * n)
                 drawCircle(color, radius = r + 2f, center = center, alpha = 0.4f * twinkle * n)
                 drawCircle(color, radius = r, center = center, alpha = twinkle * n)
                 i += 6

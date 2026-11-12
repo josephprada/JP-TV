@@ -1,6 +1,8 @@
 package co.jp.tv.themes.oceano
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
+import co.jp.tv.core.design.bakedLayer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -55,14 +57,21 @@ internal fun OceanoFrontMotes(clock: OceanoClock, modifier: Modifier = Modifier)
                 }
                 i += 4
             }
-            drawRect(bottomFade, topLeft = Offset(0f, OceanoDesign.HEIGHT - 200f), size = Size(OceanoDesign.WIDTH, 200f))
-            translate(OceanoDesign.WIDTH * 0.5f, OceanoDesign.HEIGHT * 0.38f) {
-                scale(OceanoDesign.WIDTH * 0.85f, OceanoDesign.HEIGHT * 0.8f, Offset.Zero) {
-                    drawRect(vignette, topLeft = Offset(-1f, -1f), size = Size(2f, 2f))
-                }
-            }
         }
     }
+    // The bottom fade and the vignette are static: one baked bitmap instead of two full-width gradients per frame.
+    Spacer(
+        modifier.fillMaxSize().bakedLayer {
+            inDesignSpace {
+                drawRect(bottomFade, topLeft = Offset(0f, OceanoDesign.HEIGHT - 200f), size = Size(OceanoDesign.WIDTH, 200f))
+                translate(OceanoDesign.WIDTH * 0.5f, OceanoDesign.HEIGHT * 0.38f) {
+                    scale(OceanoDesign.WIDTH * 0.85f, OceanoDesign.HEIGHT * 0.8f, Offset.Zero) {
+                        drawRect(vignette, topLeft = Offset(-1f, -1f), size = Size(2f, 2f))
+                    }
+                }
+            }
+        },
+    )
 }
 
 /** The artboard's fourteen motes: left, top, size, `sw-snow` period. */
