@@ -70,6 +70,7 @@ import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.RailWindow
 import co.jp.tv.themes.shared.ThemeControlFocus
@@ -265,7 +266,7 @@ private fun ViniloHeader(
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
             val ms = network.routerLatencyMs ?: network.internetLatencyMs
             BasicText(
-                "[RED WI-FI]${ms?.let { " · ${it} MS" }.orEmpty()}",
+                "${networkName(network).uppercase()}${ms?.let { " · ${it} MS" }.orEmpty()}",
                 modifier = Modifier.clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
@@ -568,7 +569,7 @@ private fun ViniloTonearm(angle: () -> Float, modifier: Modifier = Modifier) {
 private fun ViniloNowPlaying(selected: String, modifier: Modifier = Modifier) {
     Column(modifier.width(350.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
         BasicText(
-            stringResource(R.string.vinilo_now_playing, selected.uppercase()),
+            stringResource(R.string.vinilo_now_playing),
             style = TextStyle(
                 color = ViniloPalette.Gold,
                 fontSize = 7.5.sp,
@@ -579,8 +580,10 @@ private fun ViniloNowPlaying(selected: String, modifier: Modifier = Modifier) {
             overflow = TextOverflow.Ellipsis,
         )
         BasicText(
-            stringResource(R.string.vinilo_track),
+            selected,
             style = TextStyle(color = ViniloPalette.Cream, fontSize = 20.sp, fontFamily = JpFonts.Righteous),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

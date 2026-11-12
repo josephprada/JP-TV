@@ -1,6 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="theme_pixel_net_wifi">[RED WI-FI]</string>
-    <string name="theme_pixel_net_ethernet">[RED ETHERNET]</string>
-    <string name="theme_pixel_net_down">[SIN RED]</string>
 </resources>

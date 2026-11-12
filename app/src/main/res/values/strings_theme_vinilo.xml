@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="vinilo_records">Records</string>
-    <string name="vinilo_now_playing">AHORA SUENA · %1$s</string>
-    <string name="vinilo_track">[Canción] — [Artista]</string>
+    <string name="vinilo_now_playing">AHORA SUENA</string>
     <string name="vinilo_side">LADO A · %1$d DISCOS</string>
 </resources>

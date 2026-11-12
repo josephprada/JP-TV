@@ -5,6 +5,7 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -60,6 +61,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import co.jp.tv.R
+import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.util.ClockFormat
@@ -68,6 +70,8 @@ import co.jp.tv.themes.jptv.JpIcon
 import co.jp.tv.themes.jptv.JpIconView
 import co.jp.tv.themes.jptv.JpIcons
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.themes.shared.networkName
+import co.jp.tv.themes.shared.rememberAppIcon
 import co.jp.tv.themes.shared.HomeState
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.ThemeNavAxis
@@ -135,6 +139,7 @@ object ZenTheme : LauncherTheme {
             ZenAppList(state.apps, state.focusedIndex)
             ZenBrand(state.brand, Modifier.align(Alignment.TopStart).padding(start = 70.dp, top = 32.dp))
             ZenTopRight(
+                network = state.network,
                 now = state.now,
                 hourFormat = state.config.hourFormat,
                 actions = actions,
@@ -238,6 +243,7 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int) {
     val initials = remember(app.label) {
         app.label.filter { it in 'A'..'Z' || it in 'a'..'z' }.take(2).uppercase()
     }
+    val icon by rememberAppIcon(app)
     val iconSize = lerp(24f, 56f, grow).dp
     Row(
         Modifier
@@ -261,16 +267,25 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int) {
                 .border(0.5.dp, if (focused) ZenPalette.RingStrong else ZenPalette.RingSoft, IconShape),
             contentAlignment = Alignment.Center,
         ) {
-            BasicText(
-                initials,
-                style = TextStyle(
-                    color = tint.ink,
-                    fontSize = lerp(9f, 20f, grow).sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = JpFonts.Body,
-                    letterSpacing = (-0.02).em,
-                ),
-            )
+            val bitmap = icon
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(0.78f),
+                )
+            } else {
+                BasicText(
+                    initials,
+                    style = TextStyle(
+                        color = tint.ink,
+                        fontSize = lerp(9f, 20f, grow).sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = JpFonts.Body,
+                        letterSpacing = (-0.02).em,
+                    ),
+                )
+            }
         }
         val nameSize = lerp(16f, 28f, grow)
         BasicText(
@@ -310,6 +325,7 @@ private fun Modifier.drawBehindGlow(glow: Brush, amount: Float): Modifier = draw
 
 @Composable
 private fun ZenTopRight(
+    network: NetworkStatus,
     now: LocalDateTime,
     hourFormat: ClockFormat.HourFormat,
     actions: HomeActions,
@@ -340,7 +356,7 @@ private fun ZenTopRight(
         ) {
             JpIconView(JpIcons.Wifi, 13.dp, ZenPalette.PaperSoft)
             BasicText(
-                "[RED WI-FI]",
+                networkName(network).uppercase(),
                 style = TextStyle(color = ZenPalette.PaperSoft, fontSize = 10.sp, fontFamily = JpFonts.Body),
             )
         }

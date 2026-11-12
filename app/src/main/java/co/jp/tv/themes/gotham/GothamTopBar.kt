@@ -29,6 +29,7 @@ import co.jp.tv.R
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
 
@@ -65,7 +66,7 @@ internal fun GothamTopBar(
         ) {
             GothamIcon(GothamGlyph.Wifi, size = 13.dp, color = chrome)
             BasicText(
-                stringResource(networkLabel(network)),
+                networkName(network).uppercase(),
                 style = TextStyle(color = chrome, fontSize = 9.sp, fontFamily = JpFonts.SpecialElite, letterSpacing = 0.08.em),
                 maxLines = 1,
             )
@@ -106,12 +107,6 @@ internal fun GothamTopBar(
             maxLines = 1,
         )
     }
-}
-
-private fun networkLabel(network: NetworkStatus): Int = when {
-    network.state == NetworkStatus.State.DISCONNECTED -> R.string.theme_gotham_network_offline
-    network.transport == NetworkStatus.Transport.ETHERNET -> R.string.theme_gotham_network_ethernet
-    else -> R.string.theme_gotham_network_wifi
 }
 
 @Composable

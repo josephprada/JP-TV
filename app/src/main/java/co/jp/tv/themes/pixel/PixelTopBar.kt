@@ -28,6 +28,7 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.themes.shared.HomeActions
+import co.jp.tv.themes.shared.networkName
 import co.jp.tv.themes.shared.ThemeControlFocus
 import co.jp.tv.themes.shared.themeControlTarget
 import java.time.LocalDateTime
@@ -86,11 +87,7 @@ internal fun PixelTopBar(
 
 @Composable
 private fun NetworkPill(network: NetworkStatus, actions: HomeActions) {
-    val name = when {
-        !network.isConnected -> stringResource(R.string.theme_pixel_net_down)
-        network.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.theme_pixel_net_ethernet)
-        else -> stringResource(R.string.theme_pixel_net_wifi)
-    }
+    val name = networkName(network).uppercase()
     val ms = network.routerLatencyMs ?: network.internetLatencyMs
     val text = if (ms != null) "$name · $ms MS" else name
     Row(
