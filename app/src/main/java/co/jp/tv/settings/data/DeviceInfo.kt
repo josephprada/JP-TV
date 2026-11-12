@@ -29,4 +29,17 @@ class DeviceInfo(context: Context) {
         val wm = appContext.getSystemService(Context.WINDOW_SERVICE) as android.view.WindowManager
         wm.defaultDisplay.refreshRate.let { appContext.resources.displayMetrics.heightPixels to Math.round(it) }
     }.getOrNull()
+
+    /** Music stream volume as 0..1, or null when the audio service is unavailable. */
+    fun volume(): Float? = runCatching {
+        val audio = appContext.getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager
+        val max = audio.getStreamMaxVolume(android.media.AudioManager.STREAM_MUSIC)
+        if (max <= 0) null else audio.getStreamVolume(android.media.AudioManager.STREAM_MUSIC).toFloat() / max
+    }.getOrNull()
+
+    /** Bluetooth on/off, or null when there is no adapter or the platform refuses to say. */
+    @Suppress("DEPRECATION")
+    fun bluetoothOn(): Boolean? = runCatching {
+        android.bluetooth.BluetoothAdapter.getDefaultAdapter()?.isEnabled
+    }.getOrNull()
 }

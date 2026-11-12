@@ -20,7 +20,23 @@ internal class JpIcon(val paths: List<String>, val strokeWidth: Float = 1.8f)
 private fun circle(cx: Float, cy: Float, r: Float) =
     "M${cx - r} ${cy}a$r $r 0 1 0 ${2 * r} 0a$r $r 0 1 0 ${-2 * r} 0"
 
+private fun rrect(x: Float, y: Float, w: Float, h: Float, r: Float) =
+    "M${x + r} ${y}h${w - 2 * r}a$r $r 0 0 1 $r ${r}v${h - 2 * r}a$r $r 0 0 1 ${-r} ${r}h${-(w - 2 * r)}a$r $r 0 0 1 ${-r} ${-r}v${-(h - 2 * r)}a$r $r 0 0 1 $r ${-r}z"
+
 internal object JpIcons {
+    val Bluetooth = JpIcon(listOf("M6.5 7.5l11 9-5.5 4.5v-18l5.5 4.5-11 9"), 1.7f)
+    val Display = JpIcon(listOf(rrect(3f, 4f, 18f, 12f, 2f), "M8 20h8", "M12 16v4"), 1.7f)
+    val Sound = JpIcon(listOf("M11 5L6 9H3v6h3l5 4V5z", "M15.5 8.5a5 5 0 0 1 0 7", "M18.5 5.5a9 9 0 0 1 0 13"), 1.7f)
+    val Apps = JpIcon(
+        listOf(rrect(3f, 3f, 7.5f, 7.5f, 2f), rrect(13.5f, 3f, 7.5f, 7.5f, 2f), rrect(3f, 13.5f, 7.5f, 7.5f, 2f), rrect(13.5f, 13.5f, 7.5f, 7.5f, 2f)),
+        1.7f,
+    )
+    val Storage = JpIcon(
+        listOf("M4 15l2.4-8A2 2 0 0 1 8.3 5.5h7.4a2 2 0 0 1 1.9 1.5L20 15", rrect(4f, 15f, 16f, 5f, 2f), circle(16.5f, 17.5f, 0.7f)),
+        1.7f,
+    )
+    val Clock = JpIcon(listOf(circle(12f, 12f, 9f), "M12 7v5l3 2"), 1.7f)
+
     val Wifi = JpIcon(
         listOf("M2 8.5a15 15 0 0 1 20 0", "M5.5 12a10 10 0 0 1 13 0", "M9 15.5a5 5 0 0 1 6 0", circle(12f, 19f, 1f)),
     )

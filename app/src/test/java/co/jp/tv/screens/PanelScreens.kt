@@ -8,6 +8,7 @@ import co.jp.tv.apps.ui.EditAppsScreen
 import co.jp.tv.network.ui.NetworkPanel
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.preferences.ui.CustomizeScreen
+import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.settings.data.DeviceInfo
 import co.jp.tv.settings.ui.QuickSettingsInfo
 import co.jp.tv.settings.ui.QuickSettingsScreen
@@ -46,13 +47,17 @@ class PanelScreens : ScreenshotTest() {
     @Test fun settings() = shoot("settings") {
         val info = QuickSettingsInfo(
             launcherName = "JP-TV",
-            launcherVersion = "0.1.0",
+            launcherVersion = "1.0",
             androidRelease = "9",
             deviceModel = "V_BOX14",
-            appCount = ScreenFixtures.apps.size,
-            storage = DeviceInfo.Storage(totalBytes = 16L shl 30, freeBytes = 9L shl 30),
+            apps = ScreenFixtures.apps.take(5),
+            storage = DeviceInfo.Storage(totalBytes = 16L shl 30, freeBytes = 5L shl 30),
             display = 720 to 60,
-            themeName = ThemeRegistry.default.displayName,
+            volume = 0.6f,
+            bluetoothOn = false,
+            now = ScreenFixtures.now,
+            hourFormat = ClockFormat.HourFormat.H24,
+            titleFontId = LauncherConfig.Default.titleFontId,
         )
         QuickSettingsScreen(
             info = info,

@@ -32,10 +32,12 @@ fun GlassButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     primary: Boolean = false,
+    /** Large variant of the design (footer buttons): 8sp label, 17x10dp padding, 16dp radius. */
+    large: Boolean = false,
 ) {
     var focused by remember { mutableStateOf(false) }
     val p by animateFloatAsState(if (focused) 1f else 0f, tween(JpMotion.FocusMs, easing = JpMotion.Entrance), label = "button")
-    val shape = RoundedCornerShape(15.dp)
+    val shape = RoundedCornerShape(if (large) 16.dp else 15.dp)
     val fill = if (primary) Color(0xFF050506).copy(alpha = 0.7f + 0.2f * p) else JpColors.Paper.copy(alpha = 0.06f + 0.08f * p)
     val borderColor = if (primary) accent.copy(alpha = 0.6f + 0.4f * p) else JpColors.Paper.copy(alpha = 0.2f + 0.6f * p)
     Box(
@@ -45,11 +47,11 @@ fun GlassButton(
             .border(if (focused) 1.5.dp else JpDimens.Hairline, borderColor, shape)
             .onFocusChanged { focused = it.isFocused }
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClick)
-            .padding(horizontal = 15.dp, vertical = 9.dp),
+            .padding(horizontal = if (large) 17.dp else 15.dp, vertical = if (large) 10.dp else 9.dp),
     ) {
         BasicText(
             label,
-            style = TextStyle(JpColors.Paper, 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
+            style = TextStyle(JpColors.Paper, (if (large) 8f else 7.5f).sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
         )
     }
 }

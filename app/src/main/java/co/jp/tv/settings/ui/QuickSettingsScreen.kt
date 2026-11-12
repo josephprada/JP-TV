@@ -2,6 +2,7 @@ package co.jp.tv.settings.ui
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,27 +10,36 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,21 +47,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import co.jp.tv.R
+import co.jp.tv.apps.domain.TvApp
+import co.jp.tv.apps.ui.LocalAppIcons
 import co.jp.tv.core.design.GlassButton
 import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.design.JpDimens
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
+import co.jp.tv.core.design.rememberTitleFont
 import co.jp.tv.core.design.riseIn
-import co.jp.tv.network.domain.NetworkRules
+import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.network.domain.NetworkStatus
+import co.jp.tv.network.ui.SignalBars
 import co.jp.tv.settings.data.DeviceInfo
 import co.jp.tv.settings.domain.SettingsShortcut
 import co.jp.tv.settings.domain.SettingsShortcuts
 import co.jp.tv.settings.domain.ShortcutTarget
+import co.jp.tv.themes.jptv.JpIcon
+import co.jp.tv.themes.jptv.JpIconView
+import co.jp.tv.themes.jptv.JpIcons
+import java.time.LocalDateTime
 
 private const val COLUMNS = 4
+private val Coral = Color(0xFFFF7A6E)
+private val Amber = Color(0xFFFF8A1F)
+private val AppSwatches = listOf(0xFFDC2626, 0xFF1ED760, 0xFF2A5BD7, 0xFFF97316, 0xFF8B5CF6).map(::Color)
 
 /** What the screen needs to print on its tiles; all of it cheap and permission-free. */
 data class QuickSettingsInfo(
@@ -59,12 +80,18 @@ data class QuickSettingsInfo(
     val launcherVersion: String,
     val androidRelease: String,
     val deviceModel: String,
-    val appCount: Int,
+    /** First apps of the rail, drawn as the swatches of the Apps tile. */
+    val apps: List<TvApp>,
     val storage: DeviceInfo.Storage?,
     /** Display height in pixels and refresh rate in Hz. */
     val display: Pair<Int, Int>?,
-    /** Display name of the active home theme. */
-    val themeName: String,
+    /** Music volume 0..1, null when unknown. */
+    val volume: Float?,
+    /** Bluetooth state, null when the device has no adapter. */
+    val bluetoothOn: Boolean?,
+    val now: LocalDateTime,
+    val hourFormat: ClockFormat.HourFormat,
+    val titleFontId: String,
 )
 
 /** Compact header, a 4-column grid of shortcuts and a big "all Android settings" button. dp = design px / 2. */
@@ -90,25 +117,29 @@ fun QuickSettingsScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Header(info, accent, onEditApps)
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Tiles keep their natural height (the artboard leaves the rest of the screen empty).
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             tiles.chunked(COLUMNS).forEachIndexed { row, rowTiles ->
-                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     rowTiles.forEachIndexed { col, shortcut ->
                         val index = row * COLUMNS + col
                         Tile(
                             shortcut = shortcut,
-                            value = tileValue(shortcut, info, network),
+                            info = info,
+                            network = network,
                             accent = accent,
                             delayMs = 150 + index * 50,
                             onClick = { onShortcut(shortcut) },
                             modifier = Modifier
                                 .weight(1f)
+                                .fillMaxHeight()
                                 .then(if (index == 0) Modifier.focusRequester(firstFocus) else Modifier),
                         )
                     }
                 }
             }
         }
+        Spacer(Modifier.weight(1f))
         Footer(accent, onAllSettings)
     }
 }
@@ -147,53 +178,28 @@ private fun Footer(accent: Color, onAllSettings: () -> Unit) {
             stringResource(R.string.settings_footer),
             style = TextStyle(JpColors.Muted, 9.sp, fontFamily = JpFonts.Body),
         )
-        GlassButton(stringResource(R.string.settings_all), accent, onAllSettings, primary = true)
+        GlassButton(stringResource(R.string.settings_all), accent, onAllSettings, primary = true, large = true)
     }
 }
 
-@Composable
-private fun tileValue(shortcut: SettingsShortcut, info: QuickSettingsInfo, network: NetworkStatus): String? =
-    when (shortcut.id) {
-        SettingsShortcut.Id.NETWORK -> networkSummary(network)
-        SettingsShortcut.Id.DISPLAY -> info.display?.let { (height, hz) -> stringResource(R.string.tile_display_value, height, hz) }
-        SettingsShortcut.Id.APPS -> pluralStringResource(R.plurals.tile_apps_value, info.appCount, info.appCount)
-        SettingsShortcut.Id.STORAGE -> info.storage?.let {
-            stringResource(R.string.tile_storage_value, SettingsShortcuts.formatGb(it.freeBytes), SettingsShortcuts.formatGb(it.totalBytes))
-        }
-        SettingsShortcut.Id.THEME -> info.themeName.uppercase()
-        else -> null
-    }
-
-@Composable
-private fun networkSummary(network: NetworkStatus): String? = when {
-    network.state == NetworkStatus.State.UNKNOWN -> null
-    !network.isConnected -> stringResource(R.string.network_offline).uppercase()
-    else -> {
-        val name = network.ssid ?: stringResource(
-            if (network.transport == NetworkStatus.Transport.ETHERNET) R.string.network_ethernet else R.string.network_wifi,
-        )
-        val latency = network.routerLatencyMs ?: network.internetLatencyMs
-        (if (latency == null) name else "$name · ${NetworkRules.formatLatency(latency)}").uppercase()
-    }
-}
-
-private data class TileText(val glyph: Int, val name: Int)
+private data class TileText(val icon: JpIcon, val name: Int)
 
 private fun textFor(id: SettingsShortcut.Id) = when (id) {
-    SettingsShortcut.Id.NETWORK -> TileText(R.string.glyph_network, R.string.tile_network)
-    SettingsShortcut.Id.BLUETOOTH -> TileText(R.string.glyph_bluetooth, R.string.tile_bluetooth)
-    SettingsShortcut.Id.DISPLAY -> TileText(R.string.glyph_display, R.string.tile_display)
-    SettingsShortcut.Id.SOUND -> TileText(R.string.glyph_sound, R.string.tile_sound)
-    SettingsShortcut.Id.APPS -> TileText(R.string.glyph_apps, R.string.tile_apps)
-    SettingsShortcut.Id.STORAGE -> TileText(R.string.glyph_storage, R.string.tile_storage)
-    SettingsShortcut.Id.DATE_TIME -> TileText(R.string.glyph_date_time, R.string.tile_date_time)
-    SettingsShortcut.Id.THEME -> TileText(R.string.glyph_theme, R.string.tile_theme)
+    SettingsShortcut.Id.NETWORK -> TileText(JpIcons.Wifi, R.string.tile_network)
+    SettingsShortcut.Id.BLUETOOTH -> TileText(JpIcons.Bluetooth, R.string.tile_bluetooth)
+    SettingsShortcut.Id.DISPLAY -> TileText(JpIcons.Display, R.string.tile_display)
+    SettingsShortcut.Id.SOUND -> TileText(JpIcons.Sound, R.string.tile_sound)
+    SettingsShortcut.Id.APPS -> TileText(JpIcons.Apps, R.string.tile_apps)
+    SettingsShortcut.Id.STORAGE -> TileText(JpIcons.Storage, R.string.tile_storage)
+    SettingsShortcut.Id.DATE_TIME -> TileText(JpIcons.Clock, R.string.tile_date_time)
+    SettingsShortcut.Id.THEME -> TileText(JpIcons.Palette, R.string.tile_theme)
 }
 
 @Composable
 private fun Tile(
     shortcut: SettingsShortcut,
-    value: String?,
+    info: QuickSettingsInfo,
+    network: NetworkStatus,
     accent: Color,
     delayMs: Int,
     onClick: () -> Unit,
@@ -203,14 +209,14 @@ private fun Tile(
     val text = textFor(shortcut.id)
     var focused by remember { mutableStateOf(false) }
     val p by animateFloatAsState(if (focused) 1f else 0f, tween(JpMotion.FocusMs, easing = JpMotion.Entrance), label = "tile")
-    val shape = RoundedCornerShape(16.dp)
+    val lift = with(LocalDensity.current) { 2.dp.toPx() }
+    val shape = RoundedCornerShape(13.dp)
     Column(
         modifier = modifier
             .riseIn(delayMs = delayMs, durationMs = JpMotion.RiseMs, distanceDp = 8f)
-            .fillMaxSize()
-            .graphicsLayer { scaleX = 1f + 0.03f * p; scaleY = 1f + 0.03f * p; alpha = if (enabled) 1f else 0.45f }
+            .graphicsLayer { translationY = -lift * p; alpha = if (enabled) 1f else JpColors.DisabledAlpha }
             .glass(shape, fill = if (focused) JpColors.FocusFill else null)
-            .border(JpDimens.Hairline, accent.copy(alpha = 0.8f * p), shape)
+            .border(1.5.dp, accent.copy(alpha = 0.6f * p), shape)
             .then(
                 if (enabled) {
                     Modifier
@@ -220,31 +226,132 @@ private fun Tile(
                     Modifier
                 },
             )
-            .padding(15.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
+            .padding(horizontal = 12.dp, vertical = 11.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Box(
-            Modifier.size(32.dp).background(JpColors.Paper.copy(alpha = 0.08f), RoundedCornerShape(10.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            BasicText(
-                stringResource(text.glyph),
-                style = TextStyle(JpColors.Paper, 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.06.em),
-            )
+        IconChip(text.icon, accent)
+        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) { TileContent(shortcut.id, info, network, accent) }
+        BasicText(
+            stringResource(text.name),
+            style = TextStyle(JpColors.Paper, 11.5.sp, FontWeight.Medium, fontFamily = JpFonts.Body),
+            maxLines = 1,
+        )
+    }
+}
+
+@Composable
+private fun IconChip(icon: JpIcon, accent: Color) {
+    val shape = RoundedCornerShape(9.dp)
+    Box(
+        Modifier
+            .size(30.dp)
+            .background(Brush.linearGradient(listOf(accent.copy(alpha = 0.32f), accent.copy(alpha = 0.1f))), shape)
+            .border(JpDimens.Hairline, JpColors.AccentLift.copy(alpha = 0.35f), shape),
+        contentAlignment = Alignment.Center,
+    ) {
+        JpIconView(icon, 15.dp, Coral)
+    }
+}
+
+/** The live miniature each tile carries between its icon and its name. */
+@Composable
+private fun TileContent(id: SettingsShortcut.Id, info: QuickSettingsInfo, network: NetworkStatus, accent: Color) {
+    when (id) {
+        SettingsShortcut.Id.NETWORK -> SignalBars(
+            level = if (network.isConnected) network.signalLevel else 0,
+            barWidth = 4.5.dp,
+            heights = listOf(5.dp, 9.dp, 13.dp, 17.dp),
+            gap = 3.dp,
+        )
+        SettingsShortcut.Id.BLUETOOTH -> info.bluetoothOn?.let { Toggle(it, accent) }
+        SettingsShortcut.Id.DISPLAY -> info.display?.let { (height, hz) ->
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                Chip("${height}P")
+                Chip("$hz HZ")
+            }
         }
-        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        SettingsShortcut.Id.SOUND -> info.volume?.let { VolumeBar(it, accent) }
+        SettingsShortcut.Id.APPS -> Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            AppSwatches.forEachIndexed { i, fallback -> AppSwatch(info.apps.getOrNull(i), fallback) }
+        }
+        SettingsShortcut.Id.STORAGE -> info.storage?.let { StorageBar(it, accent) }
+        SettingsShortcut.Id.DATE_TIME -> {
+            val parts = ClockFormat.parts(info.now, info.hourFormat)
             BasicText(
-                stringResource(text.name),
-                style = TextStyle(JpColors.Paper, 14.sp, FontWeight.Medium, fontFamily = JpFonts.Body),
+                "${parts.hours}:${parts.minutes}" + (parts.meridiem?.let { " $it" } ?: ""),
+                style = TextStyle(JpColors.Paper, 26.sp, fontFamily = rememberTitleFont(info.titleFontId), letterSpacing = (-0.01).em),
                 maxLines = 1,
             )
-            if (value != null) {
-                BasicText(
-                    value,
-                    style = TextStyle(JpColors.Muted, 6.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em),
-                    maxLines = 1,
+        }
+        SettingsShortcut.Id.THEME -> Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            val current = accent
+            val dots = (listOf(current) + DotColors.filter { it != current }).take(4)
+            dots.forEachIndexed { i, color ->
+                Box(
+                    Modifier
+                        .size(20.dp)
+                        .then(if (i == 0) Modifier.border(2.5.dp, JpColors.Paper, CircleShape).padding(2.5.dp) else Modifier)
+                        .background(color, CircleShape),
                 )
             }
         }
+    }
+}
+
+private val DotColors = listOf(0xFFE63329, 0xFFFF8A1F, 0xFF3D8BFD, 0xFFB26BFF).map(::Color)
+
+@Composable
+private fun Chip(label: String) {
+    val shape = RoundedCornerShape(7.dp)
+    BasicText(
+        label,
+        style = TextStyle(JpColors.Paper, 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.1.em),
+        modifier = Modifier
+            .background(JpColors.Paper.copy(alpha = 0.08f), shape)
+            .border(JpDimens.Hairline, JpColors.Paper.copy(alpha = 0.14f), shape)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+    )
+}
+
+@Composable
+private fun Toggle(on: Boolean, accent: Color) {
+    Box(
+        Modifier.size(width = 32.dp, height = 18.dp).background(if (on) accent else JpColors.Paper.copy(alpha = 0.16f), RoundedCornerShape(9.dp)).padding(2.dp),
+        contentAlignment = if (on) Alignment.CenterEnd else Alignment.CenterStart,
+    ) {
+        Box(Modifier.size(14.dp).background(JpColors.Paper, CircleShape))
+    }
+}
+
+@Composable
+private fun VolumeBar(fraction: Float, accent: Color) {
+    val f = fraction.coerceIn(0.001f, 0.999f)
+    Box(Modifier.fillMaxWidth().height(13.dp), contentAlignment = Alignment.CenterStart) {
+        Box(Modifier.fillMaxWidth().height(6.dp).background(JpColors.Paper.copy(alpha = 0.14f), RoundedCornerShape(3.dp)))
+        Box(Modifier.fillMaxWidth(f).height(6.dp).background(accent, RoundedCornerShape(3.dp)))
+        Row(Modifier.fillMaxWidth()) {
+            Spacer(Modifier.weight(f))
+            Box(Modifier.size(13.dp).background(JpColors.Paper, CircleShape))
+            Spacer(Modifier.weight(1f - f))
+        }
+    }
+}
+
+@Composable
+private fun AppSwatch(app: TvApp?, fallback: Color) {
+    val icons = LocalAppIcons.current
+    val icon by produceState<ImageBitmap?>(null, app?.packageName) { value = app?.let { icons.load(it) } }
+    val shape = RoundedCornerShape(6.dp)
+    Box(Modifier.size(19.dp).clip(shape).background(fallback), contentAlignment = Alignment.Center) {
+        icon?.let { Image(it, contentDescription = null, modifier = Modifier.size(19.dp)) }
+    }
+}
+
+@Composable
+private fun StorageBar(storage: DeviceInfo.Storage, accent: Color) {
+    val used = if (storage.totalBytes <= 0) 0f else (1f - storage.freeBytes.toFloat() / storage.totalBytes).coerceIn(0.02f, 1f)
+    val shape = RoundedCornerShape(3.5.dp)
+    Box(Modifier.fillMaxWidth().height(7.dp).clip(shape).background(JpColors.Paper.copy(alpha = 0.14f), shape)) {
+        Box(Modifier.fillMaxWidth(used).fillMaxHeight().background(Brush.horizontalGradient(listOf(accent, Amber)), shape))
     }
 }
