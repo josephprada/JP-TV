@@ -27,7 +27,10 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /** Signs rendered on each side of the one centred under the track position. */
-private const val SIGN_WINDOW = 5
+private const val SIGN_WINDOW = 4
+
+/** Width of the edge fade on each side: 9 % of the 1920 px artboard. */
+private const val EDGE_FADE = DESIGN_WIDTH * 0.09f
 
 /**
  * The street of neon signs, one per app, on a track centred on the focused app
@@ -56,23 +59,7 @@ internal fun CyberpunkSigns(
             (centre - SIGN_WINDOW).coerceAtLeast(0)..(centre + SIGN_WINDOW).coerceAtMost(apps.size - 1)
         }
     }
-    val edgeMask = remember {
-        Brush.horizontalGradient(
-            0f to Color.Transparent,
-            0.09f to Color.Black,
-            0.91f to Color.Black,
-            1f to Color.Transparent,
-        )
-    }
-    Box(
-        modifier
-            .fillMaxSize()
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-            .drawWithContent {
-                drawContent()
-                drawRect(edgeMask, blendMode = BlendMode.DstIn)
-            },
-    ) {
+    Box(modifier.fillMaxSize()) {
         for (i in window) {
             key(apps[i].packageName, i) {
                 CyberpunkSign(
@@ -82,9 +69,14 @@ internal fun CyberpunkSigns(
                     distance = abs(i - focusedIndex),
                     bloom = phase.bloom,
                     signOn = signOn.asState(),
-                    modifier = Modifier.offset {
-                        IntOffset(((track + i * CyberpunkMotion.STEP) * 0.5.dp.toPx()).roundToInt(), 0)
-                    },
+                    modifier = Modifier
+                        .offset { IntOffset(((track + i * CyberpunkMotion.STEP) * 0.5.dp.toPx()).roundToInt(), 0) }
+                        // The artboard fades both screen edges with a mask; an offscreen mask layer is too costly
+                        // on the TV, so each sign fades by how close its centre is to the edge instead.
+                        .graphicsLayer {
+                            val centre = track + i * CyberpunkMotion.STEP + CyberpunkMotion.STEP / 2f
+                            alpha = (minOf(centre, DESIGN_WIDTH - centre) / EDGE_FADE).coerceIn(0f, 1f)
+                        },
                 )
             }
         }

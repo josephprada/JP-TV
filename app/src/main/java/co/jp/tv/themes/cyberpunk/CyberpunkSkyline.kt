@@ -8,6 +8,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
+import co.jp.tv.core.design.bakeToBitmap
+import co.jp.tv.core.design.bakedDesignRegion
+import co.jp.tv.core.design.bakedLayer
+import kotlin.math.ceil
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -67,7 +72,7 @@ private fun SkyLayer(phase: CyberpunkPalette.Phase) {
     Spacer(
         Modifier
             .fillMaxSize()
-            .drawBehind {
+            .bakedLayer {
                 inDesignPx {
                     drawRect(brushes[0], size = Size(DESIGN_WIDTH, DESIGN_HEIGHT))
                     ovalGradient(sunCx, sunCy, sunR, sunR, brushes[1], phase.sunAlpha)
@@ -105,6 +110,7 @@ private fun VehiclesLayer(time: State<Float>) {
     Spacer(
         Modifier
             .fillMaxSize()
+            .graphicsLayer()
             .drawBehind {
                 val t = time.value
                 inDesignPx {
@@ -149,73 +155,106 @@ private fun FarLayer(city: CyberpunkCity, phase: CyberpunkPalette.Phase, time: S
             },
         )
     }
+    // The towers and the constant billboard halos never change: baked once. They slide with the parallax, so the
+    // bitmap covers the whole row of towers (from x = -80 to the last one), not just the screen.
     Spacer(
         Modifier
             .fillMaxSize()
             .graphicsLayer { translationX = shift.value * 0.5.dp.toPx() }
-            .drawBehind {
-                val t = time.value
-                inDesignPx {
-                    translate(LAYER_LEFT, 0f) {
-                        drawFar(city, phase, brushes, t)
+            .bakedDesignRegion(FAR_LEFT, 0f, FAR_RIGHT, GROUND_Y) {
+                translate(LAYER_LEFT, 0f) { drawFarTowers(city, brushes) }
+            },
+    )
+    // The lights and holo billboards animate: their own layer, with the billboards baked once and faded per frame.
+    Spacer(
+        Modifier
+            .fillMaxSize()
+            .graphicsLayer { translationX = shift.value * 0.5.dp.toPx() }
+            .drawWithCache {
+                val k = 0.5.dp.toPx()
+                val boards = city.billboards.mapIndexed { i, b ->
+                    bakeToBitmap(ceil((b.w + 2 * BOARD_PAD) * k).toInt(), ceil((b.h + 2 * BOARD_PAD) * k).toInt()) {
+                        scale(k, k, Offset.Zero) {
+                            translate(BOARD_PAD - b.x, BOARD_PAD - b.y) { drawHoloBoard(b, brushes.boards[i]) }
+                        }
+                    }
+                }
+                onDrawBehind {
+                    val t = time.value
+                    inDesignPx {
+                        translate(LAYER_LEFT, 0f) { drawFarLights(city, phase, t) }
+                    }
+                    city.billboards.forEachIndexed { i, b ->
+                        val a = CyberpunkKeyframes.progress(t, b.dur, b.delay)?.let(CyberpunkKeyframes::holo) ?: 1f
+                        drawImage(
+                            boards[i],
+                            topLeft = Offset((b.x - BOARD_PAD + LAYER_LEFT) * k, (b.y - BOARD_PAD) * k),
+                            alpha = a,
+                        )
                     }
                 }
             },
     )
 }
 
-private fun DrawScope.drawFar(city: CyberpunkCity, phase: CyberpunkPalette.Phase, brushes: FarBrushes, t: Float) {
-    var light = 0
+private const val FAR_LEFT = -90f
+private const val MID_TOP = 270f
+private const val FAR_RIGHT = 2160f
+
+/** Design px around a billboard kept in its bitmap for the glow. */
+private const val BOARD_PAD = 70f
+
+private fun DrawScope.drawFarTowers(city: CyberpunkCity, brushes: FarBrushes) {
     city.towers.forEachIndexed { i, tower ->
         val top = GROUND_Y - tower.h
         drawRect(brushes.towers[i], topLeft = Offset(tower.x, top), size = Size(tower.w, tower.h))
         drawRect(CyberpunkPalette.FarEdge, topLeft = Offset(tower.x, top), size = Size(1f, tower.h))
-        while (light < city.farLights.size && city.farLights[light].tower == i) {
-            when (val l = city.farLights[light]) {
-                is CyberpunkCity.Dot -> {
-                    val a = CyberpunkKeyframes.progress(t, l.dur, l.delay)?.let(CyberpunkKeyframes::twinkle) ?: phase.dotAlpha
-                    drawRect(CyberpunkPalette.Neon[l.color], Offset(l.x, DESIGN_HEIGHT - l.bottom - 4f), Size(3f, 4f), alpha = a)
-                }
-                is CyberpunkCity.Strip -> {
-                    val a = CyberpunkKeyframes.progress(t, l.dur, l.delay)?.let(CyberpunkKeyframes::flicker) ?: 0.8f
-                    val c = CyberpunkPalette.Neon[l.color]
-                    val y = DESIGN_HEIGHT - l.bottom - l.h
-                    softRect(l.x, y, 3f, l.h, c, blur = 26f, alpha = a)
-                    softRect(l.x, y, 3f, l.h, c, blur = 10f, alpha = a)
-                    drawRect(c, Offset(l.x, y), Size(3f, l.h), alpha = a)
-                }
-                is CyberpunkCity.BeaconLight -> {
-                    val a = CyberpunkKeyframes.progress(t, 2.2f, l.delay)?.let(CyberpunkKeyframes::blink) ?: 1f
-                    val y = DESIGN_HEIGHT - l.bottom - 6f
-                    softRect(l.x, y, 6f, 6f, CyberpunkPalette.Beacon.copy(alpha = 0.8f), blur = 10f, corner = 3f, spread = 3f, alpha = a)
-                    drawCircle(CyberpunkPalette.Beacon, radius = 3f, center = Offset(l.x + 3f, y + 3f), alpha = a)
-                }
-            }
-            light++
-        }
     }
-    city.billboards.forEachIndexed { i, b ->
+    city.billboards.forEach { b ->
         val c = CyberpunkPalette.Neon[b.color]
         softRect(b.x - 30f, b.y - 30f, b.w + 60f, b.h + 60f, c.copy(alpha = 0.25f), blur = 26f)
-        val a = CyberpunkKeyframes.progress(t, b.dur, b.delay)?.let(CyberpunkKeyframes::holo) ?: 1f
-        softRect(b.x, b.y, b.w, b.h, c.copy(alpha = 0.6f), blur = 30f, corner = 4f, alpha = a)
-        drawRoundRect(
-            brushes.boards[i],
-            topLeft = Offset(b.x, b.y),
-            size = Size(b.w, b.h),
-            cornerRadius = CornerRadius(4f, 4f),
-            alpha = a,
-        )
-        // repeating-linear-gradient(0deg): 2 px at 0.85, 2 px at 0.35, from the bottom up.
-        var y = b.y + b.h - 2f
-        var strong = true
-        while (y > b.y - 2f) {
-            val top = y.coerceAtLeast(b.y)
-            val h = (y + 2f - top).coerceAtLeast(0f)
-            drawRect(c, Offset(b.x, top), Size(b.w, h), alpha = a * if (strong) 0.85f else 0.35f)
-            strong = !strong
-            y -= 2f
+    }
+}
+
+private fun DrawScope.drawFarLights(city: CyberpunkCity, phase: CyberpunkPalette.Phase, t: Float) {
+    for (l in city.farLights) {
+        when (l) {
+            is CyberpunkCity.Dot -> {
+                val a = CyberpunkKeyframes.progress(t, l.dur, l.delay)?.let(CyberpunkKeyframes::twinkle) ?: phase.dotAlpha
+                drawRect(CyberpunkPalette.Neon[l.color], Offset(l.x, DESIGN_HEIGHT - l.bottom - 4f), Size(3f, 4f), alpha = a)
+            }
+            is CyberpunkCity.Strip -> {
+                val a = CyberpunkKeyframes.progress(t, l.dur, l.delay)?.let(CyberpunkKeyframes::flicker) ?: 0.8f
+                val c = CyberpunkPalette.Neon[l.color]
+                val y = DESIGN_HEIGHT - l.bottom - l.h
+                softRect(l.x, y, 3f, l.h, c, blur = 26f, alpha = a)
+                softRect(l.x, y, 3f, l.h, c, blur = 10f, alpha = a)
+                drawRect(c, Offset(l.x, y), Size(3f, l.h), alpha = a)
+            }
+            is CyberpunkCity.BeaconLight -> {
+                val a = CyberpunkKeyframes.progress(t, 2.2f, l.delay)?.let(CyberpunkKeyframes::blink) ?: 1f
+                val y = DESIGN_HEIGHT - l.bottom - 6f
+                softRect(l.x, y, 6f, 6f, CyberpunkPalette.Beacon.copy(alpha = 0.8f), blur = 10f, corner = 3f, spread = 3f, alpha = a)
+                drawCircle(CyberpunkPalette.Beacon, radius = 3f, center = Offset(l.x + 3f, y + 3f), alpha = a)
+            }
         }
+    }
+}
+
+/** A holo billboard at full strength: glow, gradient face and scanline stripes. */
+private fun DrawScope.drawHoloBoard(b: CyberpunkCity.Billboard, face: Brush) {
+    val c = CyberpunkPalette.Neon[b.color]
+    softRect(b.x, b.y, b.w, b.h, c.copy(alpha = 0.6f), blur = 30f, corner = 4f)
+    drawRoundRect(face, topLeft = Offset(b.x, b.y), size = Size(b.w, b.h), cornerRadius = CornerRadius(4f, 4f))
+    // repeating-linear-gradient(0deg): 2 px at 0.85, 2 px at 0.35, from the bottom up.
+    var y = b.y + b.h - 2f
+    var strong = true
+    while (y > b.y - 2f) {
+        val top = y.coerceAtLeast(b.y)
+        val h = (y + 2f - top).coerceAtLeast(0f)
+        drawRect(c, Offset(b.x, top), Size(b.w, h), alpha = if (strong) 0.85f else 0.35f)
+        strong = !strong
+        y -= 2f
     }
 }
 
@@ -228,8 +267,9 @@ private fun MidLayer(city: CyberpunkCity, phase: CyberpunkPalette.Phase, shift: 
         Modifier
             .fillMaxSize()
             .graphicsLayer { translationX = shift.value * 0.5.dp.toPx() }
-            .drawBehind {
-                inDesignPx {
+            // Static, but it slides with the parallax: bake the whole row of blocks, not just the screen.
+            .bakedDesignRegion(FAR_LEFT, MID_TOP, FAR_RIGHT, GROUND_Y + 20f) {
+                run {
                     translate(LAYER_LEFT, 0f) {
                         var w = 0
                         var r = 0
@@ -304,7 +344,7 @@ private fun GroundLayer(city: CyberpunkCity, phase: CyberpunkPalette.Phase) {
     Spacer(
         Modifier
             .fillMaxSize()
-            .drawBehind {
+            .bakedLayer {
                 inDesignPx {
                     cables.forEachIndexed { i, path ->
                         drawPath(path, CyberpunkPalette.Ink, style = if (i == 3) thin else thick)
@@ -342,6 +382,7 @@ private fun SteamLayer(time: State<Float>) {
     Spacer(
         Modifier
             .fillMaxSize()
+            .graphicsLayer()
             .drawBehind {
                 val t = time.value
                 inDesignPx {

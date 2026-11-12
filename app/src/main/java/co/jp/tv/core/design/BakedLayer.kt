@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import kotlin.math.ceil
 
@@ -49,4 +50,23 @@ fun Modifier.bakedLayer(
     onDrawBehind {
         if (baked != null) drawImage(baked, topLeft = Offset(0f, top.toFloat()))
     }
+}
+
+/**
+ * Like [bakedLayer], for scenery written in design px (the 1920x1080 artboard, one design px = half
+ * a dp). Only the design-px rectangle [left], [top], [right], [bottom] is baked, which also lets a
+ * layer that slides sideways keep the part that starts off screen. [content] draws in design px.
+ */
+fun Modifier.bakedDesignRegion(
+    left: Float,
+    top: Float,
+    right: Float,
+    bottom: Float,
+    content: DrawScope.() -> Unit,
+): Modifier = drawWithCache {
+    val k = density / 2f
+    val baked = bakeToBitmap(ceil((right - left) * k).toInt(), ceil((bottom - top) * k).toInt()) {
+        scale(k, k, Offset.Zero) { translate(-left, -top) { content() } }
+    }
+    onDrawBehind { drawImage(baked, topLeft = Offset(left * k, top * k)) }
 }

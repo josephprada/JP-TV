@@ -7,6 +7,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.graphicsLayer
+import co.jp.tv.core.util.rememberLowEnd
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -31,9 +33,13 @@ internal fun CyberpunkWeather(city: CyberpunkCity, phase: CyberpunkPalette.Phase
         }
     }
     val ring = remember { Stroke(width = 1f) }
+    val lowEnd = rememberLowEnd()
+    // Low-end: two drops in three, drawn as flat lines instead of a gradient each.
+    val flatDrop = remember(phase) { CyberpunkPalette.Rain.copy(alpha = phase.rainAlpha * 0.6f) }
     Spacer(
         Modifier
             .fillMaxSize()
+            .graphicsLayer()
             .drawBehind {
                 val t = time.value
                 inDesignPx {
@@ -49,10 +55,11 @@ internal fun CyberpunkWeather(city: CyberpunkCity, phase: CyberpunkPalette.Phase
                     translate(-200f, -200f) {
                         rotate(9f, pivot = Offset(1160f, 750f)) {
                             city.drops.forEachIndexed { i, d ->
+                                if (lowEnd && i % 3 == 2) return@forEachIndexed
                                 val p = CyberpunkKeyframes.progress(t, d.dur, d.delay)
                                 val y = if (p == null) 0f else -120f + 1620f * p
                                 translate(d.x, y) {
-                                    drawRect(dropBrushes[i], size = Size(1f, d.h))
+                                    if (lowEnd) drawRect(flatDrop, size = Size(1f, d.h)) else drawRect(dropBrushes[i], size = Size(1f, d.h))
                                 }
                             }
                         }
