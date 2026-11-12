@@ -44,6 +44,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.Key
@@ -86,7 +90,6 @@ import co.jp.tv.themes.shared.themeControlRouting
 import co.jp.tv.themes.shared.themeControlTarget
 import co.jp.tv.themes.shared.themesControlTarget
 import co.jp.tv.themes.shared.themeKeyNavigation
-import co.jp.tv.wallpaper.cssGradientLine
 import java.time.LocalDateTime
 import kotlin.math.abs
 
@@ -153,7 +156,7 @@ object ZenTheme : LauncherTheme {
                         ),
                     ),
             )
-            ZenAppList(state.apps, state.focusedIndex, remember(state.config.accent) { ZenTint.of(Color(state.config.accent)) })
+            ZenAppList(state.apps, state.focusedIndex, remember(state.config.accent) { ZenGlow(Color(state.config.accent)) })
             ZenBrand(state.brand, Modifier.align(Alignment.TopStart).padding(start = 70.dp, top = 32.dp))
             ZenTopRight(
                 network = state.network,
@@ -207,7 +210,7 @@ private fun ZenBrand(brand: String, modifier: Modifier = Modifier) {
 
 /** Accordion list: the selected app big, the rest small, with the selection kept at mid-height. */
 @Composable
-private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
+private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, glowColors: ZenGlow) {
     val centre = 270f - (focusedIndex * SmallRowDp + BigRowDp / 2f)
     val offsetY by animateDpAsState(centre.dp, tween(EaseMs, easing = FocusEase), label = "zenList")
     Box(
@@ -228,7 +231,7 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
                 if (abs(index - focusedIndex) > LastVisibleAway) {
                     Spacer(Modifier.height(SmallRowDp.dp))
                 } else {
-                    key(app.packageName) { ZenRow(app, index, focusedIndex, tint) }
+                    key(app.packageName) { ZenRow(app, index, focusedIndex, glowColors) }
                 }
             }
         }
@@ -236,7 +239,7 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
 }
 
 @Composable
-private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
+private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, glowColors: ZenGlow) {
     val away = abs(index - focusedIndex)
     val focused = away == 0
     val ease = tween<Float>(EaseMs, easing = FocusEase)
@@ -251,7 +254,7 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
         ease,
         label = "zenFade",
     )
-    val glow = remember(tint) { Brush.radialGradient(listOf(tint.glow, tint.glowClear)) }
+    val glow = remember(glowColors) { Brush.radialGradient(listOf(glowColors.glow, glowColors.glowClear)) }
     val initials = remember(app.label) {
         app.label.filter { it in 'A'..'Z' || it in 'a'..'z' }.take(2).uppercase()
     }
@@ -266,18 +269,14 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
         horizontalArrangement = Arrangement.spacedBy(lerp(12f, 16f, grow).dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // The real icon alone: no backdrop tile and no tint. Focus is scale, a halo around the icon and a ring.
         Box(
             Modifier
                 .size(iconSize)
                 .launchOrigin(focused)
                 .drawBehindGlow(glow, grow)
                 .clip(IconShape)
-                .drawWithCache {
-                    val (start, end) = cssGradientLine(160f, size.width, size.height)
-                    val paint = Brush.linearGradient(listOf(tint.color, tint.fade), start = start, end = end)
-                    onDrawBehind { drawRect(paint) }
-                }
-                .border(0.5.dp, if (focused) ZenPalette.RingStrong else ZenPalette.RingSoft, IconShape),
+                .then(if (focused) Modifier.border(0.5.dp, ZenPalette.RingStrong, IconShape) else Modifier),
             contentAlignment = Alignment.Center,
         ) {
             val bitmap = icon
@@ -285,13 +284,13 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
                 Image(
                     bitmap = bitmap,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(0.78f),
+                    modifier = Modifier.fillMaxSize(),
                 )
             } else {
                 BasicText(
                     initials,
                     style = TextStyle(
-                        color = tint.ink,
+                        color = ZenPalette.PaperSoft,
                         fontSize = lerp(9f, 20f, grow).sp,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = JpFonts.Body,
@@ -318,19 +317,24 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
     }
 }
 
-/** Soft colored glow below the icon, `0 24px 60px color66` in the design, scaled by [amount]. */
+/** Soft colored glow below the icon, `0 24px 60px color66` in the design, scaled by [amount]; never drawn under the icon itself. */
 private fun Modifier.drawBehindGlow(glow: Brush, amount: Float): Modifier = drawWithCache {
     val spread = 30.dp.toPx()
     val drop = 12.dp.toPx()
+    val hole = Path().apply {
+        addRoundRect(RoundRect(0f, 0f, size.width, size.height, CornerRadius(size.minDimension * 0.23f)))
+    }
     onDrawBehind {
         if (amount > 0.01f) {
-            translate(top = drop) {
-                drawRect(
-                    brush = glow,
-                    topLeft = Offset(-spread, -spread),
-                    size = Size(size.width + spread * 2f, size.height + spread * 2f),
-                    alpha = amount,
-                )
+            clipPath(hole, ClipOp.Difference) {
+                translate(top = drop) {
+                    drawRect(
+                        brush = glow,
+                        topLeft = Offset(-spread, -spread),
+                        size = Size(size.width + spread * 2f, size.height + spread * 2f),
+                        alpha = amount,
+                    )
+                }
             }
         }
     }

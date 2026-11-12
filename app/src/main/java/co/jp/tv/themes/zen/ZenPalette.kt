@@ -1,20 +1,11 @@
 package co.jp.tv.themes.zen
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 
-/** An app icon tile built from the user's accent: gradient base color, its glow when focused, and the initials color. */
-class ZenTint(val color: Color, val ink: Color) {
-    /** Bottom end of the 160 degree gradient ("color cc"). */
-    val fade: Color = color.copy(alpha = 0.8f)
-    val glow: Color = color.copy(alpha = 0.4f)
-    val glowClear: Color = color.copy(alpha = 0f)
-
-    companion object {
-        /** Tile colors for [accent]; the initials flip to dark ink on light accents. */
-        fun of(accent: Color): ZenTint =
-            ZenTint(accent, if (accent.luminance() > 0.5f) Color(0xFF111114) else Color.White)
-    }
+/** The soft halo behind the focused app icon, built from the user's accent. There is no tile: the icon is drawn alone. */
+class ZenGlow(accent: Color) {
+    val glow: Color = accent.copy(alpha = 0.4f)
+    val glowClear: Color = accent.copy(alpha = 0f)
 }
 
 object ZenPalette {
