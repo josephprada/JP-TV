@@ -24,6 +24,12 @@ import co.jp.tv.homeoverride.domain.RedirectPolicy
 import co.jp.tv.network.data.ConnectivityNetworkMonitor
 import co.jp.tv.network.data.LocationAccess
 import co.jp.tv.network.domain.NetworkMonitor
+import co.jp.tv.playlist.data.FileMediaCatalog
+import co.jp.tv.playlist.data.MediaThumbnailLoader
+import co.jp.tv.playlist.data.SharedPrefsPlaylistStateStore
+import co.jp.tv.playlist.domain.MediaCatalog
+import co.jp.tv.playlist.domain.PlaylistStateStore
+import co.jp.tv.playlist.ui.MediaThumbnails
 import co.jp.tv.preferences.data.DataStoreConfigStore
 import co.jp.tv.preferences.domain.ConfigStore
 import co.jp.tv.settings.data.DeviceInfo
@@ -53,6 +59,11 @@ class AppContainer(context: Context) {
     val uiSounds: UiSounds = SoundPoolUiSounds(appContext)
     val settingsLauncher = SettingsLauncher(appContext)
     val deviceInfo = DeviceInfo(appContext)
+
+    /** Wallpaper media found on the device; scanned off the main thread when the home starts and when Customize opens. */
+    val mediaCatalog: MediaCatalog = FileMediaCatalog(appContext)
+    val playlistStateStore: PlaylistStateStore = SharedPrefsPlaylistStateStore(appContext)
+    val mediaThumbnails: MediaThumbnails = MediaThumbnailLoader()
 
     val redirectPolicy = RedirectPolicy(SharedPrefsGuardStateStore(appContext), clock = System::currentTimeMillis, uptime = SystemClock::elapsedRealtime)
     val homeStarter = HomeStarter(appContext)

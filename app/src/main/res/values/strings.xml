@@ -102,6 +102,7 @@
     <string name="edit_wall_default"> · POR DEFECTO</string>
     <string name="edit_wall_dim">OSCURECER</string>
     <string name="edit_wall_pause">PAUSAR EN APPS</string>
+    <string name="edit_wall_list_summary">%1$d en la lista · %2$s</string>
     <string name="edit_yes">Sí</string>
     <string name="edit_no">No</string>
     <string name="edit_reset">RESTABLECER</string>
@@ -117,7 +118,8 @@
     <string name="customize_brand">NOMBRE DEL LAUNCHER</string>
     <string name="customize_accent">COLOR DE ACENTO</string>
     <string name="customize_font">FUENTE DE TÍTULOS Y RELOJ</string>
-    <string name="wallpaper_image_hint">IMAGEN FIJA · /sdcard/JPTV/fondo.jpg</string>
+    <string name="wallpaper_image_hint">IMAGEN FIJA · /sdcard/JPTV/fondos</string>
+    <string name="wallpaper_video_hint">TU VIDEO · /sdcard/JPTV/fondos</string>
     <string name="customize_wallpaper">LIVE WALLPAPER</string>
     <string name="customize_hour_format">FORMATO DE HORA</string>
     <string name="customize_hour_format_24">24 h</string>
@@ -129,6 +131,20 @@
     <string name="customize_volume_medium">Volumen medio</string>
     <string name="customize_volume_high">Volumen alto</string>
     <string name="customize_apply">APLICAR</string>
+    <string name="customize_playlist">LISTA · %1$d DE %2$d</string>
+    <string name="customize_playlist_interval">CAMBIAR</string>
+    <string name="customize_playlist_order">ORDEN</string>
+    <string name="customize_playlist_hint">Agregá archivos en /sdcard/JPTV/fondos</string>
+    <string name="playlist_empty_video">Todavía no hay videos (mp4, webm o mkv).</string>
+    <string name="playlist_empty_image">Todavía no hay imágenes (jpg, png o webp).</string>
+    <string name="playlist_interval_never">Nunca</string>
+    <string name="playlist_interval_5">5 min</string>
+    <string name="playlist_interval_15">15 min</string>
+    <string name="playlist_interval_30">30 min</string>
+    <string name="playlist_interval_60">60 min</string>
+    <string name="playlist_interval_home">Al volver al inicio</string>
+    <string name="playlist_order_sequential">En orden</string>
+    <string name="playlist_order_shuffle">Aleatorio</string>
 
     <string name="theme_terminal_hint">↑↓ elegir · OK ejecutar · tab ajustes</string>
     <string name="theme_hud_target">▼ OBJETIVO: %1$s</string>
