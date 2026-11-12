@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -186,7 +187,9 @@ fun CustomizeScreen(
                     .weight(1f)
                     .fillMaxHeight()
                     .border(1.dp, JpColors.Paper.copy(alpha = 0.12f), RoundedCornerShape(20.dp))
-                    .background(Color(0xFF07070A), RoundedCornerShape(20.dp)),
+                    .background(Color(0xFF07070A), RoundedCornerShape(20.dp))
+                    // Wallpapers draw orbs past their bounds; the preview must not paint over the options column.
+                    .clip(RoundedCornerShape(20.dp)),
             ) {
                 key(permissionRevision) {
                     WallpaperRegistry.byId(draft.wallpaperId)
@@ -212,8 +215,8 @@ private fun OptionsCard(title: String, delayMs: Int, content: @Composable () -> 
             .riseIn(delayMs = delayMs)
             .background(JpColors.Paper.copy(alpha = 0.04f), RoundedCornerShape(16.dp))
             .border(1.dp, JpColors.Paper.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
-            .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+            .padding(horizontal = 14.dp, vertical = 11.dp),
+        verticalArrangement = Arrangement.spacedBy(9.dp),
     ) {
         BasicText(
             text = title,
