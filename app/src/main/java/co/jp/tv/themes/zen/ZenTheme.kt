@@ -115,7 +115,7 @@ private object ZenFonts {
 object ZenTheme : LauncherTheme {
     override val id = "zen"
     override val displayName = "Zen"
-    override val supportsAccent = false
+    override val supportsAccent = true
 
     @Composable
     override fun Home(state: HomeState, actions: HomeActions) {
@@ -143,7 +143,7 @@ object ZenTheme : LauncherTheme {
                         ),
                     ),
             )
-            ZenAppList(state.apps, state.focusedIndex)
+            ZenAppList(state.apps, state.focusedIndex, remember(state.config.accent) { ZenTint.of(Color(state.config.accent)) })
             ZenBrand(state.brand, Modifier.align(Alignment.TopStart).padding(start = 70.dp, top = 32.dp))
             ZenTopRight(
                 network = state.network,
@@ -196,7 +196,7 @@ private fun ZenBrand(brand: String, modifier: Modifier = Modifier) {
 
 /** Accordion list: the selected app big, the rest small, with the selection kept at mid-height. */
 @Composable
-private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int) {
+private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
     val centre = 270f - (focusedIndex * SmallRowDp + BigRowDp / 2f)
     val offsetY by animateDpAsState(centre.dp, tween(EaseMs, easing = ZenEase), label = "zenList")
     Box(
@@ -216,7 +216,7 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int) {
                 if (abs(index - focusedIndex) > LastVisibleAway) {
                     Spacer(Modifier.height(SmallRowDp.dp))
                 } else {
-                    key(app.packageName) { ZenRow(app, index, focusedIndex) }
+                    key(app.packageName) { ZenRow(app, index, focusedIndex, tint) }
                 }
             }
         }
@@ -224,7 +224,7 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int) {
 }
 
 @Composable
-private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int) {
+private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
     val away = abs(index - focusedIndex)
     val focused = away == 0
     val ease = tween<Float>(EaseMs, easing = ZenEase)
@@ -239,7 +239,6 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int) {
         ease,
         label = "zenFade",
     )
-    val tint = ZenPalette.Tints[index % ZenPalette.Tints.size]
     val glow = remember(tint) { Brush.radialGradient(listOf(tint.glow, tint.glowClear)) }
     val initials = remember(app.label) {
         app.label.filter { it in 'A'..'Z' || it in 'a'..'z' }.take(2).uppercase()

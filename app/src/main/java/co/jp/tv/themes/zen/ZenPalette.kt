@@ -1,13 +1,20 @@
 package co.jp.tv.themes.zen
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 
-/** An app icon tile: gradient base color, its glow when focused, and the initials color. */
+/** An app icon tile built from the user's accent: gradient base color, its glow when focused, and the initials color. */
 class ZenTint(val color: Color, val ink: Color) {
     /** Bottom end of the 160 degree gradient ("color cc"). */
     val fade: Color = color.copy(alpha = 0.8f)
     val glow: Color = color.copy(alpha = 0.4f)
     val glowClear: Color = color.copy(alpha = 0f)
+
+    companion object {
+        /** Tile colors for [accent]; the initials flip to dark ink on light accents. */
+        fun of(accent: Color): ZenTint =
+            ZenTint(accent, if (accent.luminance() > 0.5f) Color(0xFF111114) else Color.White)
+    }
 }
 
 object ZenPalette {
@@ -24,18 +31,4 @@ object ZenPalette {
 
     val RingSoft = Color(0x1AFFFFFF)
     val RingStrong = Color(0x2EFFFFFF)
-
-    /** Placeholder icon colors, cycled by app position. */
-    val Tints = listOf(
-        ZenTint(Color(0xFF7B5CFF), Color(0xFFFFFFFF)),
-        ZenTint(Color(0xFFFF1F3D), Color(0xFFFFFFFF)),
-        ZenTint(Color(0xFFD81F26), Color(0xFFFFFFFF)),
-        ZenTint(Color(0xFF1ED760), Color(0xFF06210F)),
-        ZenTint(Color(0xFF2BB5EE), Color(0xFF041A26)),
-        ZenTint(Color(0xFF1F46D6), Color(0xFFFFFFFF)),
-        ZenTint(Color(0xFFF47521), Color(0xFF1F0D02)),
-        ZenTint(Color(0xFFE5A00D), Color(0xFF231800)),
-        ZenTint(Color(0xFF636366), Color(0xFFFFFFFF)),
-        ZenTint(Color(0xFF48484A), Color(0xFFFFFFFF)),
-    )
 }
