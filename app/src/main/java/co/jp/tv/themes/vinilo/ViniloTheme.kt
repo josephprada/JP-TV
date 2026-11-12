@@ -61,6 +61,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import co.jp.tv.core.design.bakeToBitmap
+import kotlin.math.ceil
 import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
@@ -434,7 +436,8 @@ private fun Modifier.vinylGrooves(sheen: Boolean): Modifier = drawWithCache {
     )
     val glintTopLeft = Offset(size.width * 0.3f, size.height * 0.08f)
     val glintSize = Size(size.width * 0.4f, size.height * 0.3f)
-    onDrawBehind {
+    // Dozens of concentric rings: drawn once into a bitmap, so a spinning record only rotates a texture.
+    val grooves = bakeToBitmap(ceil(size.width).toInt(), ceil(size.height).toInt()) {
         drawCircle(ViniloPalette.Groove, radius = radius, center = center)
         var ring = pitch * 0.8f
         while (ring < radius) {
@@ -443,6 +446,7 @@ private fun Modifier.vinylGrooves(sheen: Boolean): Modifier = drawWithCache {
         }
         if (sheen) drawOval(glint, topLeft = glintTopLeft, size = glintSize)
     }
+    onDrawBehind { drawImage(grooves) }
 }
 
 @Composable
