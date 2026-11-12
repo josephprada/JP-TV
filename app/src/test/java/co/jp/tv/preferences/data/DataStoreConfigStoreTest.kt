@@ -166,4 +166,18 @@ class DataStoreConfigStoreTest {
         }
         assertEquals(SoundVolume.MEDIUM, DataStoreConfigStore(dataStore).config.first()?.soundVolume)
     }
+
+    @Test
+    fun `the home override toggle round trips`() = runTest {
+        val store = store()
+        store.update { LauncherConfig.Default.copy(homeOverrideEnabled = true) }
+        assertEquals(true, store.config.first()?.homeOverrideEnabled)
+    }
+
+    @Test
+    fun `a saved config from before the home override reads as off`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "legacy-home.preferences_pb") })
+        dataStore.edit { prefs -> prefs[booleanPreferencesKey("saved")] = true }
+        assertEquals(false, DataStoreConfigStore(dataStore).config.first()?.homeOverrideEnabled)
+    }
 }

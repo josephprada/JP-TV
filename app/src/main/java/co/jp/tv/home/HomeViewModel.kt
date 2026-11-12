@@ -276,6 +276,8 @@ class HomeViewModel(
 
     fun setPauseWallpaperInApps(pause: Boolean) = applyAppearance { it.copy(pauseWallpaperInApps = pause) }
 
+    fun setHomeOverride(enabled: Boolean) = applyAppearance { it.copy(homeOverrideEnabled = enabled) }
+
     fun setTheme(themeId: String) {
         applyAppearance { it.copy(themeId = themeId) }
     }

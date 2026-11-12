@@ -38,6 +38,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
             prefs[WEATHER_PLACE] = WeatherPlaceCodec.encode(next.weatherPlace)
             prefs[SOUNDS_ENABLED] = next.soundsEnabled
             prefs[SOUND_VOLUME] = next.soundVolume.name
+            prefs[HOME_OVERRIDE] = next.homeOverrideEnabled
         }
     }
 
@@ -59,6 +60,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
                 weatherPlace = WeatherPlaceCodec.decode(this[WEATHER_PLACE]),
                 soundsEnabled = this[SOUNDS_ENABLED] ?: true,
                 soundVolume = SoundVolume.entries.firstOrNull { it.name == this[SOUND_VOLUME] } ?: SoundVolume.MEDIUM,
+                homeOverrideEnabled = this[HOME_OVERRIDE] ?: false,
             )
         }
 
@@ -84,5 +86,8 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         /** Absent before the sounds existed: reads as on, at medium volume. */
         val SOUNDS_ENABLED = booleanPreferencesKey("sounds_enabled")
         val SOUND_VOLUME = stringPreferencesKey("sound_volume")
+
+        /** Absent before the home override existed: reads as off, so nothing changes until the user opts in. */
+        val HOME_OVERRIDE = booleanPreferencesKey("home_override")
     }
 }

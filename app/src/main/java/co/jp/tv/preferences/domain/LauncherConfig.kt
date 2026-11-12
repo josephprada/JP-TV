@@ -27,6 +27,8 @@ data class LauncherConfig(
     /** Short interface sounds in the theme's own voice. */
     val soundsEnabled: Boolean = true,
     val soundVolume: SoundVolume = SoundVolume.MEDIUM,
+    /** Opt-in: take the screen from the stock launcher on devices whose firmware ignores the preferred home. */
+    val homeOverrideEnabled: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_BRAND = "JP-TV"

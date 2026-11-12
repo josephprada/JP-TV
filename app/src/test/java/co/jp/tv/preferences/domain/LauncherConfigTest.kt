@@ -40,4 +40,9 @@ class LauncherConfigTest {
         assertEquals(true, LauncherConfig.Default.soundsEnabled)
         assertEquals(SoundVolume.MEDIUM, LauncherConfig.Default.soundVolume)
     }
+
+    @Test
+    fun `using JP-TV as home is opt-in`() {
+        assertEquals(false, LauncherConfig.Default.homeOverrideEnabled)
+    }
 }
