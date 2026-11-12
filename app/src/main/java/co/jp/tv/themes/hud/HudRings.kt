@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import co.jp.tv.core.design.bakeToBitmap
+import kotlin.math.ceil
 import androidx.compose.ui.unit.dp
 import co.jp.tv.core.util.LocalPaused
 
@@ -83,7 +85,11 @@ internal fun HudRings() {
                     width = 1.dp.toPx(),
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 3.dp.toPx())),
                 )
-                onDrawBehind { drawCircle(HudPalette.RingDashed, radius = 150.5.dp.toPx(), style = stroke) }
+                // A dashed stroke is re-generated every frame while it turns; bake it and rotate the texture.
+                val ring = bakeToBitmap(ceil(size.width).toInt(), ceil(size.height).toInt()) {
+                    drawCircle(HudPalette.RingDashed, radius = 150.5.dp.toPx(), style = stroke)
+                }
+                onDrawBehind { drawImage(ring) }
             },
     )
     Box(
@@ -95,13 +101,14 @@ internal fun HudRings() {
                 val radius = 125.25.dp.toPx()
                 val topLeft = Offset(size.width / 2f - radius, size.height / 2f - radius)
                 val arc = Size(radius * 2f, radius * 2f)
-                onDrawBehind {
+                val ring = bakeToBitmap(ceil(size.width).toInt(), ceil(size.height).toInt()) {
                     // A CSS circle border splits at the diagonals: lit top and bottom, dim sides.
                     drawArc(HudPalette.Cyan, -135f, 90f, false, topLeft, arc, style = stroke)
                     drawArc(HudPalette.RingMid, -45f, 90f, false, topLeft, arc, style = stroke)
                     drawArc(HudPalette.Cyan, 45f, 90f, false, topLeft, arc, style = stroke)
                     drawArc(HudPalette.RingMid, 135f, 90f, false, topLeft, arc, style = stroke)
                 }
+                onDrawBehind { drawImage(ring) }
             },
     )
     Box(
