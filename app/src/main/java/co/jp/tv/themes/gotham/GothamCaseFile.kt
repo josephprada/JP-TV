@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import co.jp.tv.R
 import co.jp.tv.core.design.JpFonts
+import co.jp.tv.core.design.launchOrigin
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -91,7 +92,7 @@ internal fun GothamCaseFile(name: String, index: Int, focusedIndex: Int, modifie
     )
     val number = (index + 1).toString().padStart(2, '0')
 
-    Box(modifier.size(width = 130.dp, height = 180.dp)) {
+    Box(modifier.size(width = 130.dp, height = 180.dp).launchOrigin(on)) {
         Box(
             Modifier
                 .matchParentSize()

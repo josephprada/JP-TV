@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import co.jp.tv.apps.domain.AppCatalog
 import co.jp.tv.apps.domain.AppLayout
 import co.jp.tv.apps.domain.AppOrdering
+import co.jp.tv.apps.domain.LaunchOrigin
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.network.domain.NetworkMonitor
 import co.jp.tv.network.domain.NetworkStatus
@@ -151,6 +152,9 @@ class HomeViewModel(
         copy(appOrder = ordering.order, hiddenApps = ordering.hidden)
 
     override fun launch(app: TvApp) = catalog.launch(app)
+
+    /** Launch with the bounds of the focused tile so the window animation can grow out of it. */
+    fun launch(app: TvApp, origin: LaunchOrigin?) = catalog.launch(app, origin)
 
     override fun focus(index: Int) {
         requestedFocus.value = index

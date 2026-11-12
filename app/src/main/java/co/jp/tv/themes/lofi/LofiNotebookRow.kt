@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
 import kotlinx.coroutines.delay
 
 private const val ENTER_MS = 600
@@ -47,6 +48,7 @@ internal fun LofiNotebookRow(app: TvApp, focused: Boolean, enterDelayMs: Int?) {
         Modifier
             .fillMaxWidth()
             .height(32.dp)
+            .launchOrigin(focused)
             .graphicsLayer {
                 alpha = enter.value
                 translationX = (1f - enter.value) * 15.dp.toPx()

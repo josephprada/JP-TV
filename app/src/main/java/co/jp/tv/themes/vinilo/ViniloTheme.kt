@@ -68,6 +68,7 @@ import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.network.domain.NetworkStatus
@@ -419,6 +420,7 @@ private fun ViniloCover(app: TvApp, focused: Boolean, color: Color, slot: Int, r
         Box(
             Modifier
                 .size(sleeve)
+                .launchOrigin(focused)
                 .softShadow(lowEnd, 8.dp, SleeveShape)
                 .clip(SleeveShape)
                 .background(color)

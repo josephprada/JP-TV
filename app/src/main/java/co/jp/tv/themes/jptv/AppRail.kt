@@ -45,6 +45,7 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
+import co.jp.tv.core.design.returnStagger
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.RailWindow
@@ -91,6 +92,7 @@ internal fun AppRail(
             .fillMaxHeight()
             .width(270.dp)
             .riseIn(delayMs = 0, durationMs = JpMotion.FadeMs, distanceDp = 0f)
+            .returnStagger(0)
             .glass(JpDimens.RailShape)
             .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 20.dp)
             .focusRequester(focusRequester)

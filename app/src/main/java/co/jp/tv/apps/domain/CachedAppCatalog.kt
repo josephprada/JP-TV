@@ -25,5 +25,5 @@ class CachedAppCatalog(private val delegate: AppCatalog, private val store: AppL
         )
     }.flowOn(Dispatchers.IO)
 
-    override fun launch(app: TvApp) = delegate.launch(app)
+    override fun launch(app: TvApp, origin: LaunchOrigin?) = delegate.launch(app, origin)
 }

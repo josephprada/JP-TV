@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
+import co.jp.tv.core.design.launchOrigin
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.network.domain.NetworkRules
 import co.jp.tv.network.domain.NetworkStatus
@@ -316,6 +317,7 @@ private fun TerminalAppRow(
         text,
         modifier = Modifier
             .terminalLineIn(delayMs)
+            .launchOrigin(selected)
             .terminalTap(onClick)
             .background(if (selected) TerminalPalette.Green else Color.Transparent)
             .padding(horizontal = 5.dp),

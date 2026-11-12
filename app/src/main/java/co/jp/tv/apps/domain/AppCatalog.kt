@@ -7,5 +7,6 @@ interface AppCatalog {
     /** Emits the current list and again whenever packages are added, removed or changed. */
     val apps: Flow<List<TvApp>>
 
-    fun launch(app: TvApp)
+    /** Starts [app]; [origin], when known, is where the window animation should grow from. */
+    fun launch(app: TvApp, origin: LaunchOrigin? = null)
 }

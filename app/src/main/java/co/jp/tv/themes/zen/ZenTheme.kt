@@ -66,6 +66,8 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
+import co.jp.tv.core.design.returnStagger
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.themes.LauncherTheme
 import co.jp.tv.themes.jptv.JpIcon
@@ -186,7 +188,7 @@ private fun ZenBrand(brand: String, modifier: Modifier = Modifier) {
     val rise = rememberRise(0)
     BasicText(
         brand,
-        modifier = modifier.graphicsLayer {
+        modifier = modifier.returnStagger(0).graphicsLayer {
             alpha = rise.value
             translationY = (1f - rise.value) * 8.dp.toPx()
         },
@@ -209,6 +211,7 @@ private fun ZenAppList(apps: List<TvApp>, focusedIndex: Int, tint: ZenTint) {
         Modifier
             .width(600.dp)
             .fillMaxHeight()
+            .returnStagger(1),
     ) {
         Column(
             Modifier
@@ -263,6 +266,7 @@ private fun ZenRow(app: TvApp, index: Int, focusedIndex: Int, tint: ZenTint) {
         Box(
             Modifier
                 .size(iconSize)
+                .launchOrigin(focused)
                 .drawBehindGlow(glow, grow)
                 .clip(IconShape)
                 .drawWithCache {
@@ -341,7 +345,7 @@ private fun ZenTopRight(
     val rise = rememberRise(150)
     val networkLabel = stringResource(R.string.cd_network)
     Row(
-        modifier.graphicsLayer {
+        modifier.returnStagger(2).graphicsLayer {
             alpha = rise.value
             translationY = (1f - rise.value) * 8.dp.toPx()
         },

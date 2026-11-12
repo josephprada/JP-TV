@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -108,6 +109,7 @@ private fun HudNode(
         modifier = Modifier
             .offset { IntOffset(position.x.roundToInt(), position.y.roundToInt()) }
             .size(width = 90.dp, height = 34.dp)
+            .launchOrigin(focused)
             .graphicsLayer {
                 alpha = enter.value
                 val scale = 0.6f + 0.4f * enter.value

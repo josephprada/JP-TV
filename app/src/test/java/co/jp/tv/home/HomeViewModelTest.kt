@@ -2,6 +2,7 @@ package co.jp.tv.home
 
 import app.cash.turbine.test
 import co.jp.tv.apps.domain.AppCatalog
+import co.jp.tv.apps.domain.LaunchOrigin
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.util.ClockFormat.HourFormat
 import co.jp.tv.network.domain.NetworkMonitor
@@ -35,8 +36,12 @@ class HomeViewModelTest {
     private class FakeCatalog(initial: List<TvApp>) : AppCatalog {
         val source = MutableStateFlow(initial)
         val launched = mutableListOf<TvApp>()
+        val origins = mutableListOf<LaunchOrigin?>()
         override val apps: Flow<List<TvApp>> = source
-        override fun launch(app: TvApp) { launched += app }
+        override fun launch(app: TvApp, origin: LaunchOrigin?) {
+            launched += app
+            origins += origin
+        }
     }
 
     private class FakeMonitor : NetworkMonitor {
@@ -129,6 +134,14 @@ class HomeViewModelTest {
         val target = apps.first()
         vm(catalog).launch(target)
         assertEquals(listOf(target), catalog.launched)
+    }
+
+    @Test
+    fun `launch hands the tile bounds to the catalog for the window animation`() = runTest {
+        val catalog = FakeCatalog(apps)
+        val bounds = LaunchOrigin(x = 40, y = 120, width = 90, height = 60)
+        vm(catalog).launch(apps.first(), bounds)
+        assertEquals(listOf<LaunchOrigin?>(bounds), catalog.origins)
     }
 
     private val wifi = NetworkStatus(

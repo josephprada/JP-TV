@@ -38,6 +38,7 @@ import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
 import co.jp.tv.core.design.rememberTitleFont
+import co.jp.tv.core.design.returnStagger
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
@@ -56,6 +57,7 @@ internal fun ClockCard(
         modifier = modifier
             .padding(end = 20.dp, bottom = 20.dp)
             .riseIn(delayMs = 350, durationMs = JpMotion.FadeMs, distanceDp = 12f)
+            .returnStagger(2)
             .width(IntrinsicSize.Max)
             .glass(JpDimens.RailShape)
             .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 16.dp),

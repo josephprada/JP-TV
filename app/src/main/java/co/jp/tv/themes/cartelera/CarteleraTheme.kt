@@ -64,6 +64,7 @@ import co.jp.tv.R
 import co.jp.tv.apps.domain.TvApp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
 import co.jp.tv.network.domain.NetworkStatus
@@ -450,6 +451,7 @@ private fun CarteleraPoster(
         modifier
             .zIndex(100f - away)
             .size(170.dp, 250.dp)
+            .launchOrigin(focused)
             .graphicsLayer {
                 // translateZ is emulated through the CSS perspective factor p / (p - z).
                 val f = PerspectivePx / (PerspectivePx - z.value)

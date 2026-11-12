@@ -46,6 +46,7 @@ import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.design.JpDimens
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.LocalPaused
 
@@ -110,7 +111,7 @@ internal fun AppRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(11.dp),
     ) {
-        AppTile(app, focus, accent)
+        AppTile(app, focus, accent, Modifier.launchOrigin(focused))
         BasicText(
             text = app.label,
             maxLines = 1,
@@ -147,11 +148,11 @@ private fun Modifier.glow(accent: Color, strength: () -> Float): Modifier = draw
 }
 
 @Composable
-private fun AppTile(app: TvApp, focus: Float, accent: Color) {
+private fun AppTile(app: TvApp, focus: Float, accent: Color, modifier: Modifier = Modifier) {
     val icons = LocalAppIcons.current
     val icon by produceState<ImageBitmap?>(null, app.packageName) { value = icons.load(app) }
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(27.dp)
             .clip(JpDimens.IconShape)
             .background(lerp(JpColors.TileFill, accent, focus))

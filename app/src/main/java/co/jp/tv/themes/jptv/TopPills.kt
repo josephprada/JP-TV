@@ -40,6 +40,7 @@ import co.jp.tv.core.design.JpDimens
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
 import co.jp.tv.core.design.glass
+import co.jp.tv.core.design.returnStagger
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.network.domain.NetworkRules
 import co.jp.tv.network.domain.NetworkStatus
@@ -51,7 +52,8 @@ internal fun TopPills(network: NetworkStatus, accent: Color, actions: HomeAction
     Row(
         modifier = modifier
             .padding(top = 20.dp, end = 20.dp)
-            .riseIn(delayMs = 200, durationMs = JpMotion.FadeMs, distanceDp = 12f),
+            .riseIn(delayMs = 200, durationMs = JpMotion.FadeMs, distanceDp = 12f)
+            .returnStagger(1),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         NetworkChip(network, accent, onClick = actions::openNetwork)

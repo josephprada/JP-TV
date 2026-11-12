@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import co.jp.tv.core.design.JpFonts
 import co.jp.tv.core.design.JpMotion
+import co.jp.tv.core.design.launchOrigin
 import co.jp.tv.core.util.LocalPaused
 
 private const val BodyWidthDp = 120f
@@ -105,6 +106,7 @@ internal fun PixelCartridge(
     Box(
         modifier
             .size(BodyWidthDp.dp, BodyHeightDp.dp)
+            .launchOrigin(focused)
             .graphicsLayer {
                 val scale = lerp(0.9f, 1.2f, focus)
                 scaleX = scale

@@ -19,7 +19,7 @@ class CachedAppCatalogTest {
 
     private fun delegate(vararg lists: List<TvApp>) = object : AppCatalog {
         override val apps: Flow<List<TvApp>> = flow { lists.forEach { emit(it) } }
-        override fun launch(app: TvApp) = Unit
+        override fun launch(app: TvApp, origin: LaunchOrigin?) = Unit
     }
 
     @Test
