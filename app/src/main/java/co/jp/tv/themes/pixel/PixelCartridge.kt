@@ -204,7 +204,7 @@ internal fun PixelCartridge(
                     lineHeight = 1.05.em,
                     letterSpacing = 0.01.em,
                     textAlign = TextAlign.Center,
-                    fontFamily = JpFonts.Righteous,
+                    fontFamily = JpFonts.Fredoka,
                 ),
                 maxLines = 4,
                 overflow = TextOverflow.Ellipsis,

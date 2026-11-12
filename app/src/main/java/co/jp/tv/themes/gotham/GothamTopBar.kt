@@ -66,7 +66,7 @@ internal fun GothamTopBar(
             GothamIcon(GothamGlyph.Wifi, size = 13.dp, color = chrome)
             BasicText(
                 stringResource(networkLabel(network)),
-                style = TextStyle(color = chrome, fontSize = 9.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.08.em),
+                style = TextStyle(color = chrome, fontSize = 9.sp, fontFamily = JpFonts.SpecialElite, letterSpacing = 0.08.em),
                 maxLines = 1,
             )
         }

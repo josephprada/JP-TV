@@ -97,7 +97,7 @@ private fun HudClock(now: LocalDateTime, hourFormat: ClockFormat.HourFormat) {
     val months = stringArrayResource(R.array.theme_hud_months)
     val date = "${days[now.dayOfWeek.value - 1]} · ${"%02d".format(now.dayOfMonth)} ${months[now.monthValue - 1]} · "
     val blink = rememberHudBlink()
-    val sub = TextStyle(color = HudPalette.Cyan, fontSize = 10.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.3.em)
+    val sub = TextStyle(color = HudPalette.Cyan, fontSize = 10.sp, fontFamily = JpFonts.ShareTechMono, letterSpacing = 0.3.em)
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Row {
             BasicText(

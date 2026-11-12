@@ -62,7 +62,7 @@ private val UnitShape: Shape = GenericShape { size, _ ->
 }
 
 private val Title = TextStyle(fontSize = 7.5.sp, fontFamily = JpFonts.Orbitron, letterSpacing = 0.3.em)
-private val Line = TextStyle(fontSize = 10.sp, fontFamily = JpFonts.Mono)
+private val Line = TextStyle(fontSize = 10.sp, fontFamily = JpFonts.ShareTechMono)
 
 @Composable
 private fun HudPanelFrame(

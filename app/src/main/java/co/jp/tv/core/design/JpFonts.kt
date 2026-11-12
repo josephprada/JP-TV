@@ -38,6 +38,22 @@ object JpFonts {
     val Limelight by lazy { FontFamily(Font(R.font.limelight)) }
     val Orbitron by lazy { FontFamily(Font(R.font.orbitron)) }
     val Righteous by lazy { FontFamily(Font(R.font.righteous)) }
+    val SpecialElite by lazy { FontFamily(Font(R.font.special_elite)) }
+    val Fredoka by lazy { FontFamily(weighted(R.font.fredoka, 600), weighted(R.font.fredoka, 700)) }
+    val ShareTechMono by lazy { FontFamily(Font(R.font.share_tech_mono)) }
+    val DmMono by lazy {
+        FontFamily(
+            Font(R.font.dm_mono, FontWeight.Normal),
+            Font(R.font.dm_mono_medium, FontWeight.Medium),
+        )
+    }
+    val ChakraPetch by lazy {
+        FontFamily(
+            Font(R.font.chakra_petch_medium, FontWeight.Medium),
+            Font(R.font.chakra_petch_semibold, FontWeight.SemiBold),
+            Font(R.font.chakra_petch_bold, FontWeight.Bold),
+        )
+    }
     val Caveat by lazy {
         FontFamily(
             weighted(R.font.caveat, 500),

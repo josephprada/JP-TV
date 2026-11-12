@@ -125,7 +125,7 @@ object GothamTheme : LauncherTheme {
                     style = TextStyle(
                         color = GothamPalette.Text.copy(alpha = 0.7f),
                         fontSize = 9.sp,
-                        fontFamily = JpFonts.Mono,
+                        fontFamily = JpFonts.SpecialElite,
                         letterSpacing = 0.2.em,
                     ),
                 )

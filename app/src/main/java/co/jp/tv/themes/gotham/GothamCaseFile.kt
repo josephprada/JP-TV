@@ -128,7 +128,7 @@ internal fun GothamCaseFile(name: String, index: Int, focusedIndex: Int, modifie
                             color = GothamPalette.PaperInk,
                             fontSize = if (name.length > 9) 13.5.sp else 17.sp,
                             lineHeight = if (name.length > 9) 14.85.sp else 18.7.sp,
-                            fontFamily = JpFonts.Mono,
+                            fontFamily = JpFonts.SpecialElite,
                             textAlign = TextAlign.Center,
                         ),
                         maxLines = 2,
@@ -156,7 +156,7 @@ private fun CaseHeader(number: String) {
     val style = TextStyle(
         color = GothamPalette.PaperInk,
         fontSize = 7.5.sp,
-        fontFamily = JpFonts.Mono,
+        fontFamily = JpFonts.SpecialElite,
         letterSpacing = 0.12.em,
     )
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

@@ -22,7 +22,7 @@ internal fun LofiClockLine(clockLine: String, millis: LongState) {
     val style = TextStyle(
         color = LofiPalette.Paper,
         fontSize = 11.sp,
-        fontFamily = JpFonts.Mono,
+        fontFamily = JpFonts.DmMono,
         letterSpacing = 0.14.em,
     )
     Row(

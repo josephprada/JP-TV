@@ -62,8 +62,7 @@ internal fun PixelPreview(modifier: Modifier = Modifier) {
         BasicText(
             text = "JP-64",
             modifier = Modifier.offset(x = 14.px, y = 12.px),
-            // The design uses Fredoka Bold, which is not bundled; Righteous is the closest rounded face we ship.
-            style = TextStyle(color = Title, fontSize = 10.sp, fontFamily = JpFonts.Righteous),
+            style = TextStyle(color = Title, fontSize = 10.sp, fontFamily = JpFonts.Fredoka),
         )
     }
 }

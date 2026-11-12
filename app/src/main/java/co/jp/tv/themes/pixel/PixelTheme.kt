@@ -137,7 +137,7 @@ private fun PixelBrand(brand: String, modifier: Modifier = Modifier) {
             fontSize = 30.sp,
             lineHeight = 1.em,
             letterSpacing = 0.02.em,
-            fontFamily = JpFonts.Righteous,
+            fontFamily = JpFonts.Fredoka,
             shadow = rememberPixelShadow(PixelPalette.ShadowBrand, 2.5f),
         ),
     )
@@ -172,7 +172,7 @@ private fun PixelSelection(name: String, glow: androidx.compose.ui.graphics.Colo
         fontSize = 38.sp,
         lineHeight = 1.em,
         letterSpacing = 0.01.em,
-        fontFamily = JpFonts.Righteous,
+        fontFamily = JpFonts.Fredoka,
         textAlign = TextAlign.Center,
     )
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(7.dp)) {
@@ -187,7 +187,7 @@ private fun PixelSelection(name: String, glow: androidx.compose.ui.graphics.Colo
                 color = PixelPalette.SubtleWhite,
                 fontSize = 12.sp,
                 letterSpacing = 0.16.em,
-                fontFamily = JpFonts.Righteous,
+                fontFamily = JpFonts.Fredoka,
                 shadow = positionShadow,
             ),
         )

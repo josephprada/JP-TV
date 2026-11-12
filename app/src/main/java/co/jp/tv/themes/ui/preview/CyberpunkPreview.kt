@@ -33,7 +33,7 @@ private val PinkText = Color(0xFFFFD7E6)
 
 /**
  * Thumbnail of the Cyberpunk home: neon street with three signs. The artboard shows one static night
- * scene, so no day variant is drawn. The design title face (Chakra Petch) is not bundled; Orbitron is used.
+ * scene, so no day variant is drawn.
  */
 @Composable
 internal fun CyberpunkPreview(modifier: Modifier = Modifier) {
@@ -60,7 +60,7 @@ internal fun CyberpunkPreview(modifier: Modifier = Modifier) {
                 color = PinkText,
                 fontSize = 22.sp,
                 lineHeight = 22.sp,
-                fontFamily = JpFonts.Orbitron,
+                fontFamily = JpFonts.ChakraPetch,
                 shadow = Shadow(Pink, blurRadius = 14f),
             ),
         )

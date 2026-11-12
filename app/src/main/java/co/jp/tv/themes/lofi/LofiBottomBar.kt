@@ -40,7 +40,7 @@ internal fun LofiBottomBar(
     val style = TextStyle(
         color = LofiPalette.Paper,
         fontSize = 10.sp,
-        fontFamily = JpFonts.Mono,
+        fontFamily = JpFonts.DmMono,
         letterSpacing = 0.12.em,
     )
     Row(

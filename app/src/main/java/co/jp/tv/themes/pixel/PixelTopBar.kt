@@ -77,7 +77,7 @@ internal fun PixelTopBar(
             style = TextStyle(
                 color = PixelPalette.White,
                 fontSize = 22.sp,
-                fontFamily = JpFonts.Righteous,
+                fontFamily = JpFonts.Fredoka,
                 shadow = clockShadow,
             ),
         )
@@ -106,7 +106,7 @@ private fun NetworkPill(network: NetworkStatus, actions: HomeActions) {
         PixelIcon(PixelIconKind.Wifi, PixelPalette.Green, 2f, 13.dp)
         BasicText(
             text,
-            style = TextStyle(color = PixelPalette.White, fontSize = 10.sp, fontFamily = JpFonts.Righteous),
+            style = TextStyle(color = PixelPalette.White, fontSize = 10.sp, fontFamily = JpFonts.Fredoka),
         )
     }
 }

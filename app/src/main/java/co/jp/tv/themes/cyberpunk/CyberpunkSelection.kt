@@ -21,7 +21,7 @@ internal fun CyberpunkSelection(name: String, tint: Color, index: Int, count: In
             TextStyle(
                 color = tint,
                 fontSize = 16.spx,
-                fontFamily = JpFonts.Mono,
+                fontFamily = JpFonts.ShareTechMono,
                 letterSpacing = 0.24.em,
             ),
             glows = listOf(tint.copy(alpha = 0.6f) to 10f),
