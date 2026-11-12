@@ -20,6 +20,7 @@
     <string name="panel_online">Con internet</string>
     <string name="panel_offline">Sin internet</string>
     <string name="panel_signal">SEÑAL %1$d DE 4</string>
+    <string name="panel_signal_percent">SEÑAL %1$d%%</string>
     <string name="panel_cable">CABLE</string>
     <string name="panel_no_link">SIN ENLACE</string>
     <string name="panel_ip">IP</string>

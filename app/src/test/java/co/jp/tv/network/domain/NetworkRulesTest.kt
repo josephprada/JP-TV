@@ -70,4 +70,28 @@ class NetworkRulesTest {
         assertEquals(null, NetworkRules.cleanMac(null))
         assertEquals("60:35:73:aa:bb:1f", NetworkRules.cleanMac("60:35:73:aa:bb:1f"))
     }
+
+    @Test
+    fun `signal percent is linear between -100 and -55 dbm and clamped`() {
+        assertEquals(0, NetworkRules.signalPercent(-120))
+        assertEquals(0, NetworkRules.signalPercent(-100))
+        assertEquals(62, NetworkRules.signalPercent(-72))
+        assertEquals(100, NetworkRules.signalPercent(-55))
+        assertEquals(100, NetworkRules.signalPercent(-20))
+    }
+
+    @Test
+    fun `band label follows the wifi frequency`() {
+        assertEquals("2.4 GHZ", NetworkRules.bandLabel(2437))
+        assertEquals("5 GHZ", NetworkRules.bandLabel(5180))
+        assertEquals("6 GHZ", NetworkRules.bandLabel(6115))
+        assertEquals(null, NetworkRules.bandLabel(0))
+        assertEquals(null, NetworkRules.bandLabel(null))
+    }
+
+    @Test
+    fun `mac keeps the vendor prefix and the last byte`() {
+        assertEquals("60:35:73:··:··:1F", NetworkRules.maskMac("60:35:73:AB:CD:1F"))
+        assertEquals("not-a-mac", NetworkRules.maskMac("not-a-mac"))
+    }
 }

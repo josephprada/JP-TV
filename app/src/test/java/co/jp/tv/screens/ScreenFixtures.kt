@@ -40,13 +40,15 @@ object ScreenFixtures {
         transport = NetworkStatus.Transport.WIFI,
         ssid = "Casa-5G",
         ip = "192.168.1.4",
-        gateway = "192.168.1.1",
-        dns = listOf("1.1.1.1", "8.8.8.8"),
+        gateway = "192.168.1.254",
+        dns = listOf("94.140.14.14", "8.8.8.8"),
         signalLevel = 3,
-        routerLatencyMs = 3,
-        internetLatencyMs = 18,
+        signalPercent = 62,
+        band = "5 GHZ",
+        routerLatencyMs = 12,
+        internetLatencyMs = 38,
         hasInternet = true,
-        mac = "A4:5E:60:12:9C:3F",
+        mac = "60:35:73:AB:CD:1F",
     )
 
     fun config(

@@ -14,6 +14,9 @@ data class NetworkStatus(
     val routerLatencyMs: Int? = null,
     val internetLatencyMs: Int? = null,
     val hasInternet: Boolean = false,
+    /** Wi-Fi only: 0..100 from RSSI and the band label ("5 GHZ"); null when unknown. */
+    val signalPercent: Int? = null,
+    val band: String? = null,
     /** Only present when obtainable without extra permissions. */
     val mac: String? = null,
 ) {

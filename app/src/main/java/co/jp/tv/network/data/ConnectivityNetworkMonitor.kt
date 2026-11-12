@@ -137,6 +137,8 @@ class ConnectivityNetworkMonitor(context: Context) : NetworkMonitor {
                 NetworkStatus.Transport.ETHERNET -> 4
                 null -> 0
             },
+            signalPercent = wifiInfo?.rssi?.let(NetworkRules::signalPercent),
+            band = if (wifiInfo != null) NetworkRules.bandLabel(wifiInfo.frequency) else null,
             routerLatencyMs = latency.router,
             internetLatencyMs = latency.internet,
             hasInternet = NetworkRules.hasInternet(true, validated, latency.internet),

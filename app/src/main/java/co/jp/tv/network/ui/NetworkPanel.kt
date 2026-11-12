@@ -179,7 +179,7 @@ private fun LinkCard(status: NetworkStatus) {
     val detail = when {
         !status.isConnected -> stringResource(R.string.panel_no_link)
         status.transport == NetworkStatus.Transport.ETHERNET -> stringResource(R.string.panel_cable)
-        else -> stringResource(R.string.panel_signal, status.signalLevel)
+        else -> wifiDetail(status)
     }
     Row(
         modifier = Modifier
@@ -205,17 +205,25 @@ private fun LinkCard(status: NetworkStatus) {
     }
 }
 
+/** "5 GHZ · SEÑAL 62%", or "SEÑAL 3 DE 4" when Android reports no RSSI/frequency. */
+@Composable
+private fun wifiDetail(status: NetworkStatus): String {
+    val percent = status.signalPercent ?: return stringResource(R.string.panel_signal, status.signalLevel)
+    val signal = stringResource(R.string.panel_signal_percent, percent)
+    return status.band?.let { "$it · $signal" } ?: signal
+}
+
 @Composable
 private fun Facts(status: NetworkStatus) {
     val dash = stringResource(R.string.network_no_detail)
     val cells = buildList {
         add(stringResource(R.string.panel_ip) to (status.ip ?: dash))
         add(stringResource(R.string.panel_gateway) to (status.gateway ?: dash))
-        add(stringResource(R.string.panel_dns) to status.dns.take(2).joinToString("\n").ifEmpty { dash })
+        add(stringResource(R.string.panel_dns) to (status.dns.firstOrNull() ?: dash))
         add(stringResource(R.string.panel_router_latency) to NetworkRules.formatLatency(status.routerLatencyMs))
         add(stringResource(R.string.panel_internet_latency) to NetworkRules.formatLatency(status.internetLatencyMs))
         // The MAC cell is omitted when Android does not expose it without extra permissions.
-        status.mac?.let { add(stringResource(R.string.panel_mac) to it) }
+        status.mac?.let { add(stringResource(R.string.panel_mac) to NetworkRules.maskMac(it)) }
     }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         cells.chunked(2).forEachIndexed { row, pair ->
@@ -239,7 +247,7 @@ private fun Fact(label: String, value: String, delayMs: Int, modifier: Modifier 
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(3.dp),
     ) {
-        BasicText(label, style = TextStyle(JpColors.Faint, 6.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em))
+        BasicText(label, style = TextStyle(JpColors.Faint, 6.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.14.em))
         BasicText(value, style = TextStyle(JpColors.Paper, 13.sp, fontFamily = JpFonts.Body), maxLines = 2)
     }
 }

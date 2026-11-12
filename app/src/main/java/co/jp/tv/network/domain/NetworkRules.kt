@@ -15,6 +15,24 @@ object NetworkRules {
         else -> (rssiDbm - RSSI_MIN) * MAX_LEVEL / (RSSI_MAX - RSSI_MIN)
     }
 
+    /** Linear 0..100 between [RSSI_MIN] and [RSSI_MAX], the number the panel prints after "SEÑAL". */
+    fun signalPercent(rssiDbm: Int): Int = ((rssiDbm - RSSI_MIN) * 100 / (RSSI_MAX - RSSI_MIN)).coerceIn(0, 100)
+
+    /** "2.4 GHZ" / "5 GHZ" / "6 GHZ" from a Wi-Fi center frequency in MHz; null when unknown. */
+    fun bandLabel(frequencyMhz: Int?): String? = when (frequencyMhz) {
+        null -> null
+        in 2400..2500 -> "2.4 GHZ"
+        in 4900..5899 -> "5 GHZ"
+        in 5900..7200 -> "6 GHZ"
+        else -> null
+    }
+
+    /** "60:35:73:AB:CD:1F" -> "60:35:73:··:··:1F": the artboard hides the middle of the address. */
+    fun maskMac(mac: String): String {
+        val parts = mac.split(":")
+        return if (parts.size == 6) parts.mapIndexed { i, p -> if (i == 3 || i == 4) "··" else p }.joinToString(":") else mac
+    }
+
     fun formatLatency(ms: Int?): String = if (ms == null) "—" else "$ms ms"
 
     /** Validated by the system's own check, or proven by our own probe to 1.1.1.1. */
