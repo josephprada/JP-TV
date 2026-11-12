@@ -6,16 +6,26 @@ import co.jp.tv.wallpaper.galaxy.GalaxyWallpaper
 import co.jp.tv.wallpaper.image.StaticImageWallpaper
 import co.jp.tv.wallpaper.video.VideoWallpaper
 
-/** Maps wallpaper ids from [LauncherConfig.WALLPAPER_IDS] to implementations. */
+/**
+ * Maps wallpaper ids from [LauncherConfig.WALLPAPER_IDS] to implementations.
+ * Lazy per entry: the video wallpaper (and with it Media3) is only loaded when it is chosen.
+ */
 object WallpaperRegistry {
-    val all: List<Wallpaper> = listOf(
-        EmbersWallpaper,
-        GalaxyWallpaper,
-        VideoWallpaper,
-        StaticImageWallpaper,
+    private class Entry(val id: String, create: () -> Wallpaper) {
+        val wallpaper: Wallpaper by lazy(create)
+    }
+
+    private val entries = listOf(
+        Entry("embers") { EmbersWallpaper },
+        Entry("galaxy") { GalaxyWallpaper },
+        Entry("video") { VideoWallpaper },
+        Entry("image") { StaticImageWallpaper },
     )
 
-    val default: Wallpaper get() = all.first { it.id == LauncherConfig.DEFAULT_WALLPAPER_ID }
+    val all: List<Wallpaper> by lazy { entries.map { it.wallpaper } }
 
-    fun byId(id: String): Wallpaper = all.firstOrNull { it.id == id } ?: default
+    val default: Wallpaper get() = byId(LauncherConfig.DEFAULT_WALLPAPER_ID)
+
+    fun byId(id: String): Wallpaper =
+        (entries.firstOrNull { it.id == id } ?: entries.first { it.id == LauncherConfig.DEFAULT_WALLPAPER_ID }).wallpaper
 }

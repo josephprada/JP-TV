@@ -46,6 +46,11 @@ class HomeViewModel(
     /** Visible and hidden apps resolved against the saved arrangement, plus the saved config. */
     private data class Layout(val apps: AppLayout.ResolvedApps, val config: LauncherConfig)
 
+    /** False until the saved config is read, so a cold start never draws the default theme and then swaps it. */
+    val ready: StateFlow<Boolean> = configStore.config
+        .map { true }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     private val requestedFocus = MutableStateFlow(0)
     private val active = MutableStateFlow(true)
     private val backStack = MutableStateFlow<List<Screen>>(emptyList())

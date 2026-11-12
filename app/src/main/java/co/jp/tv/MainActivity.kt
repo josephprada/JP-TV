@@ -26,6 +26,7 @@ import co.jp.tv.apps.ui.EditAppsScreen
 import co.jp.tv.apps.ui.LocalAppIcons
 import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.core.util.StartupTrace
 import co.jp.tv.core.util.rememberPausedByLifecycle
 import co.jp.tv.home.HomeViewModel
 import co.jp.tv.home.Screen
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        StartupTrace.mark("MainActivity.onCreate")
         setContent {
             val screens by viewModel.screens.collectAsStateWithLifecycle()
             BackHandler(enabled = true) { viewModel.back() }
@@ -55,6 +57,12 @@ class MainActivity : ComponentActivity() {
             val paused = rememberPausedByLifecycle()
             LaunchedEffect(paused) { viewModel.setActive(!paused) }
 
+            val ready by viewModel.ready.collectAsStateWithLifecycle()
+            if (!ready) {
+                // Same colour as the window background: nothing is composed until the saved theme is known.
+                Box(Modifier.fillMaxSize().background(JpColors.Ink))
+                return@setContent
+            }
             val accent = Color(state.config.accent)
             val top = screens.lastOrNull()
             val settingsOpen = Screen.Settings in screens
@@ -62,6 +70,12 @@ class MainActivity : ComponentActivity() {
             val editOpen = top == Screen.EditApps
             val themesOpen = top == Screen.Themes
             val customizeOpen = top == Screen.Customize
+            LaunchedEffect(state.apps.isNotEmpty()) {
+                if (state.apps.isNotEmpty()) {
+                    StartupTrace.mark("home drawn with ${state.apps.size} apps")
+                    reportFullyDrawn()
+                }
+            }
             val editState by viewModel.editState.collectAsStateWithLifecycle()
             val overlayOpen = screens.isNotEmpty()
             val hideHome = settingsOpen || editOpen || themesOpen || customizeOpen

@@ -5,7 +5,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import co.jp.tv.apps.data.AppIconLoader
+import co.jp.tv.apps.data.FileAppListStore
 import co.jp.tv.apps.data.PackageManagerAppCatalog
+import co.jp.tv.apps.domain.CachedAppCatalog
 import co.jp.tv.apps.domain.AppCatalog
 import co.jp.tv.core.util.ClockTicker
 import co.jp.tv.home.HomeViewModel
@@ -24,7 +26,7 @@ private val Context.launcherDataStore by preferencesDataStore(name = "launcher")
 class AppContainer(context: Context) {
     private val appContext = context.applicationContext
 
-    val appCatalog: AppCatalog = PackageManagerAppCatalog(appContext)
+    val appCatalog: AppCatalog = CachedAppCatalog(PackageManagerAppCatalog(appContext), FileAppListStore(appContext))
     val configStore: ConfigStore = DataStoreConfigStore(appContext.launcherDataStore)
     val appIconLoader = AppIconLoader(appContext)
     val networkMonitor: NetworkMonitor = ConnectivityNetworkMonitor(appContext)

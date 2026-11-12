@@ -1,6 +1,14 @@
 package co.jp.tv
 
 import android.app.Application
+import co.jp.tv.core.design.FontPreloader
+import co.jp.tv.core.util.StartupTrace
+import co.jp.tv.preferences.domain.LauncherConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class JpTvApp : Application() {
     lateinit var container: AppContainer
@@ -8,6 +16,19 @@ class JpTvApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        StartupTrace.init(this)
+        StartupTrace.mark("Application.onCreate")
         container = AppContainer(this)
+        warmUp()
+    }
+
+    /** Starts the slow, main-thread-free work before the activity needs it: the DataStore read and the font decode. */
+    private fun warmUp() {
+        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
+            val config = container.configStore.config.first()
+            StartupTrace.mark("warmUp: config read")
+            FontPreloader.preload(this@JpTvApp, config?.titleFontId ?: LauncherConfig.Default.titleFontId)
+            StartupTrace.mark("warmUp: fonts decoded")
+        }
     }
 }

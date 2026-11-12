@@ -11,9 +11,10 @@ class DeviceInfo(context: Context) {
 
     data class Storage(val freeBytes: Long, val totalBytes: Long)
 
-    val launcherVersion: String = runCatching {
-        appContext.packageManager.getPackageInfo(appContext.packageName, 0).versionName
-    }.getOrNull().orEmpty()
+    /** Lazy: a binder call to PackageManager that only the Settings screen needs. */
+    val launcherVersion: String by lazy {
+        runCatching { appContext.packageManager.getPackageInfo(appContext.packageName, 0).versionName }.getOrNull().orEmpty()
+    }
 
     val androidRelease: String = Build.VERSION.RELEASE
     val deviceModel: String = Build.MODEL

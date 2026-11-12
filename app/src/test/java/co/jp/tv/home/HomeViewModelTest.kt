@@ -202,6 +202,19 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `the home is not ready until the saved config has been read`() = runTest {
+        val gate = kotlinx.coroutines.flow.MutableSharedFlow<LauncherConfig?>(replay = 1)
+        val store = object : ConfigStore {
+            override val config: Flow<LauncherConfig?> = gate
+            override suspend fun update(transform: (LauncherConfig?) -> LauncherConfig) = Unit
+        }
+        val vm = HomeViewModel(FakeCatalog(apps), flowOf(t0), own, FakeMonitor(), t0, store)
+        assertEquals(false, vm.ready.value)
+        gate.emit(null)
+        assertEquals(true, vm.ready.value)
+    }
+
+    @Test
     fun `the home key closes every open screen at once`() {
         val vm = vm(FakeCatalog(apps))
         vm.openSettings()
