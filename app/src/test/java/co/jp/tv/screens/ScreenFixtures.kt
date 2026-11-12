@@ -11,6 +11,8 @@ import co.jp.tv.network.domain.NetworkStatus
 import co.jp.tv.preferences.domain.LauncherConfig
 import co.jp.tv.themes.shared.HomeActions
 import co.jp.tv.themes.shared.HomeState
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.domain.WeatherCondition
 import java.time.LocalDateTime
 
 /** Fake data for the off-device screenshots. Deterministic: no clock, no PackageManager. */
@@ -63,6 +65,7 @@ object ScreenFixtures {
         themeId: String = LauncherConfig.DEFAULT_THEME_ID,
         focusedIndex: Int = 1,
         at: LocalDateTime = now,
+        weather: Weather? = null,
     ) = HomeState(
         brand = LauncherConfig.DEFAULT_BRAND,
         apps = apps,
@@ -70,6 +73,17 @@ object ScreenFixtures {
         network = network,
         now = at,
         config = config(themeId = themeId),
+        weather = weather,
+    )
+
+    /** A reading for Bucaramanga; [night] flips the icon's sun to a moon. */
+    fun weather(condition: WeatherCondition, night: Boolean = false, temperatureC: Int = 24, stale: Boolean = false) = Weather(
+        condition = condition,
+        temperatureC = temperatureC,
+        isDay = !night,
+        updatedAt = now,
+        placeName = "Bucaramanga",
+        stale = stale,
     )
 
     val actions = object : HomeActions {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="weather_clear">Despejado</string>
+    <string name="weather_clear_night">Cielo despejado</string>
+    <string name="weather_partly_cloudy">Parcialmente nublado</string>
+    <string name="weather_cloudy">Nublado</string>
+    <string name="weather_fog">Niebla</string>
+    <string name="weather_drizzle">Llovizna</string>
+    <string name="weather_rain">Lluvia</string>
+    <string name="weather_storm">Tormenta</string>
+    <string name="cd_weather">%1$s, %2$d grados en %3$s</string>
+    <string name="cd_weather_stale">%1$s, %2$d grados en %3$s, dato desactualizado</string>
+
+    <string name="customize_weather">CLIMA · CIUDAD</string>
+    <string name="customize_weather_search">Buscar…</string>
+    <string name="customize_weather_search_hint">Escribe el nombre de la ciudad</string>
+    <string name="customize_weather_searching">Buscando…</string>
+    <string name="customize_weather_no_results">Sin resultados</string>
+    <string name="customize_weather_selected">%1$s</string>
+</resources>

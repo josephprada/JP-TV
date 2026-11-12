@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,8 @@ import co.jp.tv.core.design.returnStagger
 import co.jp.tv.core.design.riseIn
 import co.jp.tv.core.util.ClockFormat
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.ui.WeatherBadge
 import java.time.LocalDateTime
 
 @Composable
@@ -51,6 +54,7 @@ internal fun ClockCard(
     titleFontId: String,
     modifier: Modifier = Modifier,
     hourFormat: ClockFormat.HourFormat = ClockFormat.HourFormat.H24,
+    weather: Weather? = null,
 ) {
     val titleFont = rememberTitleFont(titleFontId)
     Column(
@@ -68,10 +72,19 @@ internal fun ClockCard(
             text = timeText(now, hourFormat),
             style = TextStyle(color = JpColors.Paper, fontSize = 74.sp, fontFamily = titleFont, letterSpacing = (-0.01).em),
         )
-        BasicText(
-            text = ClockFormat.date(now),
-            style = TextStyle(color = accent, fontSize = 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.2.em),
-        )
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            BasicText(
+                text = ClockFormat.date(now),
+                style = TextStyle(color = accent, fontSize = 7.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.2.em),
+            )
+            WeatherBadge(
+                weather = weather,
+                color = JpColors.Muted,
+                textStyle = TextStyle(fontSize = 10.5.sp, fontFamily = JpFonts.Mono, letterSpacing = 0.08.em),
+                iconSize = 15.dp,
+                modifier = Modifier.padding(start = 12.dp),
+            )
+        }
         MinuteLine(now, accent)
     }
 }

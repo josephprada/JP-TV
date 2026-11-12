@@ -4,6 +4,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import co.jp.tv.themes.ThemeRegistry
+import co.jp.tv.weather.domain.Weather
+import co.jp.tv.weather.domain.WeatherCondition
 import co.jp.tv.wallpaper.WallpaperRegistry
 import java.time.LocalDateTime
 import org.junit.Test
@@ -15,8 +17,9 @@ class ThemeHomeScreens : ScreenshotTest() {
         suffix: String = "",
         at: LocalDateTime = ScreenFixtures.now,
         keys: List<Key> = emptyList(),
+        weather: Weather? = null,
     ) = shoot("home-$themeId$suffix", keys) {
-        val state = ScreenFixtures.homeState(themeId, at = at)
+        val state = ScreenFixtures.homeState(themeId, at = at, weather = weather)
         WallpaperRegistry.byId(state.config.wallpaperId)
             .Render(Color(state.config.accent), paused = true, modifier = Modifier)
         ThemeRegistry.byId(themeId).Home(state, ScreenFixtures.actions)
@@ -41,6 +44,9 @@ class ThemeHomeScreens : ScreenshotTest() {
     @Test fun lofiDay() = homeDay("lofi")
     @Test fun cyberpunkDay() = homeDay("cyberpunk")
     @Test fun oceanoDay() = homeDay("oceano")
+
+    // Weather: the badge in each header, and the scenes that react to it.
+    @Test fun jptvCloudy() = home("jptv", "-weather", weather = ScreenFixtures.weather(WeatherCondition.PartlyCloudy, temperatureC = 24))
 
     @Test fun registryMatchesTests() {
         // Keeps this file honest when a theme is added to the registry.

@@ -37,6 +37,7 @@ object JpTvTheme : LauncherTheme {
                 titleFontId = titleFontId,
                 modifier = Modifier.align(Alignment.BottomEnd),
                 hourFormat = state.config.hourFormat,
+                weather = state.weather,
             )
         }
     }
