@@ -75,6 +75,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
+            <!-- Plain launcher entry: getLaunchIntentForPackage() only checks INFO/LAUNCHER, and OEM boot
+                 hooks such as the HY320's JmLauncher (persist.sys.boot_app) start apps through it. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- Opt-in (Settings > Usar JP-TV como inicio): brings JP-TV forward when a stock launcher takes the screen. -->
