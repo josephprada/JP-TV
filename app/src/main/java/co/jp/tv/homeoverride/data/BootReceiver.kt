@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import co.jp.tv.JpTvApp
+import co.jp.tv.core.util.MainVisibility
 import co.jp.tv.homeoverride.domain.Decision
 import co.jp.tv.homeoverride.domain.Trigger
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +33,8 @@ class BootReceiver : BroadcastReceiver() {
                 if (!booted) return@launch
                 if (container.redirectPolicy.decide(enabled, Trigger.BOOT) !is Decision.Redirect) return@launch
                 delay(START_DELAY_MS)
+                // The boot splash (direct boot) may have forwarded to JP-TV already: do not launch it twice.
+                if (MainVisibility.resumed) return@launch
                 if (container.redirectPolicy.decide(enabled, Trigger.BOOT) !is Decision.Redirect) return@launch
                 if (container.homeStarter.start(HomeOverrideService.current ?: context)) container.redirectPolicy.onRedirected()
             } catch (e: Exception) {
@@ -44,7 +47,7 @@ class BootReceiver : BroadcastReceiver() {
 
     private companion object {
         const val TAG = "BootReceiver"
-        const val START_DELAY_MS = 5_000L
+        const val START_DELAY_MS = 1_000L
         const val CONFIG_TIMEOUT_MS = 3_000L
     }
 }

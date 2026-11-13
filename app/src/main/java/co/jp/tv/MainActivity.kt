@@ -44,6 +44,7 @@ import co.jp.tv.core.design.JpColors
 import co.jp.tv.core.sound.LocalUiSounds
 import co.jp.tv.core.sound.UiSound
 import co.jp.tv.core.util.LocalPaused
+import co.jp.tv.core.util.MainVisibility
 import co.jp.tv.core.util.StartupTrace
 import co.jp.tv.core.util.rememberLowEnd
 import co.jp.tv.core.util.rememberPausedByLifecycle
@@ -412,6 +413,16 @@ class MainActivity : ComponentActivity() {
                 true
             }
         }
+
+    override fun onResume() {
+        super.onResume()
+        MainVisibility.resumed = true
+    }
+
+    override fun onPause() {
+        MainVisibility.resumed = false
+        super.onPause()
+    }
 
     override fun onUserInteraction() {
         super.onUserInteraction()
