@@ -64,6 +64,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JpTv">
 
+        <!-- Direct-boot aware: the only JP-TV entry that exists before the user's storage is unlocked. JmLauncher
+             finds it through MAIN+HOME right after power-on; it forwards to MainActivity once the unlock happens. -->
+        <activity
+            android:name=".homeoverride.ui.BootSplashActivity"
+            android:directBootAware="true"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.JpTv.BootSplash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

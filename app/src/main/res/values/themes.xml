@@ -5,4 +5,13 @@
         <item name="android:statusBarColor">#0b0b0c</item>
         <item name="android:navigationBarColor">#0b0b0c</item>
     </style>
+
+    <!-- Direct-boot splash: the window background is the whole screen, no content view. -->
+    <style name="Theme.JpTv.BootSplash" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@drawable/boot_splash_background</item>
+        <item name="android:statusBarColor">#0b0b0c</item>
+        <item name="android:navigationBarColor">#0b0b0c</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDisablePreview">false</item>
+    </style>
 </resources>
