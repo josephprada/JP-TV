@@ -134,7 +134,8 @@
         <receiver
             android:name=".homeoverride.data.BootReceiver"
             android:exported="false">
-            <intent-filter>
+            <!-- BOOT_COMPLETED is delivered to one app at a time; on the HY320 JP-TV got it ~2.5 min after boot. -->
+            <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
