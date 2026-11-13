@@ -1,6 +1,12 @@
 package co.jp.tv
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.UserManager
+import androidx.core.content.ContextCompat
 import co.jp.tv.core.design.FontPreloader
 import co.jp.tv.core.util.StartupTrace
 import co.jp.tv.homeoverride.data.CrashRecorder
@@ -11,17 +17,45 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicBoolean
 
 class JpTvApp : Application() {
-    lateinit var container: AppContainer
-        private set
+    /**
+     * Built on first use. Its adapters open credential-encrypted storage (DataStore, SharedPreferences, files),
+     * which does not exist yet while the process serves the direct-boot splash, so nothing touches it before the unlock.
+     */
+    val container: AppContainer by lazy {
+        AppContainer(this).also { CrashRecorder.install(it.redirectPolicy) }
+    }
+
+    private val started = AtomicBoolean(false)
 
     override fun onCreate() {
         super.onCreate()
         StartupTrace.init(this)
         StartupTrace.mark("Application.onCreate")
-        container = AppContainer(this)
-        CrashRecorder.install(container.redirectPolicy)
+        if (isUserUnlocked()) {
+            start()
+        } else {
+            // Booting: only the direct-boot splash can be running. Defer everything until the unlock.
+            val onUnlocked = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    runCatching { unregisterReceiver(this) }
+                    start()
+                }
+            }
+            ContextCompat.registerReceiver(this, onUnlocked, IntentFilter(Intent.ACTION_USER_UNLOCKED), ContextCompat.RECEIVER_NOT_EXPORTED)
+            // An unlock between the check and the registration would never be announced.
+            if (isUserUnlocked()) onUnlocked.onReceive(this, Intent(Intent.ACTION_USER_UNLOCKED))
+        }
+    }
+
+    private fun isUserUnlocked(): Boolean = getSystemService(UserManager::class.java)?.isUserUnlocked ?: true
+
+    /** Builds the container, installs the crash recorder and warms the caches; runs once, only with the storage unlocked. */
+    private fun start() {
+        if (!started.compareAndSet(false, true)) return
+        container
         warmUp()
     }
 
