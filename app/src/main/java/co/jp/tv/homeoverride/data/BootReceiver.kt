@@ -44,7 +44,7 @@ class BootReceiver : BroadcastReceiver() {
 
     private companion object {
         const val TAG = "BootReceiver"
-        const val START_DELAY_MS = 2_000L
+        const val START_DELAY_MS = 5_000L
         const val CONFIG_TIMEOUT_MS = 3_000L
     }
 }
