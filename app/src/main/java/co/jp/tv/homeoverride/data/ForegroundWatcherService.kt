@@ -58,8 +58,21 @@ class ForegroundWatcherService : Service() {
         override fun onReceive(context: Context, intent: Intent) {
             screenOn = intent.action == Intent.ACTION_SCREEN_ON
             handler.removeCallbacks(tick)
-            if (screenOn) handler.post(wake) // refreshes the stock list and the window
+            handler.removeCallbacks(openAfterWake)
+            if (screenOn) {
+                handler.post(wake) // refreshes the stock list and the window
+                // Projectors "power off" into standby, so waking the screen is the real power-on: no BOOT_COMPLETED.
+                handler.postDelayed(openAfterWake, WAKE_START_DELAY_MS)
+            }
         }
+    }
+
+    /** After a wake from standby, opens JP-TV like a boot does, under the same guards. */
+    private val openAfterWake = Runnable {
+        if (!screenOn) return@Runnable
+        val policy = container.redirectPolicy
+        if (policy.decide(enabled, Trigger.BOOT) !is Decision.Redirect) return@Runnable
+        if (container.homeStarter.start(this)) policy.onRedirected()
     }
 
     private val wake = Runnable {
@@ -193,5 +206,6 @@ class ForegroundWatcherService : Service() {
 
         /** UsageEvents.Event.ACTIVITY_RESUMED (API 29), the same value as the older MOVE_TO_FOREGROUND. */
         const val EVENT_RESUMED = 1
+        const val WAKE_START_DELAY_MS = 3_000L
     }
 }
