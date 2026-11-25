@@ -217,6 +217,7 @@ class HomeViewModel(
     fun refreshNetworkAccess() = monitor.refreshAccess()
 
     override fun openNetwork() = push(Screen.Network)
+    fun openInputs() = push(Screen.Inputs)
     override fun openSettings() = push(Screen.Settings)
 
     /** Package the editor should focus first, or null for the top of the rail. */

@@ -52,6 +52,7 @@ import co.jp.tv.home.HomeViewModel
 import co.jp.tv.home.Screen
 import co.jp.tv.homeoverride.domain.HomeOverrideState
 import co.jp.tv.homeoverride.ui.HomeOverrideUi
+import co.jp.tv.inputs.ui.InputsPanel
 import co.jp.tv.network.ui.NetworkPanel
 import co.jp.tv.playlist.ui.LocalMediaThumbnails
 import co.jp.tv.playlist.ui.LocalPlaylistStateStore
@@ -126,6 +127,7 @@ class MainActivity : ComponentActivity() {
             val themesOpen = top == Screen.Themes
             val customizeOpen = top == Screen.Customize
             val screensaverOpen = top == Screen.Screensaver
+            val inputsOpen = top == Screen.Inputs
             val showingSaver = saverShowing.value
             LaunchedEffect(state.apps.isNotEmpty()) {
                 if (state.apps.isNotEmpty()) {
@@ -386,6 +388,19 @@ class MainActivity : ComponentActivity() {
                             },
                         )
                     }
+                    if (inputsOpen) {
+                        InputsPanel(
+                            load = container.tvInputs::list,
+                            accent = accent,
+                            onOpen = { container.tvInputs.open(it.id) },
+                            onAndroidSettings = {
+                                container.settingsLauncher.open(
+                                    SettingsShortcuts.ALL_SETTINGS_ACTION,
+                                    SettingsShortcuts.ALL_SETTINGS_ACTION,
+                                )
+                            },
+                        )
+                    }
                     if (showingSaver) {
                         // Collected only while it shows; starts from what the home already knows so the mode never flashes.
                         val first = remember { ScreensaverState.of(state.now, state.config, state.weather, library) }
@@ -443,6 +458,7 @@ class MainActivity : ComponentActivity() {
     private fun openShortcut(shortcut: SettingsShortcut) {
         when (val target = shortcut.target) {
             ShortcutTarget.NetworkPanel -> viewModel.openNetwork()
+            ShortcutTarget.Inputs -> viewModel.openInputs()
             is ShortcutTarget.Native -> container.settingsLauncher.open(target)
             ShortcutTarget.Themes -> viewModel.openThemes()
             ShortcutTarget.Disabled -> Unit

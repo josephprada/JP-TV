@@ -23,6 +23,7 @@ import co.jp.tv.homeoverride.data.StockHomeResolver
 import co.jp.tv.homeoverride.data.StockLauncherOpener
 import co.jp.tv.homeoverride.data.WatcherPermissions
 import co.jp.tv.homeoverride.domain.RedirectPolicy
+import co.jp.tv.inputs.data.TvInputCatalog
 import co.jp.tv.network.data.ConnectivityNetworkMonitor
 import co.jp.tv.network.data.LocationAccess
 import co.jp.tv.network.domain.NetworkMonitor
@@ -63,6 +64,7 @@ class AppContainer(context: Context) {
     val networkMonitor: NetworkMonitor = ConnectivityNetworkMonitor(appContext, locationAccess)
     val uiSounds: UiSounds = SoundPoolUiSounds(appContext)
     val settingsLauncher = SettingsLauncher(appContext)
+    val tvInputs = TvInputCatalog(appContext)
     val deviceInfo = DeviceInfo(appContext)
 
     /** Wallpaper media found on the device; scanned off the main thread when the home starts and when Customize opens. */

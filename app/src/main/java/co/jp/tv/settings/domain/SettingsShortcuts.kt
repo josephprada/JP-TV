@@ -22,6 +22,7 @@ object SettingsShortcuts {
         SettingsShortcut(SettingsShortcut.Id.NETWORK, ShortcutTarget.NetworkPanel),
         native(SettingsShortcut.Id.BLUETOOTH, "android.settings.BLUETOOTH_SETTINGS"),
         native(SettingsShortcut.Id.DISPLAY, "android.settings.DISPLAY_SETTINGS"),
+        SettingsShortcut(SettingsShortcut.Id.INPUTS, ShortcutTarget.Inputs),
         native(SettingsShortcut.Id.SOUND, "android.settings.SOUND_SETTINGS"),
         native(SettingsShortcut.Id.APPS, "android.settings.APPLICATION_SETTINGS"),
         native(SettingsShortcut.Id.STORAGE, "android.settings.INTERNAL_STORAGE_SETTINGS"),

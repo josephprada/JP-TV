@@ -172,6 +172,8 @@ fun QuickSettingsScreen(
                                 .then(if (index == 0) Modifier.focusRequester(firstFocus) else Modifier),
                         )
                     }
+                    // A short last row keeps the tile width of the others instead of stretching.
+                    repeat(COLUMNS - rowTiles.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
         }
@@ -226,6 +228,7 @@ private fun textFor(id: SettingsShortcut.Id) = when (id) {
     SettingsShortcut.Id.NETWORK -> TileText(JpIcons.Wifi, R.string.tile_network)
     SettingsShortcut.Id.BLUETOOTH -> TileText(JpIcons.Bluetooth, R.string.tile_bluetooth)
     SettingsShortcut.Id.DISPLAY -> TileText(JpIcons.Display, R.string.tile_display)
+    SettingsShortcut.Id.INPUTS -> TileText(JpIcons.Input, R.string.tile_inputs)
     SettingsShortcut.Id.SOUND -> TileText(JpIcons.Sound, R.string.tile_sound)
     SettingsShortcut.Id.APPS -> TileText(JpIcons.Apps, R.string.tile_apps)
     SettingsShortcut.Id.STORAGE -> TileText(JpIcons.Storage, R.string.tile_storage)
@@ -308,6 +311,7 @@ private fun TileContent(id: SettingsShortcut.Id, info: QuickSettingsInfo, networ
                 Chip("$hz HZ")
             }
         }
+        SettingsShortcut.Id.INPUTS -> Chip("HDMI")
         SettingsShortcut.Id.SOUND -> info.volume?.let { VolumeBar(it, accent) }
         SettingsShortcut.Id.APPS -> Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             AppSwatches.forEachIndexed { i, fallback -> AppSwatch(info.apps.getOrNull(i), fallback) }

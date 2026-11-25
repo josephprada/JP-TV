@@ -49,6 +49,13 @@ class SettingsShortcutsTest {
     }
 
     @Test
+    fun `inputs tile opens the in-launcher inputs panel right after display`() {
+        val ids = SettingsShortcuts.tiles.map { it.id }
+        assertEquals(SettingsShortcut.Id.INPUTS, ids[ids.indexOf(SettingsShortcut.Id.DISPLAY) + 1])
+        assertEquals(ShortcutTarget.Inputs, SettingsShortcuts.tiles.single { it.id == SettingsShortcut.Id.INPUTS }.target)
+    }
+
+    @Test
     fun `byte counts format as gibibytes with one decimal`() {
         assertEquals("3.5", SettingsShortcuts.formatGb(3_758_096_384L))
         assertEquals("11.0", SettingsShortcuts.formatGb(11_811_160_064L))

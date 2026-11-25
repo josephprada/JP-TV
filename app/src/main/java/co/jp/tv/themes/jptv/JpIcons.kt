@@ -26,6 +26,7 @@ private fun rrect(x: Float, y: Float, w: Float, h: Float, r: Float) =
 internal object JpIcons {
     val Bluetooth = JpIcon(listOf("M6.5 7.5l11 9-5.5 4.5v-18l5.5 4.5-11 9"), 1.7f)
     val Display = JpIcon(listOf(rrect(3f, 4f, 18f, 12f, 2f), "M8 20h8", "M12 16v4"), 1.7f)
+    val Input = JpIcon(listOf(rrect(3f, 6f, 18f, 12f, 2f), "M8 11h8", "M8 14h5"), 1.7f)
     val Sound = JpIcon(listOf("M11 5L6 9H3v6h3l5 4V5z", "M15.5 8.5a5 5 0 0 1 0 7", "M18.5 5.5a9 9 0 0 1 0 13"), 1.7f)
     val Apps = JpIcon(
         listOf(rrect(3f, 3f, 7.5f, 7.5f, 2f), rrect(13.5f, 3f, 7.5f, 7.5f, 2f), rrect(3f, 13.5f, 7.5f, 7.5f, 2f), rrect(13.5f, 13.5f, 7.5f, 7.5f, 2f)),
