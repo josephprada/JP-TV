@@ -30,4 +30,21 @@ object InputRules {
 
     /** The label to show as is, or null so the UI falls back to a generic name like "HDMI 2". */
     fun ownLabel(raw: CharSequence?): String? = raw?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+
+    /** Splits [sources] into the ones to list and the ones the user hid, both in their original order. */
+    fun partition(sources: List<InputSource>, hidden: Set<String>): Pair<List<InputSource>, List<InputSource>> =
+        sources.partition { it.id !in hidden }
+
+    /**
+     * A real signal proves the port exists, so any hidden input that reports it leaves the hidden set.
+     * Standby and unknown states say nothing: the HY320 firmware reports its phantom ports as standby.
+     */
+    fun revealConnected(hidden: Set<String>, sources: List<InputSource>): Set<String> {
+        val live = sources.filter { it.signal == Signal.CONNECTED }.mapTo(HashSet()) { it.id }
+        return hidden - live
+    }
+
+    /** Same rule for a single `onInputStateChanged` callback (the raw `INPUT_STATE_*` value). */
+    fun revealOnState(hidden: Set<String>, inputId: String, state: Int): Set<String> =
+        if (signalOf(state) == Signal.CONNECTED) hidden - inputId else hidden
 }

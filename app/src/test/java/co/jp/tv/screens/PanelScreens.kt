@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -170,6 +172,40 @@ class PanelScreens : ScreenshotTest() {
             accent = accent, onTest = {}, onWifiSettings = {},
         )
     }
+
+    private fun inputs(name: String, hidden: Set<String>, keys: List<Key> = emptyList()) = shoot(name, keys) {
+        ThemeRegistry.default.Home(ScreenFixtures.homeState(), ScreenFixtures.actions)
+        // Hide and unhide are applied locally, like the store round trip does on the device.
+        var hiddenNow by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<Set<String>>(hidden) }
+        co.jp.tv.inputs.ui.InputsPanel(
+            load = { ScreenFixtures.inputs },
+            hidden = hiddenNow,
+            onHide = { hiddenNow = hiddenNow + it.id },
+            onShow = { hiddenNow = hiddenNow - it.id },
+            accent = accent,
+            onOpen = { true },
+            onAndroidSettings = {},
+        )
+    }
+
+    /** Nothing hidden: three rows, no "mostrar ocultas" control. */
+    @Test fun inputs() = inputs("inputs", emptySet())
+
+    /** HDMI 2 hidden: two rows and "MOSTRAR OCULTAS (1)" at the bottom. */
+    @Test fun inputsOneHidden() = inputs("inputs-hidden", setOf("hdmi2"))
+
+    /** Menu on the second row opens the inline "OCULTAR ENTRADA" action, focused. */
+    @Test fun inputsHideAction() = inputs("inputs-action", emptySet(), listOf(Key.DirectionDown, Key.Menu))
+
+    /** Menu then OK on the action: HDMI 2 leaves the list, focus lands on the next row and the toggle appears. */
+    @Test fun inputsAfterHide() = inputs("inputs-after-hide", emptySet(), listOf(Key.DirectionDown, Key.Menu, Key.Enter))
+
+    /** The toggle pressed: the hidden input shows dimmed with its "OCULTA" tag, the toggle now says "NO MOSTRAR". */
+    @Test fun inputsShowHidden() = inputs("inputs-show-hidden", setOf("hdmi2"), listOf(Key.DirectionDown, Key.DirectionDown, Key.Enter))
+
+    /** Down to the hidden row, Menu, and the "MOSTRAR" action is offered. */
+    @Test fun inputsUnhideAction() =
+        inputs("inputs-unhide-action", setOf("hdmi2"), listOf(Key.DirectionDown, Key.DirectionDown, Key.Enter, Key.DirectionUp, Key.Menu))
 
     @Test fun edit() = shoot("edit") {
         val order = AppOrdering(

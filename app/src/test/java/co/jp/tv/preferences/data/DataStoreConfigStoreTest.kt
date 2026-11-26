@@ -44,6 +44,29 @@ class DataStoreConfigStoreTest {
     }
 
     @Test
+    fun `hidden inputs round trip and default to none`() = runTest {
+        val store = store()
+        store.update { LauncherConfig.Default }
+        assertEquals(emptySet<String>(), store.config.first()?.hiddenInputs)
+        store.update { it!!.copy(hiddenInputs = setOf("com.x/.HW2", "com.x/.HW3")) }
+        assertEquals(setOf("com.x/.HW2", "com.x/.HW3"), store.config.first()?.hiddenInputs)
+        store.update { it!!.copy(hiddenInputs = emptySet()) }
+        assertEquals(emptySet<String>(), store.config.first()?.hiddenInputs)
+    }
+
+    @Test
+    fun `a saved config from before the inputs panel has no hidden inputs`() = runTest {
+        val dataStore = PreferenceDataStoreFactory.create(produceFile = { File(dir, "pre-inputs.preferences_pb") })
+        dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("saved")] = true
+            prefs[stringPreferencesKey("brand")] = "Casa"
+        }
+        val read = DataStoreConfigStore(dataStore).config.first()
+        assertEquals(emptySet<String>(), read?.hiddenInputs)
+        assertEquals(emptySet<String>(), LauncherConfig.Default.hiddenInputs)
+    }
+
+    @Test
     fun `appearance fields round trip`() = runTest {
         val store = store()
         val written = LauncherConfig.Default.copy(

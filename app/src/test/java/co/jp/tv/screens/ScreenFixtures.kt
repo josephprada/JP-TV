@@ -47,6 +47,13 @@ object ScreenFixtures {
 
     val apps: List<TvApp> = catalog.map { (pkg, label, _) -> TvApp(pkg, label, isTvApp = true) }
 
+    /** The HY320's phantom ports: two HDMI and one AV, all "standby" although it has a single real HDMI. */
+    val inputs = listOf(
+        co.jp.tv.inputs.domain.InputSource("hdmi1", co.jp.tv.inputs.domain.InputSource.Kind.HDMI, null, co.jp.tv.inputs.domain.InputSource.Signal.CONNECTED),
+        co.jp.tv.inputs.domain.InputSource("hdmi2", co.jp.tv.inputs.domain.InputSource.Kind.HDMI, null, co.jp.tv.inputs.domain.InputSource.Signal.STANDBY),
+        co.jp.tv.inputs.domain.InputSource("av1", co.jp.tv.inputs.domain.InputSource.Kind.COMPOSITE, null, co.jp.tv.inputs.domain.InputSource.Signal.STANDBY),
+    )
+
     val network = NetworkStatus(
         state = NetworkStatus.State.CONNECTED,
         transport = NetworkStatus.Transport.WIFI,

@@ -98,6 +98,9 @@ class MainActivity : ComponentActivity() {
         container.launchAnchor.attach(window.decorView)
         setContent {
             val screens by viewModel.screens.collectAsStateWithLifecycle()
+            LaunchedEffect(Unit) {
+                container.tvInputs.stateChanges().collect { (id, state) -> container.inputVisibility.revealOnState(id, state) }
+            }
             BackHandler(enabled = true) { viewModel.back() }
 
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -389,8 +392,13 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     if (inputsOpen) {
+                        val hiddenInputs by remember { container.inputVisibility.hidden }.collectAsStateWithLifecycle(emptySet())
                         InputsPanel(
-                            load = container.tvInputs::list,
+                            // A signal on a hidden input proves the port exists, so reading the list also unhides it.
+                            load = { container.tvInputs.list().also { container.inputVisibility.revealConnected(it) } },
+                            hidden = hiddenInputs,
+                            onHide = { scope.launch { container.inputVisibility.hide(it.id) } },
+                            onShow = { scope.launch { container.inputVisibility.show(it.id) } },
                             accent = accent,
                             onOpen = { container.tvInputs.open(it.id) },
                             onAndroidSettings = {

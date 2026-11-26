@@ -38,6 +38,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
             prefs[THEME] = next.themeId
             prefs[APP_ORDER] = next.appOrder.joinToString(SEPARATOR)
             prefs[HIDDEN_APPS] = next.hiddenApps
+            prefs[HIDDEN_INPUTS] = next.hiddenInputs
             prefs[HOUR_FORMAT] = next.hourFormat.name
             prefs[WALLPAPER_DIM] = next.wallpaperDim
             prefs[PAUSE_IN_APPS] = next.pauseWallpaperInApps
@@ -77,6 +78,7 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
                 themeId = this[THEME] ?: LauncherConfig.DEFAULT_THEME_ID,
                 appOrder = this[APP_ORDER].orEmpty().split(SEPARATOR).filter { it.isNotEmpty() },
                 hiddenApps = this[HIDDEN_APPS].orEmpty(),
+                hiddenInputs = this[HIDDEN_INPUTS].orEmpty(),
                 hourFormat = HourFormat.entries.firstOrNull { it.name == this[HOUR_FORMAT] } ?: HourFormat.H24,
                 wallpaperDim = this[WALLPAPER_DIM] ?: 0,
                 pauseWallpaperInApps = this[PAUSE_IN_APPS] ?: true,
@@ -104,6 +106,9 @@ class DataStoreConfigStore(private val dataStore: DataStore<Preferences>) : Conf
         val THEME = stringPreferencesKey("theme")
         val APP_ORDER = stringPreferencesKey("app_order")
         val HIDDEN_APPS = stringSetPreferencesKey("hidden_apps")
+
+        /** Absent before the inputs panel could hide ports: reads as none hidden. */
+        val HIDDEN_INPUTS = stringSetPreferencesKey("hidden_inputs")
 
         /** Absent on installs from before the setting existed; reads as 24-hour. */
         val WALLPAPER_DIM = intPreferencesKey("wallpaper_dim")

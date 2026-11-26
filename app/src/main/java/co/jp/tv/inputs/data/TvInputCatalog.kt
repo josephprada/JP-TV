@@ -5,9 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.media.tv.TvContract
 import android.media.tv.TvInputManager
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import co.jp.tv.inputs.domain.InputRules
 import co.jp.tv.inputs.domain.InputSource
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 /**
  * Lists the device's external video inputs (HDMI and friends) through Android TV's `TvInputManager`
@@ -34,6 +39,31 @@ class TvInputCatalog(context: Context) {
             Log.w(TAG, "Could not read the TV inputs", e)
             emptyList()
         }
+    }
+
+    /**
+     * Every `onInputStateChanged` the framework reports, as (input id, raw `INPUT_STATE_*`), while collected.
+     * Empty when the firmware has no TV input framework.
+     */
+    fun stateChanges(): Flow<Pair<String, Int>> = callbackFlow {
+        val manager = manager()
+        if (manager == null) {
+            close()
+            return@callbackFlow
+        }
+        val callback = object : TvInputManager.TvInputCallback() {
+            override fun onInputStateChanged(inputId: String, state: Int) {
+                trySend(inputId to state)
+            }
+        }
+        try {
+            manager.registerCallback(callback, Handler(Looper.getMainLooper()))
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "Could not listen to the TV inputs", e)
+            close()
+            return@callbackFlow
+        }
+        awaitClose { runCatching { manager.unregisterCallback(callback) } }
     }
 
     /** Opens [inputId] in the system TV app; false when nothing on the device can show it. */

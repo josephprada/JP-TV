@@ -37,6 +37,13 @@
     <string name="panel_inputs_hint">Elige una entrada para verla en pantalla.</string>
     <string name="panel_inputs_empty">Este equipo no informa de entradas de video. Revisa los ajustes de Android.</string>
     <string name="panel_inputs_open_failed">Este equipo no tiene una app de TV que pueda abrir esa entrada.</string>
+    <string name="panel_inputs_hide_hint">Mantén OK o pulsa Menú sobre una entrada para ocultarla.</string>
+    <string name="panel_inputs_all_hidden">Todas las entradas están ocultas.</string>
+    <string name="panel_inputs_hide">OCULTAR ENTRADA</string>
+    <string name="panel_inputs_unhide">MOSTRAR</string>
+    <string name="panel_inputs_show_hidden">MOSTRAR OCULTAS (%1$d)</string>
+    <string name="panel_inputs_hide_hidden">NO MOSTRAR OCULTAS (%1$d)</string>
+    <string name="input_hidden_tag">OCULTA</string>
     <string name="panel_inputs_android">AJUSTES DE ANDROID →</string>
     <string name="input_kind_hdmi">HDMI</string>
     <string name="input_kind_composite">AV</string>

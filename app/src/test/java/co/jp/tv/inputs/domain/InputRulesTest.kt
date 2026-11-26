@@ -49,4 +49,48 @@ class InputRulesTest {
         assertEquals(null, InputRules.ownLabel(null))
         assertEquals("Consola", InputRules.ownLabel("  Consola "))
     }
+
+    private fun signal(id: String, signal: Signal, kind: Kind = Kind.HDMI) = InputSource(id, kind, null, signal)
+
+    @Test
+    fun `hidden inputs are split from the visible ones keeping the order`() {
+        val all = listOf(source("a", Kind.HDMI), source("b", Kind.HDMI), source("c", Kind.COMPOSITE))
+        val (shown, hidden) = InputRules.partition(all, setOf("b"))
+        assertEquals(listOf("a", "c"), shown.map { it.id })
+        assertEquals(listOf("b"), hidden.map { it.id })
+    }
+
+    @Test
+    fun `nothing hidden keeps every input visible and ignores ids the device no longer lists`() {
+        val all = listOf(source("a", Kind.HDMI))
+        val (shown, hidden) = InputRules.partition(all, setOf("gone"))
+        assertEquals(listOf("a"), shown.map { it.id })
+        assertEquals(emptyList<InputSource>(), hidden)
+    }
+
+    @Test
+    fun `a real signal brings a hidden input back`() {
+        val sources = listOf(signal("hdmi1", Signal.CONNECTED), signal("hdmi2", Signal.STANDBY), signal("av1", Signal.UNKNOWN))
+        assertEquals(setOf("hdmi2"), InputRules.revealConnected(setOf("hdmi1", "hdmi2"), sources))
+    }
+
+    @Test
+    fun `standby disconnected and unknown never unhide anything`() {
+        val sources = listOf(signal("a", Signal.STANDBY), signal("b", Signal.DISCONNECTED), signal("c", Signal.UNKNOWN))
+        val hidden = setOf("a", "b", "c")
+        assertEquals(hidden, InputRules.revealConnected(hidden, sources))
+    }
+
+    @Test
+    fun `revealing keeps ids of inputs that are not listed right now`() {
+        assertEquals(setOf("offline"), InputRules.revealConnected(setOf("offline", "a"), listOf(signal("a", Signal.CONNECTED))))
+    }
+
+    @Test
+    fun `state change callbacks unhide only on the connected state`() {
+        assertEquals(setOf("a"), InputRules.revealOnState(setOf("a"), "a", 1))
+        assertEquals(setOf("a"), InputRules.revealOnState(setOf("a"), "a", 0))
+        assertEquals(emptySet<String>(), InputRules.revealOnState(setOf("a"), "a", 2))
+        assertEquals(setOf("a"), InputRules.revealOnState(setOf("a"), "other", 2))
+    }
 }

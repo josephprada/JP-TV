@@ -19,6 +19,8 @@ data class LauncherConfig(
     val appOrder: List<String> = emptyList(),
     /** Package names kept off the home rail. */
     val hiddenApps: Set<String> = emptySet(),
+    /** `TvInputInfo` ids of video inputs the user hid in the Entradas panel (phantom ports). */
+    val hiddenInputs: Set<String> = emptySet(),
     /** 24-hour (default) or 12-hour AM/PM clock in every theme. */
     val hourFormat: HourFormat = HourFormat.H24,
     /** 0..[MAX_DIM] percent of black laid over the wallpaper. */

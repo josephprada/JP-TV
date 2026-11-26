@@ -80,6 +80,8 @@ abstract class ScreenshotTest {
         rule.waitForIdle()
         keys.forEach { key ->
             rule.onRoot().performKeyInput { pressKey(key) }
+            // Keys the focus system leaves alone (Menu) only apply their state writes once the looper is idle.
+            rule.waitForIdle()
             rule.mainClock.advanceTimeBy(400)
         }
         val dir = File(System.getProperty("screens.dir") ?: "../screens").apply { mkdirs() }
